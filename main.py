@@ -1,4 +1,5 @@
 import random
+import os
 
 def menu_inicio():                      # LogIn/SignIn
     print(f"|{"Bienvenido al sistema de Bibloteca Bineder":-^60}|", end="\n\n")
@@ -7,6 +8,14 @@ def menu_inicio():                      # LogIn/SignIn
     print("Escriba el numero correspondiente a la opción que desea utilizar: ")
     opcion = int(input())
     return opcion
+
+def titulo(opcion):
+    if opcion==1:
+        limpiar_consola()
+        print(f"||{" Usted esta creando un Usuario ":=^60}||", end="\n\n")
+    else:
+        limpiar_consola()
+        print("Usted a Iniciado Sesion!!")
 
 def crear_contraseña():                 # Verifica que la contraseña cumpla con los parámetros de seguridad
     longitud_min_contraseñas = 5         
@@ -52,9 +61,11 @@ def validar_id(usuarios_datos,id):
 
 def crear_usuario(usuarios_datos):
     usuario = crear_nombre_usuario(usuarios_datos)
+    titulo(1)
     contraseña = crear_contraseña()     
-    
-    while True:                         # Validar que el dni tenga 3 dígitos
+    titulo(1)
+
+    while True:                      # Validar que el dni tenga 3 dígitos
         dni = input("Ingrese los 3 últimos dígitos de su DNI: ")
         if len(dni) == 3:
             dni = int(dni)
@@ -70,6 +81,7 @@ def crear_usuario(usuarios_datos):
         permisos = "cliente"
     
     usuarios_datos.append([usuario,contraseña,dni,permisos,id]) # Se agrega una fila con los datos del usuario, a la matriz que tiene a todos
+    limpiar_consola()
     print("\n¡Felicitaciones! Acaba de crear su usuario. Inicie sesión\n")
     print(usuarios_datos)
     
@@ -102,6 +114,8 @@ def menu_admin():
 def menu_cliente():
     print(f"|{"Bienvenido al menú de cliente":-^45}|", end="\n\n")
 
+def limpiar_consola(): # Vacía la consola
+    os.system("cls")
 
 def main():
     usuarios_datos = []                 # Inicializo la MATRIZ de usuarios
@@ -110,10 +124,13 @@ def main():
         opcion_inicio = menu_inicio()
         print(end="\n")
         if opcion_inicio == 1:
-            crear_usuario(usuarios_datos) 
+            titulo(opcion_inicio)
+            crear_usuario(usuarios_datos)
         elif opcion_inicio == 2:
+            titulo(opcion_inicio)
             permisos = iniciar_sesion(usuarios_datos)
             print(f"Usted tiene el rol de {permisos}")
+            limpiar_consola()
             break    
     
     if permisos=="admin":
