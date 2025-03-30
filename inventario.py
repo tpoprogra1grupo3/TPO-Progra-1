@@ -1,5 +1,5 @@
 import os
-def biblioteca():
+def biblioteca():              # Crea un inventario incial
     libros = [
     ['Cien años de soledad', 'L001', 'Gabriel García Márquez', 5, 'Sudamericana'],
     ['El principito', 'L002', 'Antoine de Saint-Exupéry', 10, 'Emecé'],
@@ -29,7 +29,7 @@ def imprimir_libros(libros):     ##ESTA FUNCION MUESTRA LOS LIBROS COMO MATRIZ
         print("-" * 20)         ##SEPARACION ENTRE LOS LIBROS
     print("--- Fin del Catálogo ---")
 
-def añadir_libro(libros):
+def añadir_libro(libros):        # VER TEMA ID DEL LIBRO Y COMO GENERAR
     limpiar_consola()
     print(f"|{"Bienvenido a la carga de libros":-^60}|", end="\n\n")
     nuevo_nombre_libro=input("Ingrese el nombre del nuevo libro: ").lower()
@@ -42,12 +42,12 @@ def añadir_libro(libros):
         if (libro[0].lower()==nuevo_nombre_libro and
             libro[2].lower()==nuevo_autor_libro and     ##COMPARA TODOS LOS DATOS DE LOS LIBROS EN MINUS CON EL INGRESADO
             libro[4].lower()==nuevo_editorial_libro):
-            libro[3]+=1                                 ##AÑADE UN EJEMPLAR MAS AL LIBRO QUE SE ENCONTRO
+            libro[3]+=1                                 ##AÑADE UN EJEMPLAR MAS SI EL LIBRO YA EXISTE
             print(f"El libro {nuevo_nombre_libro} ya existe y se añadió un ejemplar más!!")
             existente=True
-            return      ##DEBE DEVOLVER ALGO
+            return      ##DEBE DEVOLVER ALGO POR CONEVIENCIA PARA NO SEGUIR EJECUTANDO CODIGO DE LA FUNCION
 
-    if not existente:       ##DA ERROR CON existente==False
+    if existente==False:       
         nuevo_codigo_libro=input("Ingrese el nuevo codigo del libro: ")
         nuevo_libro=[nuevo_nombre_libro.title(), nuevo_codigo_libro, nuevo_autor_libro.title(), 1, nuevo_editorial_libro.title()]     ##LA PRIMERA LETRA DE CADA PALABRA EN MAYUS
         libros.append(nuevo_libro)
@@ -69,39 +69,12 @@ def eliminar_libro(libros):     ##ESTA FUNCION SOLO LA UTILIZARA EL ADMINISTRADO
     if not libro_encontrado:
         print("No se encontró el libro especificado.")
 
-##MAIN_BIBLIOTECA
-def main():
-    print(f"|{"Bienvenido a la Biblioteca":-^60}|", end="\n\n")
-    libros_biblioteca=biblioteca()
-    opcion=input("¿Desea ver la biblioteca? si/no: ").lower()
-    if opcion=="si":
-        imprimir_libros(libros_biblioteca)
-    elif opcion=="no":
-        print("Bueno no hay problema")
-    else:
-        print("Opcion no valida")
-
-    añadir = input("¿Desea añadir un libro a la biblioteca? (si/no): ").lower()
-    if añadir == "si":
-        añadir_libro(libros_biblioteca)
-        ver_nueva_biblioteca = input("¿Desea ver la biblioteca actualizada? (si/no): ").lower()
-        ver_nueva_biblioteca = ver_nueva_biblioteca.lower()
-        if ver_nueva_biblioteca == "si":
-            imprimir_libros(libros_biblioteca)
-        else:
-            return
-    elif añadir == "no":
-        print("No se añadirán libros.")
-    else:
-        print("Opción no válida.")
 
 
-##Programa Principal
-main()
 
 ##FALTA VALIDAR EL NUEVO CODIGO DEL LIBRO (QUE SEAN LETRAS Y NUMEROS)
 ##El MAIN DEBE SER MODIFICADO PARA ADMINISTRADOR Y CLIENTE
 ##CUIDADO CON EL ACENTO EN LOS NOMBRES DE LOS LIBROS
-##LA FUNCION DE ELIMINAR NO SE LLAMA DENTRO DEL MENU 
+
 
 

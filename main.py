@@ -1,13 +1,33 @@
 import random
 import os
+from inventario import añadir_libro,eliminar_libro,imprimir_libros,biblioteca
 
-def menu_inicio():                      # LogIn/SignIn
-    print(f"|{"Bienvenido al sistema de Bibloteca Bineder":-^60}|", end="\n\n")
-    print("1. Registrarse")
-    print("2. Iniciar sesion\n")
-    print("Escriba el numero correspondiente a la opción que desea utilizar: ")
-    opcion = int(input())
-    return opcion
+def menu_inicio(usuarios_datos,libros):                      # LogIn/SignIn
+    interruptor = True
+    while interruptor:
+        limpiar_consola()
+        print(usuarios_datos)
+        print(f"|{"Bienvenido al sistema de Bibloteca Bineder":-^60}|", end="\n\n")
+        print("1. Registrarse")
+        print("2. Iniciar sesion\n")
+        print("Escriba el numero correspondiente a la opción que desea utilizar: ")
+        opcion = int(input())
+    
+        # SERÍA IDEAL PASAR LAS FUNCIONES DEL MENU INICIO A OTRO ARCHIVO 
+        print(end="\n")
+        if opcion == 1:
+            titulo(opcion)
+            crear_usuario(usuarios_datos)
+        elif opcion == 2:
+            titulo(opcion)
+            permisos = iniciar_sesion(usuarios_datos)
+            limpiar_consola()
+            print(f"Usted tiene el rol de {permisos}")
+            interruptor = False
+            if permisos=="admin":
+                menu_admin(usuarios_datos,libros) 
+            elif permisos=="cliente":
+                menu_cliente(usuarios_datos,libros) 
 
 def titulo(opcion):
     if opcion==1:
@@ -49,7 +69,7 @@ def generar_id_usuario(usuarios_datos,dni):
         id = cadena_delantera + str(dni) + cadena_trasera
         if validar_id(usuarios_datos,id)==True: # Chequea que no este repetido el id
             return id
-
+        
 def validar_id(usuarios_datos,id):
     if len(usuarios_datos) != 0:
         for fila in usuarios_datos:
@@ -58,7 +78,7 @@ def validar_id(usuarios_datos,id):
         return True
     else:
         return True 
-
+    
 def crear_usuario(usuarios_datos):
     usuario = crear_nombre_usuario(usuarios_datos)
     titulo(1)
@@ -82,8 +102,7 @@ def crear_usuario(usuarios_datos):
     
     usuarios_datos.append([usuario,contraseña,dni,permisos,id]) # Se agrega una fila con los datos del usuario, a la matriz que tiene a todos
     limpiar_consola()
-    print("\n¡Felicitaciones! Acaba de crear su usuario. Inicie sesión\n")
-    print(usuarios_datos)
+
     
 def iniciar_sesion(usuarios_datos):
     bandera = True
@@ -94,7 +113,6 @@ def iniciar_sesion(usuarios_datos):
             while bandera:
                 contraseña = input("Ingrese su contraseña: ")
                 if contraseña == usuarios_datos[fila][1]:    # Se válida que la contraseña ingresada sea la pertenenciente al usuario
-                    print(usuarios_datos)
                     return usuarios_datos[fila][3]          # Retorna el rol/rango del usuario
                 else:
                     print("\nContraseña incorrecta\n") 
@@ -108,35 +126,43 @@ def buscar_nombre_usuario(usuarios_datos,usuario):
         elif fila == len(usuarios_datos)-1:     
             return None                         # Caso contrario devuelve None
 
-def menu_admin():
-    print(f"|{"Bienvenido al menú de admin":-^45}|", end="\n\n")
 
-def menu_cliente():
+
+
+
+def menu_admin(usuarios_datos,libros):
+    print(f"|{"Bienvenido al menú de admin":-^45}|", end="\n\n")
+    print("1. Añadír un libro al inventario")
+    print("2. Eliminar libro")
+    print("3. Mostrar inventario actual")
+    print("9. Para cerrar sesión")
+    while True:
+        opcion_admin = input("Escriba el numero correspondiente a la opción que desea utilizar: ")
+        if opcion_admin != None and opcion_admin.isnumeric and len(opcion_admin)== 1:
+            opcion_admin = int(opcion_admin)
+            if opcion_admin==1:
+                añadir_libro(libros)
+            elif opcion_admin==2:
+                eliminar_libro(libros)
+            elif opcion_admin==3:
+                imprimir_libros(libros)
+            elif opcion_admin==9:
+                menu_inicio(usuarios_datos,libros)
+        else:
+            print("La opción ingresada es inválida\n")
+    
+
+def menu_cliente(usuarios_datos,libros):
     print(f"|{"Bienvenido al menú de cliente":-^45}|", end="\n\n")
+    EJEMPLO = input("")
 
 def limpiar_consola(): # Vacía la consola
     os.system("cls")
 
 def main():
     usuarios_datos = []                 # Inicializo la MATRIZ de usuarios
-    
-    while True:
-        opcion_inicio = menu_inicio()
-        print(end="\n")
-        if opcion_inicio == 1:
-            titulo(opcion_inicio)
-            crear_usuario(usuarios_datos)
-        elif opcion_inicio == 2:
-            titulo(opcion_inicio)
-            permisos = iniciar_sesion(usuarios_datos)
-            print(f"Usted tiene el rol de {permisos}")
-            limpiar_consola()
-            break    
-    
-    if permisos=="admin":
-        menu_admin()
-    elif permisos=="cliente":
-        menu_cliente()
+    libros = biblioteca()
+    menu_inicio(usuarios_datos,libros)
 
 
 
