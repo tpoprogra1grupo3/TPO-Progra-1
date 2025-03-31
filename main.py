@@ -6,13 +6,18 @@ def menu_inicio(usuarios_datos,libros):                      # LogIn/SignIn
     interruptor = True
     while interruptor:
         limpiar_consola()
-        print(usuarios_datos)
         print(f"|{"Bienvenido al sistema de Bibloteca Bineder":-^60}|", end="\n\n")
         print("1. Registrarse")
         print("2. Iniciar sesion\n")
-        print("Escriba el numero correspondiente a la opción que desea utilizar: ")
-        opcion = int(input())
-    
+        while True:
+            print("Escriba el numero correspondiente a la opción que desea utilizar: ")
+            opcion = input()
+            if opcion == "1" or opcion == "2":
+                opcion = int(opcion)
+                break
+            else:
+                print("La opción ingresada no es válida")
+        
         # SERÍA IDEAL PASAR LAS FUNCIONES DEL MENU INICIO A OTRO ARCHIVO 
         print(end="\n")
         if opcion == 1:
@@ -54,10 +59,13 @@ def crear_contraseña():                 # Verifica que la contraseña cumpla co
 def crear_nombre_usuario(usuarios_datos): 
     while True:
         usuario = input("Ingrese el nombre de usuario que desea utilizar: ")
-        validez = buscar_nombre_usuario(usuarios_datos,usuario) # Verifica que no esté ocupado
-        if validez == None:             # Si esta ocupado devuelve True, sino None
-            return usuario
-        print("Usuario inválido/Ya en uso")
+        if usuario.isalnum() == True:
+            validez = buscar_nombre_usuario(usuarios_datos,usuario) # Verifica que no esté ocupado
+            if validez == None:             # Si esta ocupado devuelve True, sino None
+                return usuario
+            print("Usuario inválido/Ya en uso")
+        else: 
+            print("¡El nombre de usuario ingresado es inválido!\n")
 
 def generar_id_usuario(usuarios_datos,dni):
     while True:    
@@ -70,7 +78,7 @@ def generar_id_usuario(usuarios_datos,dni):
         if validar_id(usuarios_datos,id)==True: # Chequea que no este repetido el id
             return id
         
-def validar_id(usuarios_datos,id):
+def validar_id(usuarios_datos,id):      # Verifica al generar un id que no se repita con uno preexistente
     if len(usuarios_datos) != 0:
         for fila in usuarios_datos:
             if fila[4] == id:           # Se fija fila por fila que nadie tenga el id a crear
@@ -87,7 +95,7 @@ def crear_usuario(usuarios_datos):
 
     while True:                      # Validar que el dni tenga 3 dígitos
         dni = input("Ingrese los 3 últimos dígitos de su DNI: ")
-        if len(dni) == 3:
+        if len(dni) == 3 and dni.isnumeric:
             dni = int(dni)
             break
         else:
@@ -108,16 +116,22 @@ def iniciar_sesion(usuarios_datos):
     bandera = True
     while bandera:
         usuario = input("Ingrese su nombre de usuario: ")
-        fila = buscar_nombre_usuario(usuarios_datos,usuario) # Busca la lista de la matriz correspondiente al usuario
-        if fila!=None:
-            while bandera:
-                contraseña = input("Ingrese su contraseña: ")
-                if contraseña == usuarios_datos[fila][1]:    # Se válida que la contraseña ingresada sea la pertenenciente al usuario
-                    return usuarios_datos[fila][3]          # Retorna el rol/rango del usuario
-                else:
-                    print("\nContraseña incorrecta\n") 
+        if usuario.isalnum() == True:
+            fila = buscar_nombre_usuario(usuarios_datos,usuario) # Busca la lista de la matriz correspondiente al usuario
+            if fila!=None:
+                while bandera:
+                    contraseña = input("Ingrese su contraseña: ")
+                    if contraseña != " " or contraseña != "" or contraseña != "  " or contraseña != None:
+                        if contraseña == usuarios_datos[fila][1]:    # Se válida que la contraseña ingresada sea la pertenenciente al usuario
+                            return usuarios_datos[fila][3]          # Retorna el rol/rango del usuario
+                        else:
+                            print("\nContraseña incorrecta\n") 
+                    else:
+                        print("¡Debe ingresar una contraseña!")
+            else: 
+                print("\nEse usuario no existe\n")
         else: 
-            print("\nEse usuario no existe\n")
+            print("¡Debe ingresar un usuario!")
 
 def buscar_nombre_usuario(usuarios_datos,usuario):
     for fila in range(0,len(usuarios_datos)):   
@@ -131,14 +145,16 @@ def buscar_nombre_usuario(usuarios_datos,usuario):
 
 
 def menu_admin(usuarios_datos,libros):
-    print(f"|{"Bienvenido al menú de admin":-^45}|", end="\n\n")
-    print("1. Añadír un libro al inventario")
-    print("2. Eliminar libro")
-    print("3. Mostrar inventario actual")
-    print("9. Para cerrar sesión")
-    while True:
+    bandera = True
+    while bandera:
+        limpiar_consola()
+        print(f"|{"Bienvenido al menú de admin":-^45}|", end="\n\n")
+        print("1. Añadír un libro al inventario")
+        print("2. Eliminar libro")
+        print("3. Mostrar inventario actual")
+        print("9. Para cerrar sesión")
         opcion_admin = input("Escriba el numero correspondiente a la opción que desea utilizar: ")
-        if opcion_admin != None and opcion_admin.isnumeric and len(opcion_admin)== 1:
+        if opcion_admin.isnumeric and len(opcion_admin)== 1:
             opcion_admin = int(opcion_admin)
             if opcion_admin==1:
                 añadir_libro(libros)
@@ -147,6 +163,7 @@ def menu_admin(usuarios_datos,libros):
             elif opcion_admin==3:
                 imprimir_libros(libros)
             elif opcion_admin==9:
+                bandera = False
                 menu_inicio(usuarios_datos,libros)
         else:
             print("La opción ingresada es inválida\n")
