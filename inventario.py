@@ -27,6 +27,7 @@ def imprimir_libros(libros):     ##ESTA FUNCION MUESTRA LOS LIBROS COMO MATRIZ
         print(f"Autor: {libro[2]}")
         print(f"Stock: {libro[3]}")
         print(f"Editorial: {libro[4]}")
+        print(f"Precio: ${libro[5]:,.2f}")  # Muestra el precio con separadores
         print("-" * 20)         ##Separación entre los libros mostrados
     print("--- Fin del Catálogo ---")
     input("\nPresiona Enter para continuar...")
@@ -47,13 +48,34 @@ def añadir_libro(libros):        # VER TEMA ID DEL LIBRO Y COMO GENERAR!!!!!!!!
             libro[3]+=1                                 ##Añade un ejemplar mas si el libro ya existe
             print(f"El libro {nuevo_nombre_libro} ya existe y se añadió un ejemplar más!!")
             existente=True
-            return      ##Debe devolver algo por coneviencia para no seguir ejecutando codigo de la funcion
+            return      ##Debe devolver algo por conveniencia para no seguir ejecutando codigo de la funcion
 
-    if existente==False:       
-        nuevo_codigo_libro=input("Ingrese el nuevo codigo del libro: ")
-        nuevo_libro=[nuevo_nombre_libro.title(), nuevo_codigo_libro, nuevo_autor_libro.title(), 1, nuevo_editorial_libro.title()]     ##La primera letra de cada palabra en mayus
+    if not existente:
+        while True:
+            nuevo_codigo_libro = input("Ingrese el nuevo código del libro (solo letras y números): ")
+            if nuevo_codigo_libro.isalnum():
+                break
+            else:
+                print("Código inválido. El código solo debe contener letras y números. Intente de nuevo.")
+
+        while True:
+            nuevo_precio = input("Ingrese el precio del libro (solo números): ")
+            if nuevo_precio.isdigit():       ##Revisa que el precio sean solo números.
+                nuevo_precio = float(nuevo_precio)
+                break
+            else:
+                print("Precio inválido. Debe ser un número entero. Intente de nuevo.")
+
+        nuevo_libro = [
+            nuevo_nombre_libro.title(),
+            nuevo_codigo_libro.title(),
+            nuevo_autor_libro.title(),
+            1,
+            nuevo_editorial_libro.title(),
+            nuevo_precio
+        ]
         libros.append(nuevo_libro)
-        print("El libro se ha cargado en la biblioteca con éxito!!")
+        print(f"\nEl libro '{nuevo_nombre_libro.title()}' se ha cargado con éxito en la biblioteca.")
 
 def eliminar_libro(libros):     
     limpiar_consola()
@@ -80,15 +102,17 @@ def buscar_libro(libros):
     print("3. Autor")
     print("4. Stock")
     print("5. Editorial")
-    
-    opcion = input("\nSeleccione una opción (1-5): ")
+    print("6. Precio (por rango)")
+
+    opcion = input("\nSeleccione una opción (1-6): ")
 
     campos = {
         "1": 0,  # Nombre
         "2": 1,  # Código
         "3": 2,  # Autor
         "4": 3,  # Stock
-        "5": 4   # Editorial
+        "5": 4,  # Editorial
+        "6": 5   # Precio
     }
 
     if opcion not in campos:
@@ -97,19 +121,43 @@ def buscar_libro(libros):
         return
 
     indice = campos[opcion]
-    valor = input("Ingrese el valor a buscar: ").lower()
-
     resultados = []
 
-    for libro in libros:
-        campo = str(libro[indice]).lower()
+    if opcion == "6":
+        # Buscar por rango de precios
+        while True:
+            precio_min = input("Ingrese el precio mínimo: ")
+            if precio_min.isdigit():
+                precio_min = float(precio_min)
+                break
+            else:
+                print("Ingrese un número válido.")
 
-        if opcion in ["2", "4"]:  # Código y Stock: Realiza una búsqueda exacta
-            if campo == valor:
+        while True:
+            precio_max = input("Ingrese el precio máximo: ")
+            if precio_max.isdigit():
+                precio_max = float(precio_max)
+                break
+            else:
+                print("Ingrese un número válido.")
+
+        for libro in libros:
+            precio = libro[5]
+            if precio_min <= precio <= precio_max:
                 resultados.append(libro)
-        else:  # Nombre, Autor, Editorial: Permite una búsqueda parcial del input realizado
-            if valor in campo:
-                resultados.append(libro)
+
+    else:
+        valor = input("Ingrese el valor a buscar: ").lower()
+
+        for libro in libros:
+            campo = str(libro[indice]).lower()
+
+            if opcion in ["2", "4"]:  # Código y Stock: búsqueda exacta
+                if campo == valor:
+                    resultados.append(libro)
+            else:  # Nombre, Autor, Editorial: búsqueda parcial del input solicitado
+                if valor in campo:
+                    resultados.append(libro)
 
     limpiar_consola()
     if resultados:
@@ -120,6 +168,7 @@ def buscar_libro(libros):
             print(f"Autor: {libro[2]}")
             print(f"Stock: {libro[3]}")
             print(f"Editorial: {libro[4]}")
+            print(f"Precio: ${libro[5]:,.2f}")
             print("-" * 20)
     else:
         print("No se encontraron libros con ese criterio.")
@@ -129,7 +178,6 @@ def buscar_libro(libros):
 
 
 
-##FALTA VALIDAR EL NUEVO CODIGO DEL LIBRO (QUE SEAN LETRAS Y NUMEROS)
 ##El MAIN DEBE SER MODIFICADO PARA ADMINISTRADOR Y CLIENTE
 ##CUIDADO CON EL ACENTO EN LOS NOMBRES DE LOS LIBROS
 ##CREAR ROL EMPLEADO
