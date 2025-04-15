@@ -29,6 +29,7 @@ def imprimir_libros(libros):     ##ESTA FUNCION MUESTRA LOS LIBROS COMO MATRIZ
         print(f"Editorial: {libro[4]}")
         print("-" * 20)         ##Separación entre los libros mostrados
     print("--- Fin del Catálogo ---")
+    input("\nPresiona Enter para continuar...")
 
 def añadir_libro(libros):        # VER TEMA ID DEL LIBRO Y COMO GENERAR!!!!!!!!!!
     limpiar_consola()
@@ -69,6 +70,61 @@ def eliminar_libro(libros):
     
     if not libro_encontrado:
         print("No se encontró el libro especificado.")
+
+def buscar_libro(libros):
+    limpiar_consola()
+    print(f"|{'Buscar libro en la biblioteca':-^60}|\n")
+    print("¿Por qué criterio desea buscar el libro?")
+    print("1. Nombre")
+    print("2. Código")
+    print("3. Autor")
+    print("4. Stock")
+    print("5. Editorial")
+    
+    opcion = input("\nSeleccione una opción (1-5): ")
+
+    campos = {
+        "1": 0,  # Nombre
+        "2": 1,  # Código
+        "3": 2,  # Autor
+        "4": 3,  # Stock
+        "5": 4   # Editorial
+    }
+
+    if opcion not in campos:
+        print("Opción no válida.")
+        input("\nPresiona Enter para continuar...")
+        return
+
+    indice = campos[opcion]
+    valor = input("Ingrese el valor a buscar: ").lower()
+
+    resultados = []
+
+    for libro in libros:
+        campo = str(libro[indice]).lower()
+
+        if opcion in ["2", "4"]:  # Código y Stock: Realiza una búsqueda exacta
+            if campo == valor:
+                resultados.append(libro)
+        else:  # Nombre, Autor, Editorial: Permite una búsqueda parcial del input realizado
+            if valor in campo:
+                resultados.append(libro)
+
+    limpiar_consola()
+    if resultados:
+        print(f"\nSe encontraron {len(resultados)} libro(s):\n")
+        for libro in resultados:
+            print(f"Nombre: {libro[0]}")
+            print(f"Código: {libro[1]}")
+            print(f"Autor: {libro[2]}")
+            print(f"Stock: {libro[3]}")
+            print(f"Editorial: {libro[4]}")
+            print("-" * 20)
+    else:
+        print("No se encontraron libros con ese criterio.")
+    
+    input("\nPresiona Enter para continuar...")
 
 
 

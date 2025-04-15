@@ -1,6 +1,6 @@
 import random
 import os
-from inventario import añadir_libro,eliminar_libro,imprimir_libros,biblioteca
+from inventario import añadir_libro,eliminar_libro,imprimir_libros,buscar_libro,biblioteca
 
 def menu_inicio(usuarios_datos,libros):                      # LogIn/SignIn
     interruptor = True
@@ -152,6 +152,7 @@ def menu_admin(usuarios_datos,libros):
         print("1. Añadír un libro al inventario")
         print("2. Eliminar libro")
         print("3. Mostrar inventario actual")
+        print("4. Buscar libro específico")
         print("9. Para cerrar sesión")
         opcion_admin = input("Escriba el numero correspondiente a la opción que desea utilizar: ")
         if opcion_admin.isnumeric and len(opcion_admin)== 1:
@@ -162,6 +163,8 @@ def menu_admin(usuarios_datos,libros):
                 eliminar_libro(libros)
             elif opcion_admin==3:
                 imprimir_libros(libros)
+            elif opcion_admin==4:
+                buscar_libro(libros)
             elif opcion_admin==9:
                 bandera = False
                 menu_inicio(usuarios_datos,libros)
