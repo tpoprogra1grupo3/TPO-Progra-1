@@ -78,14 +78,9 @@ def generar_id_usuario(usuarios_datos,dni):
         if validar_id(usuarios_datos,id)==True: # Chequea que no este repetido el id
             return id
         
-def validar_id(usuarios_datos,id):      # Verifica al generar un id que no se repita con uno preexistente
-    if len(usuarios_datos) != 0:
-        for fila in usuarios_datos:
-            if fila[4] == id:           # Se fija fila por fila que nadie tenga el id a crear
-                return False
-        return True
-    else:
-        return True 
+def validar_id(usuarios_datos, id):   #Valida que el ID utilizado no se repita
+    coincidencias = [fila for fila in usuarios_datos if fila[4] == id]
+    return len(coincidencias) == 0
     
 def crear_usuario(usuarios_datos):
     usuario = crear_nombre_usuario(usuarios_datos)
