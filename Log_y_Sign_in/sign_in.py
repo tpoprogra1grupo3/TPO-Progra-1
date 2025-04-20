@@ -1,6 +1,17 @@
 from funciones_utiles import buscar_nombre_usuario, titulo, limpiar_consola
 import random
 
+def usuarios_de_base():
+    usuarios_datos = [
+    ['Juan', 'Hola!', '836', "admin", 156836921],
+    ['Elian', '5555!', '856','admin', 527856776],
+    ['Facu', '1234-', '185', 'socio', 133185723],
+    ['Iair007', 'Messi@', '835','empleado', 111835221],
+    ['Esteban', 'mentaaa#', '257','empleado', 290257618],
+    ]
+
+    return usuarios_datos
+
 def crear_usuario(usuarios_datos):
     usuario = crear_nombre_usuario(usuarios_datos)
     titulo(1)

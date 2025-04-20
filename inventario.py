@@ -80,11 +80,11 @@ def añadir_libro(libros):        # VER TEMA ID DEL LIBRO Y COMO GENERAR!!!!!!!!
 def eliminar_libro(libros):     
     limpiar_consola()
     print(f"|{'Bienvenido a la eliminación de libros':-^60}|", end="\n\n")
-    codigo_libro = input("Ingrese el nombre del libro a eliminar: ").lower()
+    nombre_libro = input("Ingrese el nombre del libro a eliminar: ").lower()
 
     libro_encontrado = False
     for libro in libros:
-        if libro[1].lower() == codigo_libro:
+        if libro[0].lower() == nombre_libro:
             libros.remove(libro)        ##Elimina el libro de la matriz
             print(f"El libro '{libro[0]}' se ha eliminado de la biblioteca.")
             libro_encontrado = True
@@ -178,8 +178,6 @@ def buscar_libro(libros):
 
 
 
-##El MAIN DEBE SER MODIFICADO PARA ADMINISTRADOR Y CLIENTE
-##CUIDADO CON EL ACENTO EN LOS NOMBRES DE LOS LIBROS
-##CREAR ROL EMPLEADO
+
 
 

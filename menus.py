@@ -2,9 +2,10 @@ from inventario import añadir_libro,eliminar_libro,imprimir_libros,buscar_libro
 from funciones_utiles import limpiar_consola, titulo, cambiar_rol
 from Log_y_Sign_in.login import iniciar_sesion
 from Log_y_Sign_in.sign_in import crear_usuario
+from prestamos import crear_prestamos
 
 
-def menu_inicio(usuarios_datos,libros):                      # LogIn/SignIn
+def menu_inicio(usuarios_datos,libros,prestamos):                      # LogIn/SignIn
     interruptor = True
     while interruptor:
         limpiar_consola()
@@ -32,13 +33,13 @@ def menu_inicio(usuarios_datos,libros):                      # LogIn/SignIn
             print(f"Usted tiene el rol de {permisos}")
             interruptor = False
             if permisos=="admin":
-                menu_admin(usuarios_datos,libros) 
+                menu_admin(usuarios_datos,libros,prestamos) 
             elif permisos=="socio":
-                menu_socio(usuarios_datos,libros) 
+                menu_socio(usuarios_datos,libros,prestamos) 
             elif permisos=="empleado":
-                menu_empleado(usuarios_datos,libros)
+                menu_empleado(usuarios_datos,libros,prestamos)
 
-def menu_admin(usuarios_datos,libros):
+def menu_admin(usuarios_datos,libros,prestamos):
     bandera = True
     while bandera:
         limpiar_consola()
@@ -47,6 +48,7 @@ def menu_admin(usuarios_datos,libros):
         print("1. Añadír un libro al inventario")
         print("2. Eliminar libro")
         print("3. Mostrar inventario actual")
+        print("5. Crear un préstamo")
         print("4. Buscar libro específico")
         print("9. Para cerrar sesión")
         opcion_admin = input("Escriba el numero correspondiente a la opción que desea utilizar: ")
@@ -60,15 +62,17 @@ def menu_admin(usuarios_datos,libros):
                 imprimir_libros(libros)
             elif opcion_admin==4:
                 buscar_libro(libros)
+            elif opcion_admin==5:
+                crear_prestamos(usuarios_datos,libros,prestamos)
             elif opcion_admin==9:
                 bandera = False
-                menu_inicio(usuarios_datos,libros)
+                menu_inicio(usuarios_datos,libros,prestamos)
             elif opcion_admin==0:
                 cambiar_rol(usuarios_datos)
         else:
             print("La opción ingresada es inválida\n")
 
-def menu_empleado(usuarios_datos,libros):
+def menu_empleado(usuarios_datos,libros,prestamos):
     bandera = True
     while bandera:
         limpiar_consola()
@@ -77,6 +81,7 @@ def menu_empleado(usuarios_datos,libros):
         print("2. Eliminar libro")
         print("3. Mostrar inventario actual")
         print("4. Buscar libro específico")
+        print("5. Crear un préstamo")
         print("9. Para cerrar sesión")
         opcion_empleado = input("Escriba el numero correspondiente a la opción que desea utilizar: ")
         if opcion_empleado.isnumeric and len(opcion_empleado)== 1:
@@ -89,12 +94,14 @@ def menu_empleado(usuarios_datos,libros):
                 imprimir_libros(libros)
             elif opcion_empleado==4:
                 buscar_libro(libros)
+            elif opcion_empleado==5:
+                crear_prestamos(usuarios_datos,libros,prestamos)
             elif opcion_empleado==9:
                 bandera = False
-                menu_inicio(usuarios_datos,libros)
+                menu_inicio(usuarios_datos,libros,prestamos)
         else:
             print("La opción ingresada es inválida\n")
     
-def menu_socio(usuarios_datos,libros):
+def menu_socio(usuarios_datos,librosm,prestamos):
     print(f"|{"Bienvenido al menú de socio":-^45}|", end="\n\n")
     EJEMPLO = input("")

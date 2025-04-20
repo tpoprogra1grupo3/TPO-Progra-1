@@ -47,3 +47,11 @@ def cambiar_rol(usuario_datos):
                         break
                 else:
                     print("La opción ingresada es inválida")        
+
+def buscar_libro(libros,libro,editorial):     # Devuelve la fila donde se encuentra o None
+    nombre_libro = libro.lower()
+    for fila in range(0,len(libros)):
+        if libros[fila][0].lower() == nombre_libro:
+            if libros[fila][4].lower() == editorial:
+                return fila   
+    return None
