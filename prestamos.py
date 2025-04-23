@@ -30,8 +30,8 @@ def crear_prestamos(usuarios_datos,libros,prestamos):
                                         id_libro_a_alquilar = libros[fila_libro][1]
                                         autor_del_libro = libros[fila_libro][2]
                                         
-                                        libro_a_alquilar = libro_a_alquilar.capitalize()
-                                        editorial = editorial.capitalize()
+                                        libro_a_alquilar = libro_a_alquilar.title()
+                                        editorial = editorial.title()
 
                                         print("\n\nLos datos del préstamo son: ")
                                         print(f"{usuario_que_alquila}|{id_usuario_que_alquila}|{libro_a_alquilar}|{id_libro_a_alquilar}|{autor_del_libro}|{editorial}|${precio}")
@@ -45,8 +45,8 @@ def crear_prestamos(usuarios_datos,libros,prestamos):
                                                 prestamos.append([usuario_que_alquila,id_usuario_que_alquila,libro_a_alquilar,id_libro_a_alquilar,autor_del_libro,editorial,precio,date.today(),date.today() + timedelta(weeks=semanas_a_alquilar)])
                                                 libros[fila_libro][3] -= 1                             # Se quita una unidad
                                                 limpiar_consola()
-                                                print("Se ha creado el préstamo exitosamente\n")
-                                                input("Pulse enter para continuar")
+                                                print("Se ha creado el préstamo exitosamente")
+                                                input("\nPresiona Enter para continuar...")
                                                 return
                                             elif opcion=="2":
                                                 return
