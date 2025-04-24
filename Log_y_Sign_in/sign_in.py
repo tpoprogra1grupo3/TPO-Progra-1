@@ -1,13 +1,14 @@
 from funciones_utiles import buscar_nombre_usuario, titulo, limpiar_consola
 import random
+import re
 
 def usuarios_de_base():
     usuarios_datos = [
-    ['Juan', 'Hola!', '836', "admin", 156836921],
-    ['Elian', '5555!', '856','admin', 527856776],
-    ['Facu', '1234-', '185', 'socio', 133185723],
-    ['Iair007', 'Messi@', '835','empleado', 111835221],
-    ['Esteban', 'mentaaa#', '257','empleado', 290257618],
+    ['Juan', 'Hola!', '836', "admin", 156836921, "jrocca@uade.edu.ar"],
+    ['Elian', '5555!', '856','admin', 527856776, "xxxx@uade.edu.ar"],
+    ['Facu', '1234-', '185', 'socio', 133185723, "xxxx@uade.edu.ar"],
+    ['Iair007', 'Messi@', '835','empleado', 111835221, "xxxx@uade.edu.ar"],
+    ['Esteban', 'mentaaa#', '257','empleado', 290257618, "xxxx@uade.edu.ar"],
     ]
 
     return usuarios_datos
@@ -16,6 +17,8 @@ def crear_usuario(usuarios_datos):
     usuario = crear_nombre_usuario(usuarios_datos)
     titulo(1)
     contraseña = crear_contraseña()     
+    titulo(1)
+    mail = crear_mail(usuarios_datos)
     titulo(1)
 
     while True:                      # Validar que el dni tenga 3 dígitos
@@ -33,7 +36,7 @@ def crear_usuario(usuarios_datos):
     else:
         permisos = "socio"
     
-    usuarios_datos.append([usuario,contraseña,dni,permisos,id]) # Se agrega una fila con los datos del usuario, a la matriz que tiene a todos
+    usuarios_datos.append([usuario,contraseña,dni,permisos,id,mail]) # Se agrega una fila con los datos del usuario, a la matriz que tiene a todos
     limpiar_consola() 
 
 def crear_contraseña():                 # Verifica que la contraseña cumpla con los parámetros de seguridad
@@ -76,3 +79,15 @@ def validar_id(usuarios_datos, id):   #Valida que el ID utilizado no se repita
     coincidencias = [fila for fila in usuarios_datos if fila[4] == id]
     return len(coincidencias) == 0
 
+def crear_mail(usuarios_datos):        #Pide un mail y lo válida
+    while True:
+        mail = input("Ingrese su e-mail: ")
+        if re.search(r"\S+@\S+\.\S+",mail) != None:   # Validar que es mail
+            for fila in usuarios_datos:
+                if fila[5] == mail:                   # Válida que no esté en uso
+                    print("\nEl mail ingresado ya está en uso\n")
+                    break
+            else:
+                    return mail
+        else:
+            print("\nEl mail introducido es inválido\n")

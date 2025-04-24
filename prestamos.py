@@ -3,8 +3,8 @@ from funciones_utiles import buscar_libro,buscar_nombre_usuario,limpiar_consola
 
 def crud_prestamos():
     prestamos = [
-    ["Facu",133185723,'El principito','L002',"Antoine de Saint-Exupéry",'Emecé',1300,date.today(),(date.today() + timedelta(weeks=1))],    
-    ["Facu",133185723,'1984','L004',"George Orwell",'Destino',5400,date.today(),(date.today() + timedelta(weeks=3))]
+    ["Facu",133185723,'El principito','L002',"Antoine de Saint-Exupéry",'Emecé',1300,date.today(),(date.today() + timedelta(weeks=1)),"En curso"],    
+    ["Facu",133185723,'1984','L004',"George Orwell",'Destino',5400,date.today(),(date.today() + timedelta(weeks=3)),"En curso"]
     ]
     return prestamos
 
@@ -33,16 +33,21 @@ def crear_prestamos(usuarios_datos,libros,prestamos):
                                         libro_a_alquilar = libro_a_alquilar.title()
                                         editorial = editorial.title()
 
+                                        fecha_de_creacion = date.today()
+                                        fecha_de_vencimiento = date.today() + timedelta(weeks=semanas_a_alquilar)
+                                        
                                         print("\n\nLos datos del préstamo son: ")
-                                        print(f"{usuario_que_alquila}|{id_usuario_que_alquila}|{libro_a_alquilar}|{id_libro_a_alquilar}|{autor_del_libro}|{editorial}|${precio}")
-                                        print(f"\nFecha de inicio: {date.today()}")
-                                        print(f"Fecha de vencimiento: {date.today() + timedelta(weeks=semanas_a_alquilar)}\n")
+                                        print(f"{usuario_que_alquila}|{id_usuario_que_alquila}|{libro_a_alquilar}|{id_libro_a_alquilar}|{autor_del_libro}|{editorial}|${precio}|{estado_prestamo(fecha_de_vencimiento)}")
+                                        print(f"\nFecha de inicio: {fecha_de_creacion}")
+                                        print(f"Fecha de vencimiento: {fecha_de_vencimiento}\n")
                                         print("1. Confirmar los datos del préstamo")
                                         print("2. Cancelar el préstamo")
                                         while True:
                                             opcion = input("Ingrese la opción que desea utilizar: ")
                                             if opcion=="1":
-                                                prestamos.append([usuario_que_alquila,id_usuario_que_alquila,libro_a_alquilar,id_libro_a_alquilar,autor_del_libro,editorial,precio,date.today(),date.today() + timedelta(weeks=semanas_a_alquilar)])
+                                                prestamo = [usuario_que_alquila,id_usuario_que_alquila,libro_a_alquilar,id_libro_a_alquilar,autor_del_libro,editorial,precio,fecha_de_creacion,fecha_de_vencimiento,estado_prestamo(fecha_de_vencimiento)]
+
+                                                prestamos.append(prestamo)
                                                 libros[fila_libro][3] -= 1                             # Se quita una unidad
                                                 limpiar_consola()
                                                 print("Se ha creado el préstamo exitosamente")
@@ -64,4 +69,16 @@ def crear_prestamos(usuarios_datos,libros,prestamos):
                 print("EL libro o editorial no existen")        
         else:
             print("El libro o editorial ingresados son inválido") 
+
+def estado_prestamo(fecha_vencimiento):         # Analiza cada vez que ejecutamos el programa si los préstmos se vencieron
+    if fecha_vencimiento<date.today():
+        return "Vencido"
+    elif fecha_vencimiento>date.today():
+        return "En curso"
+
+def cambio_estado_inicio(prestamos):            # Al ejecutarse el programa, acualiza los estados
+    for fila in prestamos:
+        fecha_vencimiento = fila[8]
+        estado = estado_prestamo(fecha_vencimiento)
+        fila[9] = estado
 

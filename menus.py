@@ -1,4 +1,4 @@
-from inventario import añadir_libro,eliminar_libro,imprimir_libros,buscar_libro
+from modulo_libros import añadir_libro,eliminar_libro,imprimir_libros,buscar_libro
 from funciones_utiles import limpiar_consola, titulo, cambiar_rol
 from Log_y_Sign_in.login import iniciar_sesion
 from Log_y_Sign_in.sign_in import crear_usuario
