@@ -245,14 +245,14 @@ def actualizar_libro(libros):
 
     print("\n¡El libro ha sido actualizado correctamente!")
 
-def generar_id_libro(libros):
-    """Genera un ID secuencial siguiendo el patron LXXX."""
-    numeros_existentes = []
+def generar_id_libro(libros):    #Genera un ID secuencial siguiendo el patrón LXXX usando set.
+    numeros_existentes = set()
+
     for libro in libros:
         codigo = libro[1]
         if codigo.startswith('L') and codigo[1:].isdigit():
-            numeros_existentes.append(int(codigo[1:]))
-    
+            numeros_existentes.add(int(codigo[1:]))
+
     if numeros_existentes:
         nuevo_numero = max(numeros_existentes) + 1
     else:

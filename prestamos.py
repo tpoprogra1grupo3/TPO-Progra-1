@@ -4,8 +4,8 @@ from modulo_libros import imprimir_libros
 
 def crud_prestamos():
     prestamos = [
-        ["Facu", 133185723, 'El principito', 'L002', "Antoine de Saint-Exupéry", 'Emecé', 1300, date.today(), (date.today() + timedelta(weeks=1)), "En curso"],
-        ["Facu", 133185723, '1984', 'L004', "George Orwell", 'Destino', 5400, date.today(), (date.today() + timedelta(weeks=3)), "En curso"]
+        ("Facu", 133185723, 'El principito', 'L002', "Antoine de Saint-Exupéry", 'Emecé', 1300, date.today(), (date.today() + timedelta(weeks=1)), "En curso"),
+        ("Facu", 133185723, '1984', 'L004', "George Orwell", 'Destino', 5400, date.today(), (date.today() + timedelta(weeks=3)), "En curso")
     ]
     return prestamos
 
@@ -31,7 +31,7 @@ def crear_prestamos(usuarios_datos, libros, prestamos):
         if opcion_libro == "0":
             print("\nOperación cancelada.\n")
             return
-        
+
         if not opcion_libro.isdigit() or not (1 <= int(opcion_libro) <= len(libros_disponibles)):
             print("\nNúmero inválido. Intente nuevamente.\n")
             continue
@@ -72,7 +72,7 @@ def crear_prestamos(usuarios_datos, libros, prestamos):
         autor_libro = libro_seleccionado[2]
         editorial = libro_seleccionado[4]
         precio = (libro_seleccionado[5]) * (semanas_a_alquilar / 10)
-        
+
         fecha_de_creacion = date.today()
         fecha_de_vencimiento = date.today() + timedelta(weeks=semanas_a_alquilar)
 
@@ -85,7 +85,7 @@ def crear_prestamos(usuarios_datos, libros, prestamos):
 
         opcion = input("Ingrese la opción que desea utilizar: ").strip()
         if opcion == "1":
-            prestamo = [
+            prestamo = (
                 nombre_real,
                 id_usuario_que_alquila,
                 nombre_libro,
@@ -96,12 +96,12 @@ def crear_prestamos(usuarios_datos, libros, prestamos):
                 fecha_de_creacion,
                 fecha_de_vencimiento,
                 estado_prestamo(fecha_de_vencimiento)
-            ]
+            )
             prestamos.append(prestamo)
             libros[fila_libro][3] -= 1
             limpiar_consola()
             print("Se ha creado el préstamo exitosamente")
-            return  # Sale al terminar
+            return
         elif opcion == "2":
             print("\nPréstamo cancelado.\n")
             return
@@ -115,20 +115,18 @@ def estado_prestamo(fecha_vencimiento):
         return "En curso"
 
 def cambio_estado_inicio(prestamos):
-    for fila in prestamos:
-        fecha_vencimiento = fila[8]
-        estado = estado_prestamo(fecha_vencimiento)
-        fila[9] = estado
+    for i in range(len(prestamos)):
+        fila = prestamos[i]
+        nueva_fila = fila[:-1] + (estado_prestamo(fila[8]),)
+        prestamos[i] = nueva_fila
 
 def imprimir_prestamos(prestamos, filtro="todos"):
     limpiar_consola()
     if not prestamos:
         print("| No hay préstamos registrados |")
         return
-    
+
     print(f"|{'Listado de Préstamos':-^190}|")
-    
-    # Encabezado de tabla
     print(f"{'N°':<4}{'Usuario':<15}{'DNI':<12}{'Libro':<25}{'Código':<8}{'Autor':<25}{'Editorial':<15}{'Precio':<10}{'Inicio':<12}{'Vencimiento':<14}{'Estado':<10}")
     print("-" * 190)
 
@@ -136,34 +134,24 @@ def imprimir_prestamos(prestamos, filtro="todos"):
     contador = 0
 
     for i, prestamo in enumerate(prestamos, 1):
-        # Asegurar que cada campo tenga un valor válido para impresión
-        usuario = prestamo[0] if prestamo[0] is not None else "Sin datos"
-        dni = str(prestamo[1]) if prestamo[1] is not None else "Sin datos"
-        libro = prestamo[2] if prestamo[2] is not None else "Sin datos"
-        codigo = prestamo[3] if prestamo[3] is not None else "Sin datos"
-        autor = prestamo[4] if prestamo[4] is not None else "Sin datos"
-        editorial = prestamo[5] if prestamo[5] is not None else "Sin datos"
-        precio = prestamo[6] if prestamo[6] is not None else 0.0
+        usuario, dni, libro, codigo, autor, editorial, precio, fecha_inicio, fecha_vencimiento, _ = prestamo
+        estado_actual = estado_prestamo(fecha_vencimiento)
 
-        fecha_inicio = prestamo[7].strftime('%d/%m/%Y') if isinstance(prestamo[7], date) else "Fecha inválida"
-        fecha_vencimiento = prestamo[8].strftime('%d/%m/%Y') if isinstance(prestamo[8], date) else "Fecha inválida"
-        estado_actual = estado_prestamo(prestamo[8]) if isinstance(prestamo[8], date) else "Desconocido"
-        
-        dias_restantes = (prestamo[8] - hoy).days if isinstance(prestamo[8], date) else 0
+        dias_restantes = (fecha_vencimiento - hoy).days
 
-        color = "\033[0m"  # Color por defecto
-        mostrar = True     # Bandera para filtrar
+        color = "\033[0m"
+        mostrar = True
 
         if estado_actual == "Vencido":
-            color = "\033[91m"  # Rojo
+            color = "\033[91m"
             if filtro == "en curso" or filtro == "por vencer":
                 mostrar = False
         elif dias_restantes <= 3:
-            color = "\033[93m"  # Amarillo
+            color = "\033[93m"
             if filtro == "vencido" or filtro == "en curso":
                 mostrar = False
         else:
-            color = "\033[92m"  # Verde
+            color = "\033[92m"
             if filtro == "vencido" or filtro == "por vencer":
                 mostrar = False
 
@@ -172,11 +160,11 @@ def imprimir_prestamos(prestamos, filtro="todos"):
 
         if mostrar:
             contador += 1
-            print(f"{contador:<4}{usuario:<15}{dni:<12}{libro:<25}{codigo:<8}{autor:<25}{editorial:<15}${precio:<9.2f}{fecha_inicio:<12}{fecha_vencimiento:<14}{color}{estado_actual:<10}\033[0m")
+            print(f"{contador:<4}{usuario:<15}{dni:<12}{libro:<25}{codigo:<8}{autor:<25}{editorial:<15}${precio:<9.2f}{fecha_inicio.strftime('%d/%m/%Y'):<12}{fecha_vencimiento.strftime('%d/%m/%Y'):<14}{color}{estado_actual:<10}\033[0m")
 
     if contador == 0:
         print("No se encontraron préstamos según el filtro aplicado.")
-    
+
     print("-" * 190)
 
 def ver_prestamos_con_filtro(prestamos):
@@ -187,7 +175,7 @@ def ver_prestamos_con_filtro(prestamos):
     print("3. Ver sólo préstamos vencidos")
     print("4. Ver préstamos próximos a vencer (3 días o menos)")
     print("9. Volver al menú anterior")
-    
+
     opcion = input("\nSeleccione una opción:\n> ")
 
     if opcion == "1":
@@ -208,7 +196,7 @@ def actualizar_prestamo(prestamos):
     if not prestamos:
         print("| No hay préstamos para actualizar |")
         return
-    
+
     imprimir_prestamos(prestamos)
 
     nro = input("\nIngrese el número de préstamo que desea actualizar: ")
@@ -222,15 +210,18 @@ def actualizar_prestamo(prestamos):
             opcion = input("Ingrese opción: ")
 
             if opcion == "1":
-                fecha_vencimiento = prestamos[nro][8]
-                prestamos[nro][9] = estado_prestamo(fecha_vencimiento)
+                fila = prestamos[nro]
+                nueva_fila = fila[:-1] + (estado_prestamo(fila[8]),)
+                prestamos[nro] = nueva_fila
                 print("Estado recalculado correctamente.")
             elif opcion == "2":
                 semanas_extra = input("Ingrese cuántas semanas desea extender el préstamo: ")
                 if semanas_extra.isnumeric() and int(semanas_extra) > 0:
                     semanas_extra = int(semanas_extra)
-                    prestamos[nro][8] = prestamos[nro][8] + timedelta(weeks=semanas_extra)
-                    prestamos[nro][9] = estado_prestamo(prestamos[nro][8])
+                    fila = prestamos[nro]
+                    nueva_fecha = fila[8] + timedelta(weeks=semanas_extra)
+                    nueva_fila = fila[:8] + (nueva_fecha, estado_prestamo(nueva_fecha))
+                    prestamos[nro] = nueva_fila
                     print("Fecha de vencimiento actualizada correctamente.")
                 else:
                     print("Cantidad de semanas inválida.")
@@ -246,7 +237,7 @@ def eliminar_prestamo(prestamos):
     if not prestamos:
         print("| No hay préstamos para eliminar |")
         return
-    
+
     imprimir_prestamos(prestamos)
 
     nro = input("\nIngrese el número de préstamo que desea eliminar: ")
