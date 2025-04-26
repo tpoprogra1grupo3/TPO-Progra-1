@@ -47,15 +47,6 @@ def cambiar_rol(usuario_datos):
                 else:
                     print("La opción ingresada es inválida.")
 
-def buscar_libro(libros,libro,editorial):     # Devuelve la fila donde se encuentra o None
-    nombre_libro = libro.lower()
-    editorial = editorial.lower()
-    for fila in range(0,len(libros)):
-        if libros[fila][0].lower() == nombre_libro:
-            if libros[fila][4].lower() == editorial:
-                return fila   
-    return None
-
 def es_numero_flotante(valor):       # Verifica si es un string con un numero flotante positivo
     valor = valor.replace(',', '.')  # Permite usar coma o punto
     partes = valor.split('.')

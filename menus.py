@@ -2,7 +2,7 @@ from modulo_libros import añadir_libro, eliminar_libro, imprimir_libros, buscar
 from funciones_utiles import limpiar_consola, titulo, cambiar_rol
 from Log_y_Sign_in.login import iniciar_sesion
 from Log_y_Sign_in.sign_in import crear_usuario
-from prestamos import crear_prestamos
+from prestamos import crear_prestamos, ver_prestamos_con_filtro, actualizar_prestamo, eliminar_prestamo
 
 def menu_inicio(usuarios_datos, libros, prestamos):
     while True:
@@ -108,6 +108,9 @@ def submenu_inventario(libros):
 def submenu_prestamos(usuarios_datos, libros, prestamos):
     opciones_prestamos = {
         "1": {"texto": "Crear un préstamo", "accion": lambda: crear_prestamos(usuarios_datos, libros, prestamos)},
+        "2": {"texto": "Ver préstamos existentes", "accion": lambda: ver_prestamos_con_filtro(prestamos)},
+        "3": {"texto": "Actualizar un préstamo", "accion": lambda: actualizar_prestamo(prestamos)},
+        "4": {"texto": "Eliminar un préstamo", "accion": lambda: eliminar_prestamo(prestamos)},
         "9": {"texto": "Volver al menú anterior", "accion": "volver"}
     }
     mostrar_menu("Submenú Préstamos", opciones_prestamos)
