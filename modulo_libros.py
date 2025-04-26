@@ -37,35 +37,33 @@ def imprimir_libros(libros):
 
     print("-" * 120)
 
-def añadir_libro(libros):        
+def añadir_libro(libros):
     limpiar_consola()
-    print(f"|{"Bienvenido a la carga de libros":-^60}|", end="\n\n")
-    nuevo_nombre_libro=input("Ingrese el nombre del nuevo libro: ").lower()
-    nuevo_autor_libro=input("Ingrese el autor: ").lower()
-    nuevo_editorial_libro=input("Ingrese la editorial del libro: ").lower()
+    print(f"|{'Bienvenido a la carga de libros':-^60}|", end="\n\n")
+    nuevo_nombre_libro = input("Ingrese el nombre del nuevo libro: ").lower()
+    nuevo_autor_libro = input("Ingrese el autor: ").lower()
+    nuevo_editorial_libro = input("Ingrese la editorial del libro: ").lower()
     
-    existente=False           ##Interruptor para saber si el libro ingresado ya existe
+    existente = False  # Interruptor para saber si el libro ingresado ya existe
 
     for libro in libros:
-        if (libro[0].lower()==nuevo_nombre_libro and
-            libro[2].lower()==nuevo_autor_libro and     ##Compara todos los datos de los libros en minus con el ingresado
-            libro[4].lower()==nuevo_editorial_libro):
-            libro[3]+=1                                 ##Añade un ejemplar mas si el libro ya existe
-            print(f"El libro {nuevo_nombre_libro} ya existe y se añadió un ejemplar más!!")
-            existente=True
-            return      ##Debe devolver algo por conveniencia para no seguir ejecutando codigo de la funcion
+        if (libro[0].lower() == nuevo_nombre_libro and
+            libro[2].lower() == nuevo_autor_libro and
+            libro[4].lower() == nuevo_editorial_libro):
+            libro[3] += 1  # Añade un ejemplar más si el libro ya existe
+            print(f"El libro '{nuevo_nombre_libro.title()}' ya existe y se añadió un ejemplar más!!")
+            existente = True
+            return
 
-    
     nuevo_codigo_libro = generar_id_libro(libros)
-    print(nuevo_codigo_libro)
 
-    while True:                                         # Caso de que el libro no exista (Es nuevo)
-        nuevo_precio = input("Ingrese el precio del libro (solo números): ")
-        if nuevo_precio.isdigit():       ##Revisa que el precio sean solo números.
-            nuevo_precio = float(nuevo_precio)
+    while True:
+        nuevo_precio = input("Ingrese el precio del libro (puede usar ',' o '.'): ").strip()
+        if es_numero_flotante(nuevo_precio):
+            nuevo_precio = convertir_a_flotante(nuevo_precio)
             break
         else:
-            print("Precio inválido. Debe ser un número entero. Intente de nuevo.")
+            print("Precio inválido. Debe ser un número válido. Intente de nuevo.")
         
     nuevo_libro = [
         nuevo_nombre_libro.title(),
@@ -74,7 +72,7 @@ def añadir_libro(libros):
         1,
         nuevo_editorial_libro.title(),
         nuevo_precio
-        ]
+    ]
     libros.append(nuevo_libro)
     print(f"\nEl libro '{nuevo_nombre_libro.title()}' se ha cargado con éxito en la biblioteca.")
 
