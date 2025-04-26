@@ -4,19 +4,19 @@ def iniciar_sesion(usuarios_datos):
     bandera = True
     while bandera:
         usuario = input("Ingrese su nombre de usuario: ")
-        if usuario.isalnum() == True:
-            fila = buscar_nombre_usuario(usuarios_datos,usuario) # Busca la lista de la matriz correspondiente al usuario
-            if fila!=None:
+        if usuario.isalnum():
+            existe_usuario = buscar_nombre_usuario(usuarios_datos, usuario)
+            if existe_usuario is not None:
                 while bandera:
                     contraseña = input("Ingrese su contraseña: ")
-                    if contraseña != " " or contraseña != "" or contraseña != "  " or contraseña != None:
-                        if contraseña == usuarios_datos[fila][1]:    # Se válida que la contraseña ingresada sea la pertenenciente al usuario
-                            return usuarios_datos[fila][3]          # Retorna el rol/rango del usuario
+                    if contraseña.strip() != "":
+                        if contraseña == usuarios_datos[usuario]['contraseña']:
+                            return usuarios_datos[usuario]['rol']  # Devuelve el rol asociado al usuario
                         else:
-                            print("\nContraseña incorrecta\n") 
+                            print("\nContraseña incorrecta\n")
                     else:
                         print("¡Debe ingresar una contraseña!")
-            else: 
+            else:
                 print("\nEse usuario no existe\n")
-        else: 
+        else:
             print("¡Debe ingresar un usuario!")

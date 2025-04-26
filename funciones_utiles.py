@@ -3,12 +3,14 @@ import os
 def limpiar_consola(): # Vacía la consola
     os.system("cls")
 
-def buscar_nombre_usuario(usuarios_datos,usuario): # Devuelve fila (int) en la que se encuentra el nombre de usuario, o None
-    for fila in range(0,len(usuarios_datos)):   
-        if usuario == usuarios_datos[fila][0]:  # Mira fila a fila si el usuario existe en alguna lista de la matriz
-            return fila                         # En caso de existir, devuelve la fila del usuario
-        elif fila == len(usuarios_datos)-1:     
-            return None                         # Caso contrario devuelve None
+def buscar_nombre_usuario(usuarios_datos, nombre_usuario):
+    nombre_usuario = nombre_usuario.lower()   # Busca un nombre de usuario sin importar mayúsculas
+
+    for nombre in usuarios_datos:
+        if nombre.lower() == nombre_usuario:
+            return nombre  # Devuelve el nombre exactamente como está en la base
+
+    return None
         
 def titulo(opcion):
     if opcion==1:
@@ -21,32 +23,29 @@ def titulo(opcion):
 def cambiar_rol(usuario_datos):
     limpiar_consola()
     while True:
-        usuario_a_cambiar = input("Ingrese el nombre de usuario de la cuenta que desea hacer empleado: ")
-        if buscar_nombre_usuario(usuario_datos, usuario = usuario_a_cambiar) != None:
-            fila = buscar_nombre_usuario(usuario_datos, usuario = usuario_a_cambiar)
-            if usuario_datos[fila][3] == "socio":
-                usuario_datos[fila][3] = "empleado"
-                print("\nLos cambios se han realizado correctamente\n")
-                input("Ingrese enter para continuar: ")
-                break
+        usuario_ingresado = input("Ingrese el nombre de usuario de la cuenta que desea hacer empleado: ").strip()
+        nombre_real = buscar_nombre_usuario(usuario_datos, usuario_ingresado)  # Usa la búsqueda case-insensitive
+
+        if nombre_real is not None:
+            if usuario_datos[nombre_real]['rol'] == "socio":
+                usuario_datos[nombre_real]['rol'] = "empleado"
+                print("\nLos cambios se han realizado correctamente.\n")
             else:
-                print("\nEl usuario ingresado ya cuenta con permisos de empleado/administrador\n")
-                input("Ingrese enter para continuar: ") 
-                break
+                print("\nEl usuario ingresado ya cuenta con permisos de empleado/administrador.\n")
+            break
         else:
-            print("\nNo se ha encontrado el usuario ingresado\n")
-            print("1. Volverlo a intentar")
-            print("2. Volver al menú de su cuenta\n\n")
+            print("\nNo se ha encontrado el usuario ingresado.\n")
+            print("1. Volver a intentar")
+            print("2. Volver al menú\n")
             while True:
-                opcion = input("Ingrese la opción que desea utilizar: ")
-                if opcion=="1" or opcion=="2":
-                    opcion = int(opcion)
-                    if opcion == 2: 
-                        return 
+                opcion = input("Ingrese la opción que desea utilizar: ").strip()
+                if opcion in ("1", "2"):
+                    if opcion == "2":
+                        return
                     else:
                         break
                 else:
-                    print("La opción ingresada es inválida")        
+                    print("La opción ingresada es inválida.")
 
 def buscar_libro(libros,libro,editorial):     # Devuelve la fila donde se encuentra o None
     nombre_libro = libro.lower()

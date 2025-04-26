@@ -1,116 +1,113 @@
-from modulo_libros import añadir_libro,eliminar_libro,imprimir_libros,buscar_libro, actualizar_libro
+from modulo_libros import añadir_libro, eliminar_libro, imprimir_libros, buscar_libro, actualizar_libro
 from funciones_utiles import limpiar_consola, titulo, cambiar_rol
 from Log_y_Sign_in.login import iniciar_sesion
 from Log_y_Sign_in.sign_in import crear_usuario
 from prestamos import crear_prestamos
 
-
-def menu_inicio(usuarios_datos,libros,prestamos):                      # LogIn/SignIn
-    interruptor = True
-    while interruptor:
+def menu_inicio(usuarios_datos, libros, prestamos):
+    while True:
         limpiar_consola()
-        print(f"|{"Bienvenido al sistema de Bibloteca Bineder":-^60}|", end="\n\n")
+        print(f"\n{'=' * 60}")
+        print(f"{'Bienvenido al sistema de Biblioteca Bineder'.center(60)}")
+        print(f"{'=' * 60}\n")
+
         print("1. Registrarse")
-        print("2. Iniciar sesion\n")
-        while True:
-            print("Escriba el numero correspondiente a la opción que desea utilizar: ")
-            opcion = input()
-            if opcion == "1" or opcion == "2":
-                opcion = int(opcion)
-                break
-            else:
-                print("La opción ingresada no es válida")
-        
-        print(end="\n")
-        if opcion == 1:
-            titulo(opcion)
+        print("2. Iniciar sesión")
+        print("0. Salir\n")
+
+        opcion = input("Seleccione una opción:\n> ").strip()
+
+        if opcion == "1":
+            limpiar_consola()
+            titulo(1)
             crear_usuario(usuarios_datos)
-        elif opcion == 2:
-            titulo(opcion)
+            input("\nPresione ENTER para continuar...")
+        elif opcion == "2":
+            limpiar_consola()
+            titulo(2)
             permisos = iniciar_sesion(usuarios_datos)
             limpiar_consola()
             print(f"Usted tiene el rol de {permisos}")
-            interruptor = False
-            if permisos=="admin":
-                menu_admin(usuarios_datos,libros,prestamos) 
-            elif permisos=="socio":
-                menu_socio(usuarios_datos,libros,prestamos) 
-            elif permisos=="empleado":
-                menu_empleado(usuarios_datos,libros,prestamos)
+
+            if permisos == "admin":
+                menu_admin(usuarios_datos, libros, prestamos)
+            elif permisos == "socio":
+                menu_socio(usuarios_datos, libros, prestamos)
+            elif permisos == "empleado":
+                menu_empleado(usuarios_datos, libros, prestamos)
+
+            input("\nPresione ENTER para continuar...")
+        elif opcion == "0":
+            print("\nGracias por utilizar el sistema. ¡Hasta luego!")
+            break
+        else:
+            print("\nLa opción ingresada no es válida.")
+            input("Presione ENTER para intentarlo de nuevo...")
+
+def mostrar_menu(titulo_menu, opciones):
+    while True:
+        limpiar_consola()
+        print(f"\n{'=' * 50}")
+        print(f"{titulo_menu.center(50)}")
+        print(f"{'=' * 50}\n")
+
+        for numero, opcion in sorted(opciones.items()):
+            print(f"{numero}. {opcion['texto']}")
+
+        print("\nSeleccione una opción:")
+        opcion = input("> ").strip()
+
+        if opcion in opciones:
+            if opciones[opcion]["accion"] == "volver":
+                break
+            else:
+                limpiar_consola()
+                opciones[opcion]["accion"]()
+                input("\nPresione ENTER para continuar...")
+        else:
+            print("\nLa opción ingresada no es válida.")
+            input("Presione ENTER para intentarlo de nuevo...")
 
 def menu_admin(usuarios_datos, libros, prestamos):
-    bandera = True
-    while bandera:
-        limpiar_consola()
-        print(f"|{'Bienvenido al menú de admin':-^45}|", end="\n\n")
-        print("0. Dar rol de empleado")
-        print("1. Añadir un libro al inventario")
-        print("2. Eliminar libro")
-        print("3. Mostrar inventario actual")
-        print("4. Buscar libro específico")
-        print("5. Actualizar libro")
-        print("6. Crear un préstamo")
-        print("9. Para cerrar sesión")
-        
-        opcion_admin = input("\nEscriba el número correspondiente a la opción que desea utilizar: ")
+    opciones_admin = {
+        "0": {"texto": "Dar rol de empleado", "accion": lambda: cambiar_rol(usuarios_datos)},
+        "1": {"texto": "Inventario", "accion": lambda: submenu_inventario(libros)},
+        "2": {"texto": "Préstamos", "accion": lambda: submenu_prestamos(usuarios_datos, libros, prestamos)},
+        "9": {"texto": "Cerrar sesión", "accion": "volver"}
+    }
+    mostrar_menu("Bienvenido al menú de Admin", opciones_admin)
 
-        if opcion_admin.isnumeric() and len(opcion_admin) == 1:
-            opcion_admin = int(opcion_admin)
-            if opcion_admin == 0:
-                cambiar_rol(usuarios_datos)
-            elif opcion_admin == 1:
-                añadir_libro(libros)
-            elif opcion_admin == 2:
-                eliminar_libro(libros)
-            elif opcion_admin == 3:
-                imprimir_libros(libros)
-            elif opcion_admin == 4:
-                buscar_libro(libros)
-            elif opcion_admin == 5:
-                actualizar_libro(libros)
-            elif opcion_admin == 6:
-                crear_prestamos(usuarios_datos, libros, prestamos)
-            elif opcion_admin == 9:
-                bandera = False
-                menu_inicio(usuarios_datos, libros, prestamos)
-            else:
-                print("\nLa opción ingresada no es válida.\n")
-        else:
-            print("\nLa opción ingresada no es válida.\n")
+def menu_empleado(usuarios_datos, libros, prestamos):
+    opciones_empleado = {
+        "1": {"texto": "Inventario", "accion": lambda: submenu_inventario(libros)},
+        "2": {"texto": "Préstamos", "accion": lambda: submenu_prestamos(usuarios_datos, libros, prestamos)},
+        "9": {"texto": "Cerrar sesión", "accion": "volver"}
+    }
+    mostrar_menu("Bienvenido al menú de Empleado", opciones_empleado)
 
-def menu_empleado(usuarios_datos,libros,prestamos):
-    bandera = True
-    while bandera:
-        limpiar_consola()
-        print(f"|{"Bienvenido al menú de Empleado":-^45}|", end="\n\n")
-        print("1. Añadír un libro al inventario")
-        print("2. Eliminar libro")
-        print("3. Mostrar inventario actual")
-        print("4. Buscar libro específico")
-        print("5. Actualizar Libro")
-        print("6. Crear un préstamo")
-        print("9. Para cerrar sesión")
-        opcion_empleado = input("Escriba el numero correspondiente a la opción que desea utilizar: ")
-        if opcion_empleado.isnumeric and len(opcion_empleado)== 1:
-            opcion_empleado = int(opcion_empleado)
-            if opcion_empleado==1:
-                añadir_libro(libros)
-            elif opcion_empleado==2:
-                eliminar_libro(libros)
-            elif opcion_empleado==3:
-                imprimir_libros(libros)
-            elif opcion_empleado==4:
-                buscar_libro(libros)
-            elif opcion_empleado==5:
-                actualizar_libro(libros)
-            elif opcion_empleado==6:
-                crear_prestamos(usuarios_datos,libros,prestamos)
-            elif opcion_empleado==9:
-                bandera = False
-                menu_inicio(usuarios_datos,libros,prestamos)
-        else:
-            print("La opción ingresada es inválida\n")
-    
-def menu_socio(usuarios_datos,librosm,prestamos):
-    print(f"|{"Bienvenido al menú de socio":-^45}|", end="\n\n")
-    EJEMPLO = input("")
+def menu_socio(usuarios_datos, libros, prestamos):
+    opciones_socio = {
+        "1": {"texto": "Mostrar inventario actual", "accion": lambda: imprimir_libros(libros)},
+        "2": {"texto": "Buscar libro específico", "accion": lambda: buscar_libro(libros)},
+        "3": {"texto": "Crear un préstamo", "accion": lambda: crear_prestamos(usuarios_datos, libros, prestamos)},
+        "9": {"texto": "Cerrar sesión", "accion": "volver"}
+    }
+    mostrar_menu("Bienvenido al menú de Socio", opciones_socio)
+
+def submenu_inventario(libros):
+    opciones_inventario = {
+        "1": {"texto": "Añadir un libro al inventario", "accion": lambda: añadir_libro(libros)},
+        "2": {"texto": "Eliminar libro", "accion": lambda: eliminar_libro(libros)},
+        "3": {"texto": "Mostrar inventario actual", "accion": lambda: imprimir_libros(libros)},
+        "4": {"texto": "Buscar libro específico", "accion": lambda: buscar_libro(libros)},
+        "5": {"texto": "Actualizar libro", "accion": lambda: actualizar_libro(libros)},
+        "9": {"texto": "Volver al menú anterior", "accion": "volver"}
+    }
+    mostrar_menu("Submenú Inventario", opciones_inventario)
+
+def submenu_prestamos(usuarios_datos, libros, prestamos):
+    opciones_prestamos = {
+        "1": {"texto": "Crear un préstamo", "accion": lambda: crear_prestamos(usuarios_datos, libros, prestamos)},
+        "9": {"texto": "Volver al menú anterior", "accion": "volver"}
+    }
+    mostrar_menu("Submenú Préstamos", opciones_prestamos)

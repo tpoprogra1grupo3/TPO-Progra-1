@@ -3,91 +3,126 @@ import random
 import re
 
 def usuarios_de_base():
-    usuarios_datos = [
-    ['Juan', 'Hola!', '836', "admin", 156836921, "jrocca@uade.edu.ar"],
-    ['Elian', '5555!', '856','admin', 527856776, "xxxx@uade.edu.ar"],
-    ['Facu', '1234-', '185', 'socio', 133185723, "xxxx@uade.edu.ar"],
-    ['Iair007', 'Messi@', '835','empleado', 111835221, "xxxx@uade.edu.ar"],
-    ['Esteban', 'mentaaa#', '257','empleado', 290257618, "xxxx@uade.edu.ar"],
-    ]
-
+    usuarios_datos = {
+        'Juan': {
+            'contraseña': 'Hola!',
+            'ultimos_3_digitos': '836',
+            'rol': 'admin',
+            'id': 156836921,
+            'mail': 'jrocca@uade.edu.ar'
+        },
+        'Elian': {
+            'contraseña': '5555!',
+            'ultimos_3_digitos': '856',
+            'rol': 'admin',
+            'id': 527856776,
+            'mail': 'xxxx@uade.edu.ar'
+        },
+        'Facu': {
+            'contraseña': '1234-',
+            'ultimos_3_digitos': '185',
+            'rol': 'socio',
+            'id': 133185723,
+            'mail': 'xxxx@uade.edu.ar'
+        },
+        'Iair007': {
+            'contraseña': 'Messi@',
+            'ultimos_3_digitos': '835',
+            'rol': 'empleado',
+            'id': 111835221,
+            'mail': 'xxxx@uade.edu.ar'
+        },
+        'Esteban': {
+            'contraseña': 'mentaaa#',
+            'ultimos_3_digitos': '257',
+            'rol': 'empleado',
+            'id': 290257618,
+            'mail': 'xxxx@uade.edu.ar'
+        }
+    }
     return usuarios_datos
 
 def crear_usuario(usuarios_datos):
     usuario = crear_nombre_usuario(usuarios_datos)
     titulo(1)
-    contraseña = crear_contraseña()     
+    contraseña = crear_contraseña()
     titulo(1)
     mail = crear_mail(usuarios_datos)
     titulo(1)
 
-    while True:                      # Validar que el dni tenga 3 dígitos
-        dni = input("Ingrese los 3 últimos dígitos de su DNI: ")
-        if len(dni) == 3 and dni.isnumeric:
-            dni = int(dni)
+    while True:
+        dni_completo = input("Ingrese su DNI completo (9 dígitos): ")
+        if dni_completo.isdigit() and len(dni_completo) == 9:
+            ultimos_3_digitos = dni_completo[-3:]  # Ahora dejamos como string
             break
         else:
-            print("DNI inválido")
+            print("DNI inválido. Asegúrese de ingresar exactamente 9 dígitos numéricos.")
 
-    id = generar_id_usuario(usuarios_datos,dni)
-    
-    if len(usuarios_datos)==0:          # El usuario numero 0 es admin siempre                                   
+    id = generar_id_usuario(usuarios_datos, ultimos_3_digitos)
+
+    if len(usuarios_datos) == 0:
         permisos = "admin"
     else:
         permisos = "socio"
-    
-    usuarios_datos.append([usuario,contraseña,dni,permisos,id,mail]) # Se agrega una fila con los datos del usuario, a la matriz que tiene a todos
-    limpiar_consola() 
 
-def crear_contraseña():                 # Verifica que la contraseña cumpla con los parámetros de seguridad
-    longitud_min_contraseñas = 5         
+    # Ahora agregamos al diccionario directamente
+    usuarios_datos[usuario] = {
+        'contraseña': contraseña,
+        'ultimos_3_digitos': ultimos_3_digitos,
+        'rol': permisos,
+        'id': id,
+        'mail': mail
+    }
+
+    limpiar_consola()
+
+def crear_contraseña():
+    longitud_min_contraseñas = 5
     print(f"\nRecuerde que su contraseña debe tener al menos:")
     print(f"\t-{longitud_min_contraseñas} dígitos")
     print(f"\t-Debe tener por lo menos 1 carácter especial")
     print(f"\t-No debe tener espacios vacíos (No se puede dejar huecos entre caracteres)")
     while True:
         contraseña = input("\nIngrese una contraseña: ")
-        if contraseña.isalnum() == False: # Verifica que hayan caracteres especiales
-            if len(contraseña)>= 5:       # Verifica que tenga 5 o más caracteres
-                if contraseña.count(" ") == 0:  # Verifica que no hayan espacios 
+        if not contraseña.isalnum(): 
+            if len(contraseña) >= longitud_min_contraseñas:
+                if " " not in contraseña:
                     return contraseña
         print("Contraseña inválida")
 
-def generar_id_usuario(usuarios_datos,dni):
-    while True:    
-        cadena_delantera = ""
-        cadena_trasera = ""
-        for i in range(0,3):
-            cadena_delantera = cadena_delantera + str(random.randint(0,9))
-            cadena_trasera = cadena_trasera + str(random.randint(0,9))
-        id = cadena_delantera + str(dni) + cadena_trasera
-        if validar_id(usuarios_datos,id)==True: # Chequea que no este repetido el id
+def generar_id_usuario(usuarios_datos, dni):
+    while True:
+        cadena_delantera = ''.join(str(random.randint(0, 9)) for _ in range(3))
+        cadena_trasera = ''.join(str(random.randint(0, 9)) for _ in range(3))
+        id = cadena_delantera + dni + cadena_trasera
+        if validar_id(usuarios_datos, id):
             return id
-        
-def crear_nombre_usuario(usuarios_datos): 
+
+def crear_nombre_usuario(usuarios_datos):
     while True:
         usuario = input("Ingrese el nombre de usuario que desea utilizar: ")
-        if usuario.isalnum() == True:
-            validez = buscar_nombre_usuario(usuarios_datos,usuario) # Verifica que no esté ocupado
-            if validez == None:             # Si esta ocupado devuelve True, sino None
+        if usuario.isalnum():
+            if buscar_nombre_usuario(usuarios_datos, usuario) is None:
                 return usuario
             print("Usuario inválido/Ya en uso")
-        else: 
+        else:
             print("¡El nombre de usuario ingresado es inválido!\n")
 
-def validar_id(usuarios_datos, id):   #Valida que el ID utilizado no se repita
-    coincidencias = [fila for fila in usuarios_datos if fila[4] == id]
-    return len(coincidencias) == 0
+def validar_id(usuarios_datos, id):
+    for datos in usuarios_datos.values():
+        if datos['id'] == int(id):
+            return False
+    return True
 
-def crear_mail(usuarios_datos):        #Pide un mail y lo válida
+def crear_mail(usuarios_datos):
     while True:
         mail = input("Ingrese su e-mail: ")
-        if re.search(r"\S+@\S+\.\S+",mail) != None:   # Validar que es mail
-            for fila in usuarios_datos:
-                if fila[5] == mail:                   # Válida que no esté en uso
+        if re.search(r"\S+@\S+\.\S+", mail):
+            for datos in usuarios_datos.values():
+                if datos['mail'] == mail:
                     print("\nEl mail ingresado ya está en uso\n")
                     break
             else:
-                    return mail
+                return mail
         else:
             print("\nEl mail introducido es inválido\n")

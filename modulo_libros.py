@@ -36,7 +36,6 @@ def imprimir_libros(libros):
         print(linea)
 
     print("-" * 120)
-    input("\nPresiona Enter para continuar...")
 
 def añadir_libro(libros):        
     limpiar_consola()
@@ -78,7 +77,6 @@ def añadir_libro(libros):
         ]
     libros.append(nuevo_libro)
     print(f"\nEl libro '{nuevo_nombre_libro.title()}' se ha cargado con éxito en la biblioteca.")
-    input("\nPresiona Enter para continuar...")
 
 def eliminar_libro(libros):
     """Elimina un libro por ID."""
@@ -88,13 +86,11 @@ def eliminar_libro(libros):
 
     for libro in libros:
         if libro[1] == id_libro:
-            libros.remove(libro) ##Elimina el libro de la matriz
+            libros.remove(libro)  # Elimina el libro de la lista
             print(f"\nEl libro '{libro[0]}' (ID: {libro[1]}) se ha eliminado de la biblioteca.")
-            input("\nPresiona Enter para continuar...")
             return
 
     print("\nNo se encontró ningún libro con ese ID.")
-    input("\nPresiona Enter para continuar...")
 
 def buscar_libro(libros):
     limpiar_consola()
@@ -184,8 +180,6 @@ def buscar_libro(libros):
     else:
         print("No se encontraron libros con ese criterio.")
 
-    input("\nPresiona Enter para continuar...")
-
 def actualizar_libro(libros):
     limpiar_consola()
     print(f"|{'Actualizar datos de un libro':-^120}|\n")
@@ -200,19 +194,16 @@ def actualizar_libro(libros):
 
     if not libro_encontrado:
         print("\nNo se encontró ningún libro con ese ID.")
-        input("\nPresiona Enter para continuar...")
         return
 
     # Muestra información actual del libro
     limpiar_consola()
     print(f"|{'Información actual del libro':-^120}|\n")
     
-    # Encabezado
     encabezado = f"{'N°':<3} {'Campo':<15} {'Valor Actual':<60}"
     print(encabezado)
     print("-" * 120)
 
-    # Datos
     print(f"{'1':<3} {'Nombre':<15} {libro_encontrado[0]:<60}")
     print(f"{'2':<3} {'Autor':<15} {libro_encontrado[2]:<60}")
     print(f"{'3':<3} {'Stock':<15} {libro_encontrado[3]:<60}")
@@ -242,19 +233,17 @@ def actualizar_libro(libros):
         libro_encontrado[4] = nueva_editorial
     elif opcion == "5":
         while True:
-            nuevo_precio = input("Ingrese el nuevo precio (solo números): ")
+            nuevo_precio = input("Ingrese el nuevo precio (solo números o decimales '.'): ")
             if nuevo_precio.replace('.', '', 1).isdigit():
                 libro_encontrado[5] = float(nuevo_precio)
                 break
             else:
                 print("Precio inválido. Intente nuevamente.")
     else:
-        print("Opción no válida.")
-        input("\nPresiona Enter para continuar...")
+        print("\nOpción no válida.")
         return
 
     print("\n¡El libro ha sido actualizado correctamente!")
-    input("\nPresiona Enter para continuar...")
 
 def generar_id_libro(libros):
     """Genera un ID secuencial siguiendo el patron LXXX."""
