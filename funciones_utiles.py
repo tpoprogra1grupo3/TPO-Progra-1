@@ -56,3 +56,15 @@ def buscar_libro(libros,libro,editorial):     # Devuelve la fila donde se encuen
             if libros[fila][4].lower() == editorial:
                 return fila   
     return None
+
+def es_numero_flotante(valor):       # Verifica si es un string con un numero flotante positivo
+    valor = valor.replace(',', '.')  # Permite usar coma o punto
+    partes = valor.split('.')
+    return (
+        len(partes) == 1 and partes[0].isdigit() or
+        len(partes) == 2 and partes[0].isdigit() and partes[1].isdigit()
+    )
+
+def convertir_a_flotante(valor):    # Convierte string a float reemplazando , por .
+    valor = valor.replace(',', '.')
+    return float(valor)

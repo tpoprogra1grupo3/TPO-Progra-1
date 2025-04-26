@@ -1,4 +1,4 @@
-from modulo_libros import añadir_libro,eliminar_libro,imprimir_libros,buscar_libro
+from modulo_libros import añadir_libro,eliminar_libro,imprimir_libros,buscar_libro, actualizar_libro
 from funciones_utiles import limpiar_consola, titulo, cambiar_rol
 from Log_y_Sign_in.login import iniciar_sesion
 from Log_y_Sign_in.sign_in import crear_usuario
@@ -21,7 +21,6 @@ def menu_inicio(usuarios_datos,libros,prestamos):                      # LogIn/S
             else:
                 print("La opción ingresada no es válida")
         
-        # SERÍA IDEAL PASAR LAS FUNCIONES DEL MENU INICIO A OTRO ARCHIVO 
         print(end="\n")
         if opcion == 1:
             titulo(opcion)
@@ -39,38 +38,45 @@ def menu_inicio(usuarios_datos,libros,prestamos):                      # LogIn/S
             elif permisos=="empleado":
                 menu_empleado(usuarios_datos,libros,prestamos)
 
-def menu_admin(usuarios_datos,libros,prestamos):
+def menu_admin(usuarios_datos, libros, prestamos):
     bandera = True
     while bandera:
         limpiar_consola()
-        print(f"|{"Bienvenido al menú de admin":-^45}|", end="\n\n")
+        print(f"|{'Bienvenido al menú de admin':-^45}|", end="\n\n")
         print("0. Dar rol de empleado")
-        print("1. Añadír un libro al inventario")
+        print("1. Añadir un libro al inventario")
         print("2. Eliminar libro")
         print("3. Mostrar inventario actual")
-        print("5. Crear un préstamo")
         print("4. Buscar libro específico")
+        print("5. Actualizar libro")
+        print("6. Crear un préstamo")
         print("9. Para cerrar sesión")
-        opcion_admin = input("Escriba el numero correspondiente a la opción que desea utilizar: ")
-        if opcion_admin.isnumeric and len(opcion_admin)== 1:
+        
+        opcion_admin = input("\nEscriba el número correspondiente a la opción que desea utilizar: ")
+
+        if opcion_admin.isnumeric() and len(opcion_admin) == 1:
             opcion_admin = int(opcion_admin)
-            if opcion_admin==1:
-                añadir_libro(libros)
-            elif opcion_admin==2:
-                eliminar_libro(libros)
-            elif opcion_admin==3:
-                imprimir_libros(libros)
-            elif opcion_admin==4:
-                buscar_libro(libros)
-            elif opcion_admin==5:
-                crear_prestamos(usuarios_datos,libros,prestamos)
-            elif opcion_admin==9:
-                bandera = False
-                menu_inicio(usuarios_datos,libros,prestamos)
-            elif opcion_admin==0:
+            if opcion_admin == 0:
                 cambiar_rol(usuarios_datos)
+            elif opcion_admin == 1:
+                añadir_libro(libros)
+            elif opcion_admin == 2:
+                eliminar_libro(libros)
+            elif opcion_admin == 3:
+                imprimir_libros(libros)
+            elif opcion_admin == 4:
+                buscar_libro(libros)
+            elif opcion_admin == 5:
+                actualizar_libro(libros)
+            elif opcion_admin == 6:
+                crear_prestamos(usuarios_datos, libros, prestamos)
+            elif opcion_admin == 9:
+                bandera = False
+                menu_inicio(usuarios_datos, libros, prestamos)
+            else:
+                print("\nLa opción ingresada no es válida.\n")
         else:
-            print("La opción ingresada es inválida\n")
+            print("\nLa opción ingresada no es válida.\n")
 
 def menu_empleado(usuarios_datos,libros,prestamos):
     bandera = True
@@ -81,7 +87,8 @@ def menu_empleado(usuarios_datos,libros,prestamos):
         print("2. Eliminar libro")
         print("3. Mostrar inventario actual")
         print("4. Buscar libro específico")
-        print("5. Crear un préstamo")
+        print("5. Actualizar Libro")
+        print("6. Crear un préstamo")
         print("9. Para cerrar sesión")
         opcion_empleado = input("Escriba el numero correspondiente a la opción que desea utilizar: ")
         if opcion_empleado.isnumeric and len(opcion_empleado)== 1:
@@ -95,6 +102,8 @@ def menu_empleado(usuarios_datos,libros,prestamos):
             elif opcion_empleado==4:
                 buscar_libro(libros)
             elif opcion_empleado==5:
+                actualizar_libro(libros)
+            elif opcion_empleado==6:
                 crear_prestamos(usuarios_datos,libros,prestamos)
             elif opcion_empleado==9:
                 bandera = False

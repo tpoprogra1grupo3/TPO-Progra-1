@@ -1,5 +1,6 @@
 import os
-import random
+import re
+from funciones_utiles import es_numero_flotante, convertir_a_flotante
 
 def biblioteca():              # Crea un inventario incial
     libros = [
@@ -19,18 +20,22 @@ def biblioteca():              # Crea un inventario incial
 def limpiar_consola(): # Vacía la consola
     os.system("cls")
 
-def imprimir_libros(libros):     ##ESTA FUNCION MUESTRA LOS LIBROS COMO MATRIZ
+def imprimir_libros(libros):
     limpiar_consola()
-    print(f"|{"Catálogo de Libros":-^60}|", end="\n\n")
+    print(f"|{'Catálogo de Libros':-^120}|\n")
+    
+    # Encabezado
+    encabezado = f"{'Nombre':<35} {'Código':<8} {'Autor':<25} {'Stock':<7} {'Editorial':<20} {'Precio':>10}"
+    print(encabezado)
+    print("-" * 120)
+
+    # Libros
     for libro in libros:
-        print(f"Nombre: {libro[0]}")
-        print(f"Código: {libro[1]}")
-        print(f"Autor: {libro[2]}")
-        print(f"Stock: {libro[3]}")
-        print(f"Editorial: {libro[4]}")
-        print(f"Precio: ${libro[5]:,.2f}")  # Muestra el precio con separadores
-        print("-" * 20)         ##Separación entre los libros mostrados
-    print("--- Fin del Catálogo ---")
+        nombre, codigo, autor, stock, editorial, precio = libro
+        linea = f"{nombre:<35} {codigo:<8} {autor:<25} {stock:<7} {editorial:<20} ${precio:>9,.2f}"
+        print(linea)
+
+    print("-" * 120)
     input("\nPresiona Enter para continuar...")
 
 def añadir_libro(libros):        
@@ -75,25 +80,25 @@ def añadir_libro(libros):
     print(f"\nEl libro '{nuevo_nombre_libro.title()}' se ha cargado con éxito en la biblioteca.")
     input("\nPresiona Enter para continuar...")
 
-def eliminar_libro(libros):     
+def eliminar_libro(libros):
+    """Elimina un libro por ID."""
     limpiar_consola()
-    print(f"|{'Bienvenido a la eliminación de libros':-^60}|", end="\n\n")
-    nombre_libro = input("Ingrese el nombre del libro a eliminar: ").lower()
+    print(f"|{'Bienvenido a la eliminación de libros':-^60}|\n")
+    id_libro = input("Ingrese el ID del libro a eliminar (ej: L001): ").upper()
 
-    libro_encontrado = False
     for libro in libros:
-        if libro[0].lower() == nombre_libro:
-            libros.remove(libro)        ##Elimina el libro de la matriz
-            print(f"El libro '{libro[0]}' se ha eliminado de la biblioteca.")
-            libro_encontrado = True
+        if libro[1] == id_libro:
+            libros.remove(libro) ##Elimina el libro de la matriz
+            print(f"\nEl libro '{libro[0]}' (ID: {libro[1]}) se ha eliminado de la biblioteca.")
+            input("\nPresiona Enter para continuar...")
             return
-    
-    if not libro_encontrado:
-        print("No se encontró el libro especificado.")
+
+    print("\nNo se encontró ningún libro con ese ID.")
+    input("\nPresiona Enter para continuar...")
 
 def buscar_libro(libros):
     limpiar_consola()
-    print(f"|{'Buscar libro en la biblioteca':-^60}|\n")
+    print(f"|{'Buscar libro en la biblioteca':-^120}|\n")
     print("¿Por qué criterio desea buscar el libro?")
     print("1. Nombre")
     print("2. Código")
@@ -124,72 +129,145 @@ def buscar_libro(libros):
     if opcion == "6":
         # Buscar por rango de precios
         while True:
-            precio_min = input("Ingrese el precio mínimo: ")
-            if precio_min.isdigit():
-                precio_min = float(precio_min)
+            precio_min = input("Ingrese el precio mínimo (use ',' o '.' para decimales): ").strip()
+            if es_numero_flotante(precio_min):
+                precio_min = convertir_a_flotante(precio_min)
                 break
             else:
-                print("Ingrese un número válido.")
+                print("Error: Ingrese un número válido.")
 
         while True:
-            precio_max = input("Ingrese el precio máximo: ")
-            if precio_max.isdigit():
-                precio_max = float(precio_max)
+            precio_max = input("Ingrese el precio máximo (use ',' o '.' para decimales): ").strip()
+            if es_numero_flotante(precio_max):
+                precio_max = convertir_a_flotante(precio_max)
                 break
             else:
-                print("Ingrese un número válido.")
+                print("Error: Ingrese un número válido.")
 
-        for libro in libros:
-            precio = libro[5]
-            if precio_min <= precio <= precio_max:
-                resultados.append(libro)
+        # Lambda para filtrar precios
+        filtro = lambda libro: precio_min <= libro[5] <= precio_max
 
     else:
-        valor = input("Ingrese el valor a buscar: ").lower()
+        valor = input("Ingrese el valor a buscar: ").strip()
 
-        for libro in libros:
-            campo = str(libro[indice]).lower()
+        if opcion in ["2", "4"]:  # Código y Stock: comparación exacta
+            filtro = lambda libro: str(libro[indice]).lower() == valor.lower()
+        else:
+            # Nombre, Autor, Editorial: coincidencia parcial (regex)
+            patron = re.compile(re.escape(valor), re.IGNORECASE)
+            filtro = lambda libro: bool(patron.search(str(libro[indice])))
 
-            if opcion in ["2", "4"]:  # Código y Stock: búsqueda exacta
-                if campo == valor:
-                    resultados.append(libro)
-            else:  # Nombre, Autor, Editorial: búsqueda parcial del input solicitado
-                if valor in campo:
-                    resultados.append(libro)
+    # Aplica el filtro
+    resultados = list(filter(filtro, libros))
 
     limpiar_consola()
     if resultados:
-        print(f"\nSe encontraron {len(resultados)} libro(s):\n")
+        print(f"|{'Resultados de la búsqueda':-^120}|\n")
+
+        # Encabezado
+        encabezado = f"{'Nombre':<35} {'Código':<8} {'Autor':<25} {'Stock':<7} {'Editorial':<20} {'Precio':>10}"
+        print(encabezado)
+        print("-" * 120)
+
         for libro in resultados:
-            print(f"Nombre: {libro[0]}")
-            print(f"Código: {libro[1]}")
-            print(f"Autor: {libro[2]}")
-            print(f"Stock: {libro[3]}")
-            print(f"Editorial: {libro[4]}")
-            print(f"Precio: ${libro[5]:,.2f}")
-            print("-" * 20)
+            nombre, codigo, autor, stock, editorial, precio = libro
+
+            # Si el nombre o autor exceden su espacio, se corta:
+            nombre = (nombre[:32] + '...') if len(nombre) > 35 else nombre
+            autor = (autor[:22] + '...') if len(autor) > 25 else autor
+            editorial = (editorial[:17] + '...') if len(editorial) > 20 else editorial
+
+            linea = f"{nombre:<35} {codigo:<8} {autor:<25} {stock:<7} {editorial:<20} ${precio:>9,.2f}"
+            print(linea)
+
+        print("-" * 120)
     else:
         print("No se encontraron libros con ese criterio.")
+
+    input("\nPresiona Enter para continuar...")
+
+def actualizar_libro(libros):
+    limpiar_consola()
+    print(f"|{'Actualizar datos de un libro':-^120}|\n")
+    id_libro = input("Ingrese el ID del libro que desea actualizar (ej: L001): ").upper()
+
+    # Busca el libro por ID
+    libro_encontrado = None
+    for libro in libros:
+        if libro[1] == id_libro:
+            libro_encontrado = libro
+            break
+
+    if not libro_encontrado:
+        print("\nNo se encontró ningún libro con ese ID.")
+        input("\nPresiona Enter para continuar...")
+        return
+
+    # Muestra información actual del libro
+    limpiar_consola()
+    print(f"|{'Información actual del libro':-^120}|\n")
     
+    # Encabezado
+    encabezado = f"{'N°':<3} {'Campo':<15} {'Valor Actual':<60}"
+    print(encabezado)
+    print("-" * 120)
+
+    # Datos
+    print(f"{'1':<3} {'Nombre':<15} {libro_encontrado[0]:<60}")
+    print(f"{'2':<3} {'Autor':<15} {libro_encontrado[2]:<60}")
+    print(f"{'3':<3} {'Stock':<15} {libro_encontrado[3]:<60}")
+    print(f"{'4':<3} {'Editorial':<15} {libro_encontrado[4]:<60}")
+    print(f"{'5':<3} {'Precio':<15} ${libro_encontrado[5]:,.2f}")
+    print("-" * 120)
+
+    # Selecciona campo para actualizar
+    opcion = input("\nSeleccione el número del campo que desea actualizar (1-5): ")
+
+    if opcion == "1":
+        nuevo_nombre = input("Ingrese el nuevo nombre del libro: ").title()
+        libro_encontrado[0] = nuevo_nombre
+    elif opcion == "2":
+        nuevo_autor = input("Ingrese el nuevo autor: ").title()
+        libro_encontrado[2] = nuevo_autor
+    elif opcion == "3":
+        while True:
+            nuevo_stock = input("Ingrese el nuevo stock (número entero): ")
+            if nuevo_stock.isdigit():
+                libro_encontrado[3] = int(nuevo_stock)
+                break
+            else:
+                print("Stock inválido. Intente nuevamente.")
+    elif opcion == "4":
+        nueva_editorial = input("Ingrese la nueva editorial: ").title()
+        libro_encontrado[4] = nueva_editorial
+    elif opcion == "5":
+        while True:
+            nuevo_precio = input("Ingrese el nuevo precio (solo números): ")
+            if nuevo_precio.replace('.', '', 1).isdigit():
+                libro_encontrado[5] = float(nuevo_precio)
+                break
+            else:
+                print("Precio inválido. Intente nuevamente.")
+    else:
+        print("Opción no válida.")
+        input("\nPresiona Enter para continuar...")
+        return
+
+    print("\n¡El libro ha sido actualizado correctamente!")
     input("\nPresiona Enter para continuar...")
 
 def generar_id_libro(libros):
-    while True:
-        letra = random.choice("abcdefghijklmnopqrstuvwxyz")
-        cadena_trasera = ""
-        for i in range(0,3):
-                cadena_trasera = cadena_trasera + str(random.randint(0,9))
-        
-        id = letra + cadena_trasera
-        
-        coincidencias = [fila for fila in libros if fila[1] == id]
-        if len(coincidencias) == 0:
-            return id
+    """Genera un ID secuencial siguiendo el patron LXXX."""
+    numeros_existentes = []
+    for libro in libros:
+        codigo = libro[1]
+        if codigo.startswith('L') and codigo[1:].isdigit():
+            numeros_existentes.append(int(codigo[1:]))
+    
+    if numeros_existentes:
+        nuevo_numero = max(numeros_existentes) + 1
+    else:
+        nuevo_numero = 1
+
+    return f"L{nuevo_numero:03d}"
             
-
-        
-
-
-
-
-
