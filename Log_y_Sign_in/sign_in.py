@@ -2,7 +2,7 @@ from funciones_utiles import buscar_nombre_usuario, titulo, limpiar_consola
 import random
 import re
 
-def usuarios_de_base():
+def usuarios_de_base():   # Usuarios del sistema con su ID y rol 
     usuarios_datos = {
         'Juan': {
             'contraseña': 'Hola!',
@@ -53,7 +53,7 @@ def crear_usuario(usuarios_datos):
     while True:
         dni_completo = input("Ingrese su DNI completo (9 dígitos): ")
         if dni_completo.isdigit() and len(dni_completo) == 9:
-            ultimos_3_digitos = dni_completo[-3:]  # Ahora dejamos como string
+            ultimos_3_digitos = dni_completo[-3:]  # Se deja como string
             break
         else:
             print("DNI inválido. Asegúrese de ingresar exactamente 9 dígitos numéricos.")
@@ -65,7 +65,7 @@ def crear_usuario(usuarios_datos):
     else:
         permisos = "socio"
 
-    # Ahora agregamos al diccionario directamente
+    # Se agrega al diccionario "Usuarios"
     usuarios_datos[usuario] = {
         'contraseña': contraseña,
         'ultimos_3_digitos': ultimos_3_digitos,

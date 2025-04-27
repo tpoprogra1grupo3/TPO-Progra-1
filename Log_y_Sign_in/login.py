@@ -1,6 +1,6 @@
 from funciones_utiles import buscar_nombre_usuario
 
-def iniciar_sesion(usuarios_datos):
+def iniciar_sesion(usuarios_datos):   # Loguea el usuario y devuelve nombre/ID para uso posterior
     bandera = True
     while bandera:
         usuario_ingresado = input("Ingrese su nombre de usuario: ").strip()

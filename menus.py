@@ -4,7 +4,7 @@ from Log_y_Sign_in.login import iniciar_sesion
 from Log_y_Sign_in.sign_in import crear_usuario
 from prestamos import crear_prestamos, ver_prestamos_con_filtro, actualizar_prestamo, eliminar_prestamo, ver_mis_prestamos
 
-def menu_inicio(usuarios_datos, libros, prestamos):
+def menu_inicio(usuarios_datos, libros, prestamos):  # Menu de registro y login
     while True:
         limpiar_consola()
         print(f"\n{'=' * 60}")
@@ -25,7 +25,7 @@ def menu_inicio(usuarios_datos, libros, prestamos):
         elif opcion == "2":
             limpiar_consola()
             titulo(2)
-            rol, usuario_actual, id_usuario_actual = iniciar_sesion(usuarios_datos)
+            rol, usuario_actual, id_usuario_actual = iniciar_sesion(usuarios_datos)  # Se guarda el usuario y el ID para uso posterior.
             limpiar_consola()
             print(f"Usted tiene el rol de {rol}")
 
@@ -46,37 +46,35 @@ def menu_inicio(usuarios_datos, libros, prestamos):
             print("\nLa opción ingresada no es válida.")
             input("Presione ENTER para intentarlo de nuevo...")
 
-def mostrar_menu(titulo_menu, opciones):
+def mostrar_menu(titulo_menu, opciones):  # Permite el cierre de sesión desde los distintos menu y submenu.
     while True:
         limpiar_consola()
         print(f"\n{'=' * 50}")
-        print(f"{titulo_menu.center(50)}")
+        print(titulo_menu.center(50))
         print(f"{'=' * 50}\n")
 
         for numero, opcion in sorted(opciones.items()):
             print(f"{numero}. {opcion['texto']}")
 
-        print("\nSeleccione una opción:")
-        opcion = input("> ").strip()
+        opcion = input("\nSeleccione una opción:\n> ").strip()
 
-        if opcion == "9":
+        if opcion == "9" or (opcion in opciones and opciones[opcion]["accion"] == "volver_inicio"):
             return "volver_inicio"
-        elif opcion in opciones:
+
+        if opcion in opciones:
             if opciones[opcion]["accion"] == "volver":
                 break
-            elif opciones[opcion]["accion"] == "volver_inicio":
-                return "volver_inicio"
             else:
                 limpiar_consola()
-                resultado_accion = opciones[opcion]["accion"]()
-                if resultado_accion == "volver_inicio":
+                resultado = opciones[opcion]["accion"]()
+                if resultado == "volver_inicio":
                     return "volver_inicio"
                 input("\nPresione ENTER para continuar...")
         else:
             print("\nLa opción ingresada no es válida.")
             input("Presione ENTER para intentarlo de nuevo...")
 
-def menu_admin(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):
+def menu_admin(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):   # Menu Principal Vista Admin
     while True:
         opciones_admin = {
             "0": {"texto": "Dar rol de empleado", "accion": lambda: cambiar_rol(usuarios_datos)},
@@ -88,7 +86,7 @@ def menu_admin(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_act
         if resultado == "volver_inicio":
             return "volver_inicio"
 
-def menu_empleado(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):
+def menu_empleado(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):  # Menu Principal Vista Empleado
     while True:
         opciones_empleado = {
             "1": {"texto": "Inventario", "accion": lambda: submenu_inventario(libros)},
@@ -99,7 +97,7 @@ def menu_empleado(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_
         if resultado == "volver_inicio":
             return "volver_inicio"
 
-def menu_socio(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):
+def menu_socio(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):   # Menu Principal Vista Socio
     while True:
         opciones_socio = {
             "1": {"texto": "Mostrar inventario actual", "accion": lambda: imprimir_libros(libros)},
@@ -112,7 +110,7 @@ def menu_socio(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_act
         if resultado == "volver_inicio":
             return "volver_inicio"
 
-def submenu_inventario(libros):
+def submenu_inventario(libros):   # Submenu Inventario
     opciones_inventario = {
         "1": {"texto": "Añadir un libro al inventario", "accion": lambda: añadir_libro(libros)},
         "2": {"texto": "Eliminar libro", "accion": lambda: eliminar_libro(libros)},
@@ -126,7 +124,7 @@ def submenu_inventario(libros):
     if resultado == "volver_inicio":
         return "volver_inicio"
 
-def submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):
+def submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):  # Submenu Préstamos
     opciones_prestamos = {
         "1": {"texto": "Crear un préstamo", "accion": lambda: crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual)},
         "2": {"texto": "Ver préstamos existentes", "accion": lambda: ver_prestamos_con_filtro(prestamos)},

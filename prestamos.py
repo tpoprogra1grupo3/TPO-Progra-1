@@ -2,14 +2,14 @@ from datetime import datetime, date, time, timedelta
 from funciones_utiles import buscar_nombre_usuario, limpiar_consola
 from modulo_libros import imprimir_libros
 
-def crud_prestamos():
+def crud_prestamos(): # Prestamos utilizando Tuplas
     prestamos = [
-        ("Facu", 133185723, 'El principito', 'L002', "Antoine de Saint-Exupéry", 'Emecé', 1300, date.today(), (date.today() + timedelta(weeks=1)), "En curso"),
-        ("Facu", 133185723, '1984', 'L004', "George Orwell", 'Destino', 5400, date.today(), (date.today() + timedelta(weeks=3)), "En curso")
+        ("Facu", 133185723, 'El principito', 'L002', "Antoine de Saint-Exupéry", 'Emecé', 1300, date.today(), (date.today() + timedelta(weeks=-0.2)), "Vencido"),
+        ("Facu", 133185723, '1984', 'L004', "George Orwell", 'Destino', 5400, date.today(), (date.today() + timedelta(weeks=0.5)), "En Curso")
     ]
     return prestamos
 
-def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):
+def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):  # Crea el préstamo utilizando los datos del usuario logueado
     while True:
         libros_disponibles = [libro for libro in libros if libro[3] > 0]
 
@@ -27,7 +27,7 @@ def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuari
 
         print("-" * 125)
 
-        opcion_libro = input("\nIngrese el número del libro que desea alquilar (o '0' para cancelar): ").strip()
+        opcion_libro = input("\nIngrese el número del libro que desea alquilar (o '0' para cancelar): ").strip()  
         if opcion_libro == "0":
             print("\nOperación cancelada.\n")
             return
@@ -40,7 +40,7 @@ def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuari
         libro_seleccionado = libros_disponibles[indice_libro]
         fila_libro = libros.index(libro_seleccionado)
 
-        semanas_a_alquilar = input("\nIngrese la cantidad de semanas que desea alquilar el libro (o '0' para cancelar): ").strip()
+        semanas_a_alquilar = input("\nIngrese la cantidad de semanas que desea alquilar el libro (o '0' para cancelar): ").strip()  # Determina la duración del préstamo
         if semanas_a_alquilar == "0":
             print("\nOperación cancelada.\n")
             return
@@ -67,7 +67,7 @@ def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuari
         print("1. Confirmar los datos del préstamo")
         print("2. Cancelar el préstamo")
 
-        opcion = input("Ingrese la opción que desea utilizar: ").strip()
+        opcion = input("Ingrese la opción que desea utilizar: ").strip()   # Confirma la creación del préstamo
         if opcion == "1":
             prestamo = (
                 usuario_actual,
@@ -92,19 +92,19 @@ def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuari
         else:
             print("\nLa opción ingresada es inválida.\n")
 
-def estado_prestamo(fecha_vencimiento):
+def estado_prestamo(fecha_vencimiento):   # Define el estado del préstamo
     if fecha_vencimiento < date.today():
         return "Vencido"
     else:
         return "En curso"
 
-def cambio_estado_inicio(prestamos):
+def cambio_estado_inicio(prestamos):   
     for i in range(len(prestamos)):
         fila = prestamos[i]
         nueva_fila = fila[:-1] + (estado_prestamo(fila[8]),)
         prestamos[i] = nueva_fila
 
-def imprimir_prestamos(prestamos, filtro="todos"):
+def imprimir_prestamos(prestamos, filtro="todos"):    # Imprime los préstamos existentes en pantalla
     limpiar_consola()
     if not prestamos:
         print("| No hay préstamos registrados |")
@@ -151,7 +151,7 @@ def imprimir_prestamos(prestamos, filtro="todos"):
 
     print("-" * 190)
 
-def ver_prestamos_con_filtro(prestamos):
+def ver_prestamos_con_filtro(prestamos):   # Añade un filtro según el estado del préstamo
     limpiar_consola()
     print(f"|{'Ver Préstamos':-^50}|")
     print("1. Ver todos los préstamos")
@@ -175,7 +175,7 @@ def ver_prestamos_con_filtro(prestamos):
     else:
         print("Opción inválida.")
 
-def actualizar_prestamo(prestamos):
+def actualizar_prestamo(prestamos):   # Permite actualizar un préstamo existente
     limpiar_consola()
     if not prestamos:
         print("| No hay préstamos para actualizar |")
@@ -216,7 +216,7 @@ def actualizar_prestamo(prestamos):
     else:
         print("Debe ingresar un número válido.")
 
-def eliminar_prestamo(prestamos, libros):
+def eliminar_prestamo(prestamos, libros):   # Elimina un préstamo existente
     limpiar_consola()
     if not prestamos:
         print("| No hay préstamos para eliminar |")
@@ -247,7 +247,7 @@ def eliminar_prestamo(prestamos, libros):
     else:
         print("\nDebe ingresar un número válido.")
 
-def ver_mis_prestamos(prestamos, usuario_actual):
+def ver_mis_prestamos(prestamos, usuario_actual):  # Imprime préstamos según el ID del usuario logueado
     limpiar_consola()
     mis_prestamos = [p for p in prestamos if p[0] == usuario_actual]
 

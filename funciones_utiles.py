@@ -18,7 +18,7 @@ def titulo(opcion):
         print(f"||{" Usted esta creando un Usuario ":=^60}||", end="\n\n")
     else:
         limpiar_consola()
-        print("Usted a Iniciado Sesion!!")
+        print(f"||{" Usted está Iniciando Sesión ":=^60}||", end="\n\n")
 
 def cambiar_rol(usuario_datos):
     limpiar_consola()
