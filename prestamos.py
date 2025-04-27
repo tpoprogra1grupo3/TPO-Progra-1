@@ -9,7 +9,7 @@ def crud_prestamos():
     ]
     return prestamos
 
-def crear_prestamos(usuarios_datos, libros, prestamos):
+def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):
     while True:
         libros_disponibles = [libro for libro in libros if libro[3] > 0]
 
@@ -51,22 +51,6 @@ def crear_prestamos(usuarios_datos, libros, prestamos):
 
         semanas_a_alquilar = int(semanas_a_alquilar)
 
-        usuario_que_alquila = input("\nIngrese el nombre del usuario que desea alquilar el libro (o '0' para cancelar): ").strip()
-        if usuario_que_alquila == "0":
-            print("\nOperación cancelada.\n")
-            return
-
-        if not usuario_que_alquila.isalnum():
-            print("\nEl nombre de usuario ingresado es inválido.\n")
-            continue
-
-        nombre_real = buscar_nombre_usuario(usuarios_datos, usuario_que_alquila)
-        if nombre_real is None:
-            print("\nEl usuario ingresado no existe.\n")
-            continue
-
-        id_usuario_que_alquila = usuarios_datos[nombre_real]['id']
-
         nombre_libro = libro_seleccionado[0]
         id_libro = libro_seleccionado[1]
         autor_libro = libro_seleccionado[2]
@@ -77,7 +61,7 @@ def crear_prestamos(usuarios_datos, libros, prestamos):
         fecha_de_vencimiento = date.today() + timedelta(weeks=semanas_a_alquilar)
 
         print("\n\nLos datos del préstamo son: ")
-        print(f"{nombre_real} | {id_usuario_que_alquila} | {nombre_libro} | {id_libro} | {autor_libro} | {editorial} | ${precio:.2f} | {estado_prestamo(fecha_de_vencimiento)}")
+        print(f"{usuario_actual} | {id_usuario_actual} | {nombre_libro} | {id_libro} | {autor_libro} | {editorial} | ${precio:.2f} | {estado_prestamo(fecha_de_vencimiento)}")
         print(f"\nFecha de inicio: {fecha_de_creacion}")
         print(f"Fecha de vencimiento: {fecha_de_vencimiento}\n")
         print("1. Confirmar los datos del préstamo")
@@ -86,8 +70,8 @@ def crear_prestamos(usuarios_datos, libros, prestamos):
         opcion = input("Ingrese la opción que desea utilizar: ").strip()
         if opcion == "1":
             prestamo = (
-                nombre_real,
-                id_usuario_que_alquila,
+                usuario_actual,
+                id_usuario_actual,
                 nombre_libro,
                 id_libro,
                 autor_libro,
@@ -232,7 +216,7 @@ def actualizar_prestamo(prestamos):
     else:
         print("Debe ingresar un número válido.")
 
-def eliminar_prestamo(prestamos):
+def eliminar_prestamo(prestamos, libros):
     limpiar_consola()
     if not prestamos:
         print("| No hay préstamos para eliminar |")
@@ -247,11 +231,50 @@ def eliminar_prestamo(prestamos):
             prestamo = prestamos[nro]
             confirmacion = input(f"\n¿Confirma eliminar el préstamo de {prestamo[0]} por el libro '{prestamo[2]}'? (s/n): ").lower()
             if confirmacion == "s":
-                prestamos.pop(nro)
-                print("Préstamo eliminado correctamente.")
+                # Buscar el libro en el inventario y aumentar su stock
+                id_libro_prestamo = prestamo[3]  # Código del libro del préstamo
+                for libro in libros:
+                    if libro[1] == id_libro_prestamo:
+                        libro[3] += 1  # Aumenta el stock en 1
+                        break
+
+                prestamos.pop(nro)  # Elimina el préstamo
+                print("\nPréstamo eliminado correctamente. El stock del libro ha sido actualizado.")
             else:
-                print("Eliminación cancelada.")
+                print("\nEliminación cancelada.")
         else:
-            print("Número de préstamo inválido.")
+            print("\nNúmero de préstamo inválido.")
     else:
-        print("Debe ingresar un número válido.")
+        print("\nDebe ingresar un número válido.")
+
+def ver_mis_prestamos(prestamos, usuario_actual):
+    limpiar_consola()
+    mis_prestamos = [p for p in prestamos if p[0] == usuario_actual]
+
+    if not mis_prestamos:
+        print("| Usted no tiene préstamos registrados |")
+        return
+
+    print(f"|{'Sus Préstamos':-^190}|")
+    print(f"{'N°':<4}{'Libro':<25}{'Código':<8}{'Autor':<25}{'Editorial':<15}{'Precio':<10}{'Inicio':<12}{'Vencimiento':<14}{'Estado':<10}")
+    print("-" * 190)
+
+    hoy = date.today()
+
+    for i, prestamo in enumerate(mis_prestamos, 1):
+        _, _, libro, codigo, autor, editorial, precio, fecha_inicio, fecha_vencimiento, _ = prestamo
+        estado_actual = estado_prestamo(fecha_vencimiento)
+
+        dias_restantes = (fecha_vencimiento - hoy).days
+
+        color = "\033[0m"
+        if estado_actual == "Vencido":
+            color = "\033[91m"
+        elif dias_restantes <= 3:
+            color = "\033[93m"
+        else:
+            color = "\033[92m"
+
+        print(f"{i:<4}{libro:<25}{codigo:<8}{autor:<25}{editorial:<15}${precio:<9.2f}{fecha_inicio.strftime('%d/%m/%Y'):<12}{fecha_vencimiento.strftime('%d/%m/%Y'):<14}{color}{estado_actual:<10}\033[0m")
+
+    print("-" * 190)

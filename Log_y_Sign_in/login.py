@@ -11,7 +11,9 @@ def iniciar_sesion(usuarios_datos):
                     contraseña = input("Ingrese su contraseña: ").strip()
                     if contraseña != "":
                         if contraseña == usuarios_datos[nombre_real]['contraseña']:
-                            return usuarios_datos[nombre_real]['rol']  # Usa nombre_real
+                            rol = usuarios_datos[nombre_real]['rol']
+                            id_usuario = usuarios_datos[nombre_real]['id']
+                            return rol, nombre_real, id_usuario
                         else:
                             print("\nContraseña incorrecta\n")
                     else:
