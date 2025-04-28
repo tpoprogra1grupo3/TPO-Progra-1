@@ -50,36 +50,41 @@ def mostrar_menu(titulo_menu, opciones):  # Permite el cierre de sesión desde l
     while True:
         limpiar_consola()
         print(f"\n{'=' * 50}")
-        print(titulo_menu.center(50))
+        print(titulo_menu.center(50))      # Imprime el título del menú dado
         print(f"{'=' * 50}\n")
 
-        for numero, opcion in sorted(opciones.items()):
+
+        for numero, opcion in sorted(opciones.items()): # Imprime las opciones en orden (forma abreviada de hacerlo)
             print(f"{numero}. {opcion['texto']}")
+
 
         opcion = input("\nSeleccione una opción:\n> ").strip()
 
-        if opcion == "9" or (opcion in opciones and opciones[opcion]["accion"] == "volver_inicio"):
+
+        if opcion == "9" or (opcion in opciones and opciones[opcion]["accion"] == "volver_inicio"):     # Evita que intente ejecutarse una función lambda si tengo str en esa pos.
             return "volver_inicio"
 
+
         if opcion in opciones:
-            if opciones[opcion]["accion"] == "volver":
+            if opciones[opcion]["accion"] == "volver":     # Rompe el ciclo para que se repita el menú previo
                 break
             else:
                 limpiar_consola()
-                resultado = opciones[opcion]["accion"]()
+                resultado = opciones[opcion]["accion"]()  # Esto ejecuta una función, osea si fuese un str en lugar de un lambda, nos da error. Por eso el if de arriba
                 if resultado == "volver_inicio":
-                    return "volver_inicio"
+                    return "volver_inicio"                 # Se hace una cadena de returns que nos levan al primer menú de todos
                 input("\nPresione ENTER para continuar...")
         else:
             print("\nLa opción ingresada no es válida.")
             input("Presione ENTER para intentarlo de nuevo...")
+
 
 def menu_admin(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):   # Menu Principal Vista Admin
     while True:
         opciones_admin = {
             "0": {"texto": "Dar rol de empleado", "accion": lambda: cambiar_rol(usuarios_datos)},
             "1": {"texto": "Inventario", "accion": lambda: submenu_inventario(libros)},
-            "2": {"texto": "Préstamos", "accion": lambda: submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual)},
+            "2": {"texto": "Préstamos", "accion": lambda: submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual,"admin")},
             "9": {"texto": "Cerrar sesión", "accion": "volver"}
         }
         resultado = mostrar_menu("Bienvenido al menú de Admin", opciones_admin)
@@ -90,7 +95,7 @@ def menu_empleado(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_
     while True:
         opciones_empleado = {
             "1": {"texto": "Inventario", "accion": lambda: submenu_inventario(libros)},
-            "2": {"texto": "Préstamos", "accion": lambda: submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual)},
+            "2": {"texto": "Préstamos", "accion": lambda: submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual,"empleado")},
             "9": {"texto": "Cerrar sesión", "accion": "volver"}
         }
         resultado = mostrar_menu("Bienvenido al menú de Empleado", opciones_empleado)
@@ -102,7 +107,7 @@ def menu_socio(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_act
         opciones_socio = {
             "1": {"texto": "Mostrar inventario actual", "accion": lambda: imprimir_libros(libros)},
             "2": {"texto": "Buscar libro específico", "accion": lambda: buscar_libro(libros)},
-            "3": {"texto": "Crear un préstamo", "accion": lambda: crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual)},
+            "3": {"texto": "Crear un préstamo", "accion": lambda: crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual,"socio")},
             "4": {"texto": "Ver mis préstamos", "accion": lambda: ver_mis_prestamos(prestamos, usuario_actual)},
             "9": {"texto": "Cerrar sesión", "accion": "volver"}
         }
@@ -124,11 +129,11 @@ def submenu_inventario(libros):   # Submenu Inventario
     if resultado == "volver_inicio":
         return "volver_inicio"
 
-def submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):  # Submenu Préstamos
+def submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual,permisos_usuario_actual):  # Submenu Préstamos
     opciones_prestamos = {
-        "1": {"texto": "Crear un préstamo", "accion": lambda: crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual)},
+        "1": {"texto": "Crear un préstamo", "accion": lambda: crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual, permisos_usuario_actual)},
         "2": {"texto": "Ver préstamos existentes", "accion": lambda: ver_prestamos_con_filtro(prestamos)},
-        "3": {"texto": "Actualizar un préstamo", "accion": lambda: actualizar_prestamo(prestamos)},
+        "3": {"texto": "Actualizar un préstamo", "accion": lambda: actualizar_prestamo(prestamos,libros)},
         "4": {"texto": "Eliminar un préstamo", "accion": lambda: eliminar_prestamo(prestamos, libros)},
         "8": {"texto": "Volver al menú anterior", "accion": "volver"},
         "9": {"texto": "Cerrar sesión y volver al menú principal", "accion": "volver_inicio"}

@@ -1,5 +1,5 @@
 from datetime import datetime, date, time, timedelta
-from funciones_utiles import buscar_nombre_usuario, limpiar_consola
+from funciones_utiles import buscar_nombre_usuario, limpiar_consola, encontrar_id_usuario, buscar_fila_libro
 from modulo_libros import imprimir_libros
 
 def crud_prestamos(): # Prestamos utilizando Tuplas
@@ -9,7 +9,7 @@ def crud_prestamos(): # Prestamos utilizando Tuplas
     ]
     return prestamos
 
-def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):  # Crea el préstamo utilizando los datos del usuario logueado
+def crear_prestamos(usuarios_datos,libros, prestamos, usuario_actual, id_usuario_actual, permisos_usuario_actual):  # Crea el préstamo utilizando los datos del usuario logueado
     while True:
         libros_disponibles = [libro for libro in libros if libro[3] > 0]
 
@@ -35,6 +35,24 @@ def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuari
         if not opcion_libro.isdigit() or not (1 <= int(opcion_libro) <= len(libros_disponibles)):
             print("\nNúmero inválido. Intente nuevamente.\n")
             continue
+
+        if permisos_usuario_actual == "admin" or permisos_usuario_actual == "empleado":     # Solo admin y empleado pueden hacer préstamos a otros
+            while True:
+                usuario_actual = input("\nIngrese el nombre de usuario de quien desea alquilar el libro: ")
+                usuario_actual = buscar_nombre_usuario(usuarios_datos, usuario_actual)
+                if usuario_actual == None:
+                    print("\nNo se ha encontrado a ese usuario")
+                    continue
+                else:
+                    id_usuario_actual = encontrar_id_usuario(usuarios_datos,usuario_actual)
+                    if id_usuario_actual != None:
+                        break
+                    else:
+                        print("Hay irregularidades con el id del usuario. Solicitar revisión")
+                        continue
+                    
+                    
+                    
 
         indice_libro = int(opcion_libro) - 1
         libro_seleccionado = libros_disponibles[indice_libro]
@@ -175,7 +193,7 @@ def ver_prestamos_con_filtro(prestamos):   # Añade un filtro según el estado d
     else:
         print("Opción inválida.")
 
-def actualizar_prestamo(prestamos):   # Permite actualizar un préstamo existente
+def actualizar_prestamo(prestamos,libros):   # Permite actualizar un préstamo existente
     limpiar_consola()
     if not prestamos:
         print("| No hay préstamos para actualizar |")
@@ -191,6 +209,7 @@ def actualizar_prestamo(prestamos):   # Permite actualizar un préstamo existent
             print("¿Qué desea actualizar del préstamo?")
             print("1. Estado (se recalcula automáticamente)")
             print("2. Fecha de vencimiento")
+            print("3. Devolver libro")
             opcion = input("Ingrese opción: ")
 
             if opcion == "1":
@@ -203,12 +222,24 @@ def actualizar_prestamo(prestamos):   # Permite actualizar un préstamo existent
                 if semanas_extra.isnumeric() and int(semanas_extra) > 0:
                     semanas_extra = int(semanas_extra)
                     fila = prestamos[nro]
+                    
+                    fila_del_libro = buscar_fila_libro(libros,nombre=prestamos[nro][2])
+                    precio_total_libro = libros[fila_del_libro][5]
+                    precio = precio_total_libro*(semanas_extra/10)
+                    precio = precio + prestamos[nro][6]
                     nueva_fecha = fila[8] + timedelta(weeks=semanas_extra)
-                    nueva_fila = fila[:8] + (nueva_fecha, estado_prestamo(nueva_fecha))
+                    nueva_fila = fila[:6] + (precio ,fila[7]) + (nueva_fecha, estado_prestamo(nueva_fecha))
+                    print(nueva_fila)
                     prestamos[nro] = nueva_fila
                     print("Fecha de vencimiento actualizada correctamente.")
                 else:
-                    print("Cantidad de semanas inválida.")
+                    print("Cantidad de semanas inválida.")            
+            elif opcion == "3":
+                fila = prestamos[nro]
+                nueva_fila = fila[:6] + ("Devuelto",)
+                prestamos[nro] = nueva_fila
+                print(nueva_fila)
+                print("El préstamo se ha finalizado correctamente")
             else:
                 print("Opción inválida.")
         else:

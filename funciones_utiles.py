@@ -11,7 +11,23 @@ def buscar_nombre_usuario(usuarios_datos, nombre_usuario):
             return nombre  # Devuelve el nombre exactamente como está en la base
 
     return None
-        
+
+def encontrar_id_usuario(usuarios_datos, nombre_usuario):
+    nombre_usuario = nombre_usuario.lower()   
+
+    for nombre in usuarios_datos:
+        if nombre.lower() == nombre_usuario:
+            id_del_usuario = usuarios_datos[nombre]["id"]
+            return id_del_usuario  # Devuelve el id del usuario
+
+def buscar_fila_libro(libros,nombre):
+    nombre = nombre.lower()   
+
+    for i in range(0,len(libros)):
+        if libros[i][0].lower() == nombre:
+            return i  # Devuelve el id del usuario
+
+
 def titulo(opcion):
     if opcion==1:
         limpiar_consola()

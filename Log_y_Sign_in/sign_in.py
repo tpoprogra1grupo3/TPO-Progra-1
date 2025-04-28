@@ -51,8 +51,9 @@ def crear_usuario(usuarios_datos):
     titulo(1)
 
     while True:
-        dni_completo = input("Ingrese su DNI completo (9 dígitos): ")
-        if dni_completo.isdigit() and len(dni_completo) == 9:
+        dni_completo = input("Ingrese su DNI completo (Máx 10 caracteres): ")
+        if dni_completo.isdigit() and len(dni_completo) <=10 and len(dni_completo)>=3:
+            dni_completo = dni_completo.zfill(10)  # Tendrá siempre 10 caracteres
             ultimos_3_digitos = dni_completo[-3:]  # Se deja como string
             break
         else:
