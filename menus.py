@@ -46,7 +46,7 @@ def menu_inicio(usuarios_datos, libros, prestamos):  # Menu de registro y login
             print("\nLa opción ingresada no es válida.")
             input("Presione ENTER para intentarlo de nuevo...")
 
-def mostrar_menu(titulo_menu, opciones):  # Permite el cierre de sesión desde los distintos menu y submenu.
+def mostrar_menu(titulo_menu, opciones):  # Generaliza el mostrado de menús con diccionarios 
     while True:
         limpiar_consola()
         print(f"\n{'=' * 50}")
@@ -62,7 +62,7 @@ def mostrar_menu(titulo_menu, opciones):  # Permite el cierre de sesión desde l
 
 
         if opcion == "9" or (opcion in opciones and opciones[opcion]["accion"] == "volver_inicio"):     # Evita que intente ejecutarse una función lambda si tengo str en esa pos.
-            return "volver_inicio"
+            return "volver_inicio"                                                    # Permite el cierre de sesión desde los distintos menu y submenu!!!
 
 
         if opcion in opciones:
@@ -125,7 +125,7 @@ def submenu_inventario(libros):   # Submenu Inventario
         "8": {"texto": "Volver al menú anterior", "accion": "volver"},
         "9": {"texto": "Cerrar sesión y volver al menú principal", "accion": "volver_inicio"}
     }
-    resultado = mostrar_menu("Submenú Inventario", opciones_inventario)
+    resultado = mostrar_menu("Submenú Inventario", opciones_inventario)     
     if resultado == "volver_inicio":
         return "volver_inicio"
 

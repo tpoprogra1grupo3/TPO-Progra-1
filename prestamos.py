@@ -306,7 +306,7 @@ def eliminar_prestamo(prestamos, libros):   # Elimina un préstamo existente
 
 def ver_mis_prestamos(prestamos, usuario_actual):  # Imprime préstamos según el ID del usuario logueado
     limpiar_consola()
-    mis_prestamos = [p for p in prestamos if p[0] == usuario_actual]
+    mis_prestamos = [p for p in prestamos if p[0] == usuario_actual]    # Filtra la lista para obtener solo los que su primer valor (usuario) coincide con el usuario_actual
 
     if not mis_prestamos:
         print("| Usted no tiene préstamos registrados |")
@@ -318,13 +318,13 @@ def ver_mis_prestamos(prestamos, usuario_actual):  # Imprime préstamos según e
 
     hoy = date.today()
 
-    for i, prestamo in enumerate(mis_prestamos, 1):
-        _, _, libro, codigo, autor, editorial, precio, fecha_inicio, fecha_vencimiento, _ = prestamo
+    for i, prestamo in enumerate(mis_prestamos, 1):         # Recorremos la lista de préstamos del usuario, empezando el índice desde 1
+        _, _, libro, codigo, autor, editorial, precio, fecha_inicio, fecha_vencimiento, _ = prestamo   # Desempaquetamos los valores del préstamo (ignoramos los campos que no usamos con '_')
         estado_actual = estado_prestamo(fecha_vencimiento)
 
         dias_restantes = (fecha_vencimiento - hoy).days
 
-        color = "\033[0m"
+        color = "\033[0m"        # Inicializamos el color (por defecto sin color)
         if estado_actual == "Vencido":
             color = "\033[91m"
         elif dias_restantes <= 3:
@@ -333,5 +333,5 @@ def ver_mis_prestamos(prestamos, usuario_actual):  # Imprime préstamos según e
             color = "\033[92m"
 
         print(f"{i:<4}{libro:<25}{codigo:<8}{autor:<25}{editorial:<15}${precio:<9.2f}{fecha_inicio.strftime('%d/%m/%Y'):<12}{fecha_vencimiento.strftime('%d/%m/%Y'):<14}{color}{estado_actual:<10}\033[0m")
-
+        # Se pone el color con los marcadores {} del f-string, y se resetea al final con \033[0m
     print("-" * 190)

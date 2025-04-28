@@ -81,11 +81,11 @@ def crear_contraseña():
     longitud_min_contraseñas = 5
     print(f"\nRecuerde que su contraseña debe tener al menos:")
     print(f"\t-{longitud_min_contraseñas} dígitos")
-    print(f"\t-Debe tener por lo menos 1 carácter especial")
+    print(f"\t-Debe tener por lo menos 1 carácter especial")    
     print(f"\t-No debe tener espacios vacíos (No se puede dejar huecos entre caracteres)")
     while True:
         contraseña = input("\nIngrese una contraseña: ")
-        if not contraseña.isalnum(): 
+        if not contraseña.isalnum():   
             if len(contraseña) >= longitud_min_contraseñas:
                 if " " not in contraseña:
                     return contraseña
@@ -93,18 +93,18 @@ def crear_contraseña():
 
 def generar_id_usuario(usuarios_datos, dni):
     while True:
-        cadena_delantera = ''.join(str(random.randint(0, 9)) for _ in range(3))
-        cadena_trasera = ''.join(str(random.randint(0, 9)) for _ in range(3))
+        cadena_delantera = ''.join(str(random.randint(0, 9)) for _ in range(3)) 
+        cadena_trasera = ''.join(str(random.randint(0, 9)) for _ in range(3))   
         id = cadena_delantera + dni + cadena_trasera
-        if validar_id(usuarios_datos, id):
+        if validar_id(usuarios_datos, id):  # Verifica que no sea el mismo que otro usuario
             return id
 
 def crear_nombre_usuario(usuarios_datos):
     while True:
         usuario = input("Ingrese el nombre de usuario que desea utilizar: ")
         if usuario.isalnum():
-            if buscar_nombre_usuario(usuarios_datos, usuario) is None:
-                return usuario
+            if buscar_nombre_usuario(usuarios_datos, usuario) is None:      # Verifica que no esté en uso
+                return usuario          
             print("Usuario inválido/Ya en uso")
         else:
             print("¡El nombre de usuario ingresado es inválido!\n")
@@ -118,7 +118,7 @@ def validar_id(usuarios_datos, id):
 def crear_mail(usuarios_datos):
     while True:
         mail = input("Ingrese su e-mail: ")
-        if re.search(r"\S+@\S+\.\S+", mail):
+        if re.search(r"\S+@\S+\.\S+", mail):    # Verifica que sea formato de mail
             for datos in usuarios_datos.values():
                 if datos['mail'] == mail:
                     print("\nEl mail ingresado ya está en uso\n")

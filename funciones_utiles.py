@@ -3,8 +3,8 @@ import os
 def limpiar_consola(): # Vacía la consola
     os.system("cls")
 
-def buscar_nombre_usuario(usuarios_datos, nombre_usuario):
-    nombre_usuario = nombre_usuario.lower()   # Busca un nombre de usuario sin importar mayúsculas
+def buscar_nombre_usuario(usuarios_datos, nombre_usuario):  # Busca un nombre de usuario sin importar mayúsculas
+    nombre_usuario = nombre_usuario.lower()   
 
     for nombre in usuarios_datos:
         if nombre.lower() == nombre_usuario:
@@ -12,23 +12,23 @@ def buscar_nombre_usuario(usuarios_datos, nombre_usuario):
 
     return None
 
-def encontrar_id_usuario(usuarios_datos, nombre_usuario):
+def encontrar_id_usuario(usuarios_datos, nombre_usuario):   # Devuelve el id del usuario
     nombre_usuario = nombre_usuario.lower()   
 
     for nombre in usuarios_datos:
         if nombre.lower() == nombre_usuario:
             id_del_usuario = usuarios_datos[nombre]["id"]
-            return id_del_usuario  # Devuelve el id del usuario
+            return id_del_usuario  
 
-def buscar_fila_libro(libros,nombre):
+def buscar_fila_libro(libros,nombre):   # Devuelve el id del usuario
     nombre = nombre.lower()   
 
     for i in range(0,len(libros)):
         if libros[i][0].lower() == nombre:
-            return i  # Devuelve el id del usuario
+            return i  
 
 
-def titulo(opcion):
+def titulo(opcion):     
     if opcion==1:
         limpiar_consola()
         print(f"||{" Usted esta creando un Usuario ":=^60}||", end="\n\n")
@@ -42,8 +42,8 @@ def cambiar_rol(usuario_datos):
         usuario_ingresado = input("Ingrese el nombre de usuario de la cuenta que desea hacer empleado: ").strip()
         nombre_real = buscar_nombre_usuario(usuario_datos, usuario_ingresado)  # Usa la búsqueda case-insensitive
 
-        if nombre_real is not None:
-            if usuario_datos[nombre_real]['rol'] == "socio":
+        if nombre_real is not None:     
+            if usuario_datos[nombre_real]['rol'] == "socio":    # Solo cambia en caso de que no tenga permisos superiores a socio
                 usuario_datos[nombre_real]['rol'] = "empleado"
                 print("\nLos cambios se han realizado correctamente.\n")
             else:
