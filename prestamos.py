@@ -122,7 +122,7 @@ def cambio_estado_inicio(prestamos):
         nueva_fila = fila[:-1] + (estado_prestamo(fila[8]),)
         prestamos[i] = nueva_fila
 
-def imprimir_prestamos(prestamos, filtro="todos"):    # Imprime los préstamos existentes en pantalla
+def imprimir_prestamos(prestamos, filtro="todos"):
     limpiar_consola()
     if not prestamos:
         print("| No hay préstamos registrados |")
@@ -136,30 +136,40 @@ def imprimir_prestamos(prestamos, filtro="todos"):    # Imprime los préstamos e
     contador = 0
 
     for i, prestamo in enumerate(prestamos, 1):
-        usuario, dni, libro, codigo, autor, editorial, precio, fecha_inicio, fecha_vencimiento, _ = prestamo
-        estado_actual = estado_prestamo(fecha_vencimiento)
+        usuario, dni, libro, codigo, autor, editorial, precio, fecha_inicio, fecha_vencimiento, estado_original = prestamo
+
+        if estado_original == "Devuelto":
+            estado_actual = "Devuelto"
+        else:
+            estado_actual = estado_prestamo(fecha_vencimiento)
 
         dias_restantes = (fecha_vencimiento - hoy).days
-
         color = "\033[0m"
-        mostrar = True
+        mostrar = False  # Por defecto no se muestran, solo si cumplen con el filtro
 
-        if estado_actual == "Vencido":
-            color = "\033[91m"
-            if filtro == "en curso" or filtro == "por vencer":
-                mostrar = False
-        elif dias_restantes <= 3:
-            color = "\033[93m"
-            if filtro == "vencido" or filtro == "en curso":
-                mostrar = False
-        else:
-            color = "\033[92m"
-            if filtro == "vencido" or filtro == "por vencer":
-                mostrar = False
-
+        # ---------------------- FILTRO ----------------------
         if filtro == "todos":
             mostrar = True
+        elif filtro == "devuelto" and estado_original == "Devuelto":
+            mostrar = True
+        elif filtro == "vencido" and estado_actual == "Vencido":
+            mostrar = True
+        elif filtro == "en curso" and estado_actual == "En curso":
+            mostrar = True
+        elif filtro == "por vencer" and estado_actual == "En curso" and dias_restantes <= 3:
+            mostrar = True
 
+        # COLORES
+        if estado_actual == "Devuelto":
+            color = "\033[94m"  # Azul
+        elif estado_actual == "Vencido":
+            color = "\033[91m"  # Rojo
+        elif dias_restantes <= 3 and estado_actual == "En curso":
+            color = "\033[93m"  # Amarillo
+        else:
+            color = "\033[92m"  # Verde
+
+        # Mostrar si cumple filtro
         if mostrar:
             contador += 1
             print(f"{contador:<4}{usuario:<15}{dni:<12}{libro:<25}{codigo:<8}{autor:<25}{editorial:<15}${precio:<9.2f}{fecha_inicio.strftime('%d/%m/%Y'):<12}{fecha_vencimiento.strftime('%d/%m/%Y'):<14}{color}{estado_actual:<10}\033[0m")
@@ -169,13 +179,14 @@ def imprimir_prestamos(prestamos, filtro="todos"):    # Imprime los préstamos e
 
     print("-" * 190)
 
-def ver_prestamos_con_filtro(prestamos):   # Añade un filtro según el estado del préstamo
+def ver_prestamos_con_filtro(prestamos): # Añade un filtro según el estado del préstamo
     limpiar_consola()
     print(f"|{'Ver Préstamos':-^50}|")
     print("1. Ver todos los préstamos")
     print("2. Ver sólo préstamos en curso")
     print("3. Ver sólo préstamos vencidos")
     print("4. Ver préstamos próximos a vencer (3 días o menos)")
+    print("5. Ver préstamos devueltos")
     print("9. Volver al menú anterior")
 
     opcion = input("\nSeleccione una opción:\n> ")
@@ -188,12 +199,14 @@ def ver_prestamos_con_filtro(prestamos):   # Añade un filtro según el estado d
         imprimir_prestamos(prestamos, filtro="vencido")
     elif opcion == "4":
         imprimir_prestamos(prestamos, filtro="por vencer")
+    elif opcion == "5":
+        imprimir_prestamos(prestamos, filtro="devuelto")
     elif opcion == "9":
         return
     else:
         print("Opción inválida.")
 
-def actualizar_prestamo(prestamos,libros):   # Permite actualizar un préstamo existente
+def actualizar_prestamo(prestamos, libros):
     limpiar_consola()
     if not prestamos:
         print("| No hay préstamos para actualizar |")
@@ -223,23 +236,36 @@ def actualizar_prestamo(prestamos,libros):   # Permite actualizar un préstamo e
                     semanas_extra = int(semanas_extra)
                     fila = prestamos[nro]
                     
-                    fila_del_libro = buscar_fila_libro(libros,nombre=prestamos[nro][2])
+                    fila_del_libro = buscar_fila_libro(libros, nombre=prestamos[nro][2])
                     precio_total_libro = libros[fila_del_libro][5]
-                    precio = precio_total_libro*(semanas_extra/10)
+                    precio = precio_total_libro * (semanas_extra / 10)
                     precio = precio + prestamos[nro][6]
                     nueva_fecha = fila[8] + timedelta(weeks=semanas_extra)
-                    nueva_fila = fila[:6] + (precio ,fila[7]) + (nueva_fecha, estado_prestamo(nueva_fecha))
-                    print(nueva_fila)
+                    nueva_fila = fila[:6] + (precio, fila[7], nueva_fecha, estado_prestamo(nueva_fecha))
                     prestamos[nro] = nueva_fila
                     print("Fecha de vencimiento actualizada correctamente.")
                 else:
-                    print("Cantidad de semanas inválida.")            
+                    print("Cantidad de semanas inválida.")    
             elif opcion == "3":
+                # Devuelve el libro
                 fila = prestamos[nro]
-                nueva_fila = fila[:6] + ("Devuelto",)
+                
+                # Verificar si ya estaba devuelto
+                if fila[9] == "Devuelto":
+                    print("El préstamo ya fue devuelto anteriormente.")
+                    return
+
+                # Aumenta stock del libro
+                fila_del_libro = buscar_fila_libro(libros, nombre=fila[2])
+                if fila_del_libro is not None:
+                    libros[fila_del_libro][3] += 1
+
+                # Actualiza estado del préstamo a Devuelto
+                nueva_fila = fila[:-1] + ("Devuelto",)
                 prestamos[nro] = nueva_fila
-                print(nueva_fila)
-                print("El préstamo se ha finalizado correctamente")
+
+                print("El préstamo se ha devuelto correctamente.")
+
             else:
                 print("Opción inválida.")
         else:
