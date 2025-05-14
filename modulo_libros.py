@@ -4,16 +4,16 @@ from funciones_utiles import es_numero_flotante, convertir_a_flotante
 
 def biblioteca():              # Crea un inventario incial
     libros = [
-    ['Cien años de soledad', 'L001', 'Gabriel García Márquez', 5, 'Sudamericana', 25000.0],
-    ['El principito', 'L002', 'Antoine de Saint-Exupéry', 10, 'Emecé', 13000.0],
-    ['Don Quijote de la Mancha', 'L003', 'Miguel de Cervantes', 3, 'Alfaguara', 35000.0],
-    ['1984', 'L004', 'George Orwell', 7, 'Destino', 18000.0],
-    ['Orgullo y prejuicio', 'L005', 'Jane Austen', 6, 'Alianza', 7000.0],
-    ['El señor de los anillos', 'L006', 'J.R.R. Tolkien', 2, 'Minotauro', 42000.0],
-    ['Harry Potter y la piedra filosofal', 'L007', 'J.K. Rowling', 9, 'Salamandra', 28000.0],
-    ['Matar un ruiseñor', 'L008', 'Harper Lee', 4, 'Debolsillo', 16000.0],
-    ['Crónica de una muerte anunciada', 'L009', 'Gabriel García Márquez', 8, 'Norma', 8500.0],
-    ['El código Da Vinci', 'L010', 'Dan Brown', 1, 'Planeta', 19500.0]
+    ['Cien años de soledad', 'L001', 'Gabriel García Márquez', 5, 'Sudamericana'],
+    ['El principito', 'L002', 'Antoine de Saint-Exupéry', 10, 'Emecé'],
+    ['Don Quijote de la Mancha', 'L003', 'Miguel de Cervantes', 3, 'Alfaguara'],
+    ['1984', 'L004', 'George Orwell', 7, 'Destino'],
+    ['Orgullo y prejuicio', 'L005', 'Jane Austen', 6, 'Alianza'],
+    ['El señor de los anillos', 'L006', 'J.R.R. Tolkien', 2, 'Minotauro'],
+    ['Harry Potter y la piedra filosofal', 'L007', 'J.K. Rowling', 9, 'Salamandra'],
+    ['Matar un ruiseñor', 'L008', 'Harper Lee', 4, 'Debolsillo'],
+    ['Crónica de una muerte anunciada', 'L009', 'Gabriel García Márquez', 8, 'Norma'],
+    ['El código Da Vinci', 'L010', 'Dan Brown', 1, 'Planeta']
 ]
     return libros
 
@@ -25,14 +25,14 @@ def imprimir_libros(libros):
     print(f"|{'Catálogo de Libros':-^120}|\n")
     
     # Encabezado
-    encabezado = f"{'Nombre':<35} {'Código':<8} {'Autor':<25} {'Stock':<7} {'Editorial':<20} {'Precio':>10}"
+    encabezado = f"{'Nombre':<35} {'Código':<8} {'Autor':<25} {'Stock':<7} {'Editorial':<20}"
     print(encabezado)
     print("-" * 120)
 
     # Libros
     for libro in libros:
-        nombre, codigo, autor, stock, editorial, precio = libro
-        linea = f"{nombre:<35} {codigo:<8} {autor:<25} {stock:<7} {editorial:<20} ${precio:>9,.2f}"
+        nombre, codigo, autor, stock, editorial= libro
+        linea = f"{nombre:<35} {codigo:<8} {autor:<25} {stock:<7} {editorial:<20}"
         print(linea)
 
     print("-" * 120)
@@ -57,13 +57,6 @@ def añadir_libro(libros):
 
     nuevo_codigo_libro = generar_id_libro(libros)
 
-    while True:
-        nuevo_precio = input("Ingrese el precio del libro (puede usar ',' o '.'): ").strip()
-        if es_numero_flotante(nuevo_precio):
-            nuevo_precio = convertir_a_flotante(nuevo_precio)
-            break
-        else:
-            print("Precio inválido. Debe ser un número válido. Intente de nuevo.")
         
     nuevo_libro = [
         nuevo_nombre_libro.title(),
@@ -71,7 +64,6 @@ def añadir_libro(libros):
         nuevo_autor_libro.title(),
         1,
         nuevo_editorial_libro.title(),
-        nuevo_precio
     ]
     libros.append(nuevo_libro)
     print(f"\nEl libro '{nuevo_nombre_libro.title()}' se ha cargado con éxito en la biblioteca.")
@@ -99,7 +91,6 @@ def buscar_libro(libros):
     print("3. Autor")
     print("4. Stock")
     print("5. Editorial")
-    print("6. Precio (por rango)")
 
     opcion = input("\nSeleccione una opción (1-6): ")
 
@@ -109,7 +100,6 @@ def buscar_libro(libros):
         "3": 2,  # Autor
         "4": 3,  # Stock
         "5": 4,  # Editorial
-        "6": 5   # Precio
     }
 
     if opcion not in campos:
@@ -120,36 +110,15 @@ def buscar_libro(libros):
     indice = campos[opcion]
     resultados = []
 
-    if opcion == "6":
-        # Buscar por rango de precios
-        while True:
-            precio_min = input("Ingrese el precio mínimo (use ',' o '.' para decimales): ").strip()
-            if es_numero_flotante(precio_min):
-                precio_min = convertir_a_flotante(precio_min)
-                break
-            else:
-                print("Error: Ingrese un número válido.")
 
-        while True:
-            precio_max = input("Ingrese el precio máximo (use ',' o '.' para decimales): ").strip()
-            if es_numero_flotante(precio_max):
-                precio_max = convertir_a_flotante(precio_max)
-                break
-            else:
-                print("Error: Ingrese un número válido.")
+    valor = input("Ingrese el valor a buscar: ").strip()
 
-        # Lambda para filtrar precios
-        filtro = lambda libro: precio_min <= libro[5] <= precio_max
-
+    if opcion in ["2", "4"]:  # Código y Stock: comparación exacta
+        filtro = lambda libro: str(libro[indice]).lower() == valor.lower()
     else:
-        valor = input("Ingrese el valor a buscar: ").strip()
-
-        if opcion in ["2", "4"]:  # Código y Stock: comparación exacta
-            filtro = lambda libro: str(libro[indice]).lower() == valor.lower()
-        else:
-            # Nombre, Autor, Editorial: coincidencia parcial (regex)
-            patron = re.compile(re.escape(valor), re.IGNORECASE)
-            filtro = lambda libro: bool(patron.search(str(libro[indice])))
+        # Nombre, Autor, Editorial: coincidencia parcial (regex)
+        patron = re.compile(re.escape(valor), re.IGNORECASE)
+        filtro = lambda libro: bool(patron.search(str(libro[indice])))
 
     # Aplica el filtro
     resultados = list(filter(filtro, libros))
@@ -159,19 +128,19 @@ def buscar_libro(libros):
         print(f"|{'Resultados de la búsqueda':-^120}|\n")
 
         # Encabezado
-        encabezado = f"{'Nombre':<35} {'Código':<8} {'Autor':<25} {'Stock':<7} {'Editorial':<20} {'Precio':>10}"
+        encabezado = f"{'Nombre':<35} {'Código':<8} {'Autor':<25} {'Stock':<7} {'Editorial':<20}"
         print(encabezado)
         print("-" * 120)
 
         for libro in resultados:
-            nombre, codigo, autor, stock, editorial, precio = libro
+            nombre, codigo, autor, stock, editorial= libro
 
             # Si el nombre o autor exceden su espacio, se corta:
             nombre = (nombre[:32] + '...') if len(nombre) > 35 else nombre
             autor = (autor[:22] + '...') if len(autor) > 25 else autor
             editorial = (editorial[:17] + '...') if len(editorial) > 20 else editorial
 
-            linea = f"{nombre:<35} {codigo:<8} {autor:<25} {stock:<7} {editorial:<20} ${precio:>9,.2f}"
+            linea = f"{nombre:<35} {codigo:<8} {autor:<25} {stock:<7} {editorial:<20}"
             print(linea)
 
         print("-" * 120)
@@ -198,7 +167,7 @@ def actualizar_libro(libros):
     limpiar_consola()
     print(f"|{'Información actual del libro':-^120}|\n")
     
-    encabezado = f"{'N°':<3} {'Campo':<15} {'Valor Actual':<60}"
+    encabezado = f"{'N°':<3} {'Campo':<15}"
     print(encabezado)
     print("-" * 120)
 
@@ -206,7 +175,6 @@ def actualizar_libro(libros):
     print(f"{'2':<3} {'Autor':<15} {libro_encontrado[2]:<60}")
     print(f"{'3':<3} {'Stock':<15} {libro_encontrado[3]:<60}")
     print(f"{'4':<3} {'Editorial':<15} {libro_encontrado[4]:<60}")
-    print(f"{'5':<3} {'Precio':<15} ${libro_encontrado[5]:,.2f}")
     print("-" * 120)
 
     # Selecciona campo para actualizar
@@ -229,14 +197,6 @@ def actualizar_libro(libros):
     elif opcion == "4":
         nueva_editorial = input("Ingrese la nueva editorial: ").title()
         libro_encontrado[4] = nueva_editorial
-    elif opcion == "5":
-        while True:
-            nuevo_precio = input("Ingrese el nuevo precio (solo números o decimales '.'): ")
-            if nuevo_precio.replace('.', '', 1).isdigit():
-                libro_encontrado[5] = float(nuevo_precio)
-                break
-            else:
-                print("Precio inválido. Intente nuevamente.")
     else:
         print("\nOpción no válida.")
         return

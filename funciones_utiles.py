@@ -36,32 +36,32 @@ def titulo(opcion):
         limpiar_consola()
         print(f"||{" Usted está Iniciando Sesión ":=^60}||", end="\n\n")
 
-def cambiar_rol(usuario_datos):
-    limpiar_consola()
-    while True:
-        usuario_ingresado = input("Ingrese el nombre de usuario de la cuenta que desea hacer empleado: ").strip()
-        nombre_real = buscar_nombre_usuario(usuario_datos, usuario_ingresado)  # Usa la búsqueda case-insensitive
+# def cambiar_rol(usuario_datos):
+#     limpiar_consola()
+#     while True:
+#         usuario_ingresado = input("Ingrese el nombre de usuario de la cuenta que desea hacer empleado: ").strip()
+#         nombre_real = buscar_nombre_usuario(usuario_datos, usuario_ingresado)  # Usa la búsqueda case-insensitive
 
-        if nombre_real is not None:     
-            if usuario_datos[nombre_real]['rol'] == "socio":    # Solo cambia en caso de que no tenga permisos superiores a socio
-                usuario_datos[nombre_real]['rol'] = "empleado"
-                print("\nLos cambios se han realizado correctamente.\n")
-            else:
-                print("\nEl usuario ingresado ya cuenta con permisos de empleado/administrador.\n")
-            break
-        else:
-            print("\nNo se ha encontrado el usuario ingresado.\n")
-            print("1. Volver a intentar")
-            print("2. Volver al menú\n")
-            while True:
-                opcion = input("Ingrese la opción que desea utilizar: ").strip()
-                if opcion in ("1", "2"):
-                    if opcion == "2":
-                        return
-                    else:
-                        break
-                else:
-                    print("La opción ingresada es inválida.")
+#         if nombre_real is not None:     
+#             if usuario_datos[nombre_real]['rol'] == "socio":    # Solo cambia en caso de que no tenga permisos superiores a socio
+#                 usuario_datos[nombre_real]['rol'] = "empleado"
+#                 print("\nLos cambios se han realizado correctamente.\n")
+#             else:
+#                 print("\nEl usuario ingresado ya cuenta con permisos de empleado/administrador.\n")
+#             break
+#         else:
+#             print("\nNo se ha encontrado el usuario ingresado.\n")
+#             print("1. Volver a intentar")
+#             print("2. Volver al menú\n")
+#             while True:
+#                 opcion = input("Ingrese la opción que desea utilizar: ").strip()
+#                 if opcion in ("1", "2"):
+#                     if opcion == "2":
+#                         return
+#                     else:
+#                         break
+#                 else:
+#                     print("La opción ingresada es inválida.")
 
 def es_numero_flotante(valor):       # Verifica si es un string con un numero flotante positivo
     valor = valor.replace(',', '.')  # Permite usar coma o punto
