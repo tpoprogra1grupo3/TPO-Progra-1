@@ -133,7 +133,7 @@ def generar_id_usuario(usuarios_datos, dni):
         cadena_trasera = ''.join(str(random.randint(0, 9)) for _ in range(3))   
         id = cadena_delantera + dni + cadena_trasera
         if validar_id(usuarios_datos, id):  # Verifica que no sea el mismo que otro usuario
-            return id
+            return id 
 
 def crear_nombre_usuario(usuarios_datos):
     while True:
