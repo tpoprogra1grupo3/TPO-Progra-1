@@ -18,12 +18,12 @@ def crear_prestamos(usuarios_datos,libros, prestamos, usuario_actual, id_usuario
             return
 
         print("\n| Libros disponibles para préstamo |\n")
-        print(f"{'N°':<4} {'Nombre':<35} {'Código':<8} {'Autor':<25} {'Stock':<7} {'Editorial':<20} {'Precio':>10}")
+        print(f"{'N°':<4} {'Nombre':<35} {'Código':<8} {'Autor':<25} {'Stock':<7} {'Editorial':<20}")
         print("-" * 125)
 
         for i, libro in enumerate(libros_disponibles, start=1):
-            nombre, codigo, autor, stock, editorial, precio = libro
-            print(f"{i:<4} {nombre:<35} {codigo:<8} {autor:<25} {stock:<7} {editorial:<20} ${precio:>9,.2f}")
+            nombre, codigo, autor, stock, editorial= libro
+            print(f"{i:<4} {nombre:<35} {codigo:<8} {autor:<25} {stock:<7} {editorial:<20}")
 
         print("-" * 125)
 
@@ -73,7 +73,7 @@ def crear_prestamos(usuarios_datos,libros, prestamos, usuario_actual, id_usuario
         id_libro = libro_seleccionado[1]
         autor_libro = libro_seleccionado[2]
         editorial = libro_seleccionado[4]
-        precio = (libro_seleccionado[5]) * (semanas_a_alquilar / 10)
+        precio = 1000 * (semanas_a_alquilar / 10)
 
         fecha_de_creacion = date.today()
         fecha_de_vencimiento = date.today() + timedelta(weeks=semanas_a_alquilar)
