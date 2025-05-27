@@ -9,7 +9,7 @@ def crud_prestamos(): # Prestamos utilizando Tuplas
     ]
     return prestamos
 
-def crear_prestamos(usuarios_datos,libros, prestamos, usuario_actual, id_usuario_actual, permisos_usuario_actual):  # Crea el préstamo utilizando los datos del usuario logueado
+def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual, permisos_usuario_actual):  # Crea el préstamo utilizando los datos del usuario logueado
     while True:
         libros_disponibles = [libro for libro in libros if libro[3] > 0]
 
@@ -18,56 +18,59 @@ def crear_prestamos(usuarios_datos,libros, prestamos, usuario_actual, id_usuario
             return
 
         print("\n| Libros disponibles para préstamo |\n")
-        print(f"{'N°':<4} {'Nombre':<35} {'Código':<8} {'Autor':<25} {'Stock':<7} {'Editorial':<20}")
+        print(f"{'Nº':<4} {'Nombre':<35} {'Código':<8} {'Autor':<25} {'Stock':<7} {'Editorial':<20}")
         print("-" * 125)
 
         for i, libro in enumerate(libros_disponibles, start=1):
-            nombre, codigo, autor, stock, editorial= libro
+            nombre, codigo, autor, stock, editorial = libro
             print(f"{i:<4} {nombre:<35} {codigo:<8} {autor:<25} {stock:<7} {editorial:<20}")
 
         print("-" * 125)
 
-        opcion_libro = input("\nIngrese el número del libro que desea alquilar (o '0' para cancelar): ").strip()  
-        if opcion_libro == "0":
-            print("\nOperación cancelada.\n")
-            return
+        try:
+            opcion_libro = input("\nIngrese el número del libro que desea alquilar (o '0' para cancelar): ").strip()
+            if opcion_libro == "0":
+                print("\nOperación cancelada.\n")
+                return
 
-        if not opcion_libro.isdigit() or not (1 <= int(opcion_libro) <= len(libros_disponibles)):
-            print("\nNúmero inválido. Intente nuevamente.\n")
+            indice_libro = int(opcion_libro) - 1
+            if not (0 <= indice_libro < len(libros_disponibles)):
+                print("\nNúmero fuera de rango. Intente nuevamente.\n")
+                continue
+        except ValueError:   
+            print("\nEntrada inválida. Debe ingresar un número.\n")
             continue
 
-        if permisos_usuario_actual == "admin" or permisos_usuario_actual == "empleado":     # Solo admin y empleado pueden hacer préstamos a otros
-            while True:
-                usuario_actual = input("\nIngrese el nombre de usuario de quien desea alquilar el libro: ")
-                usuario_actual = buscar_nombre_usuario(usuarios_datos, usuario_actual)
-                if usuario_actual == None:
-                    print("\nNo se ha encontrado a ese usuario")
-                    continue
-                else:
-                    id_usuario_actual = encontrar_id_usuario(usuarios_datos,usuario_actual)
-                    if id_usuario_actual != None:
-                        break
-                    else:
-                        print("Hay irregularidades con el id del usuario. Solicitar revisión")
-                        continue
-                    
-                    
-                    
-
-        indice_libro = int(opcion_libro) - 1
         libro_seleccionado = libros_disponibles[indice_libro]
         fila_libro = libros.index(libro_seleccionado)
 
-        semanas_a_alquilar = input("\nIngrese la cantidad de semanas que desea alquilar el libro (o '0' para cancelar): ").strip()  # Determina la duración del préstamo
-        if semanas_a_alquilar == "0":
-            print("\nOperación cancelada.\n")
-            return
+        if permisos_usuario_actual in ["admin", "empleado"]:
+            while True:
+                try:
+                    usuario_ingresado = input("\nIngrese el nombre de usuario de quien desea alquilar el libro: ").strip() # Solo admin y empleado pueden hacer préstamos a otros
+                    usuario_actual = buscar_nombre_usuario(usuarios_datos, usuario_ingresado)
+                    if usuario_actual is None:
+                        raise ValueError("Usuario no encontrado.")  
+                    id_usuario_actual = encontrar_id_usuario(usuarios_datos, usuario_actual)
+                    if id_usuario_actual is None:
+                        raise ValueError("ID de usuario inválido.")
+                    break
+                except ValueError as err:   
+                    print(f"\n{err}")
+                    continue
 
-        if not semanas_a_alquilar.isdigit() or semanas_a_alquilar == "0":
-            print("\nLa cantidad de semanas ingresada es inválida.\n")
+        try:
+            semanas_input = input("\nIngrese la cantidad de semanas que desea alquilar el libro (o '0' para cancelar): ").strip() # Determina la duración del préstamo
+            if semanas_input == "0":
+                print("\nOperación cancelada.\n")
+                return
+
+            semanas_a_alquilar = int(semanas_input)
+            if semanas_a_alquilar <= 0:
+                raise ValueError("Debe ingresar un número mayor que cero.")
+        except ValueError as err:    
+            print(f"\nEntrada inválida: {err}\n")
             continue
-
-        semanas_a_alquilar = int(semanas_a_alquilar)
 
         nombre_libro = libro_seleccionado[0]
         id_libro = libro_seleccionado[1]
@@ -85,7 +88,7 @@ def crear_prestamos(usuarios_datos,libros, prestamos, usuario_actual, id_usuario
         print("1. Confirmar los datos del préstamo")
         print("2. Cancelar el préstamo")
 
-        opcion = input("Ingrese la opción que desea utilizar: ").strip()   # Confirma la creación del préstamo
+        opcion = input("Ingrese la opción que desea utilizar: ").strip()
         if opcion == "1":
             prestamo = (
                 usuario_actual,
