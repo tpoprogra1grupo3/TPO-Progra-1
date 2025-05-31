@@ -42,7 +42,7 @@ def usuarios_de_base():   # Usuarios del sistema con su ID y rol
     }
     return usuarios_datos
 
-def crear_empleado(usuarios_datos):
+def crear_empleado(usuarios_datos):         # REVISARRRRRRR
     usuario = crear_nombre_usuario(usuarios_datos)
     titulo(1)
     contraseña = crear_contraseña()
@@ -78,16 +78,22 @@ def crear_empleado(usuarios_datos):
 
 def crear_socio(usuarios_datos):
     usuario = crear_nombre_usuario(usuarios_datos)
+    if usuario == "Volver":
+        return "Volver"
     titulo(1)
     contraseña = crear_contraseña()
+    if contraseña == "Volver":
+        return "Volver"
     titulo(1)
     mail = crear_mail(usuarios_datos)
+    if mail == "Volver":
+        return "Volver"
     titulo(1)
 
     while True:
         dni_completo = input("Ingrese su DNI completo (Máx 10 caracteres)(-1 para volver al menu): ")
-        if dni_completo==-1:
-            return -1
+        if dni_completo=="-1":
+            return "Volver"
         elif dni_completo.isdigit() and len(dni_completo) <=10 and len(dni_completo)>=3:
             dni_completo = dni_completo.zfill(10)  # Tendrá siempre 10 caracteres
             ultimos_3_digitos = dni_completo[-3:]  # Se deja como string
@@ -120,12 +126,15 @@ def crear_contraseña():
     print(f"\t-Debe tener por lo menos 1 carácter especial")    
     print(f"\t-No debe tener espacios vacíos (No se puede dejar huecos entre caracteres)")
     while True:
-        contraseña = input("\nIngrese una contraseña: ")
-        if not contraseña.isalnum():   
-            if len(contraseña) >= longitud_min_contraseñas:
-                if " " not in contraseña:
-                    return contraseña
-        print("Contraseña inválida")
+        contraseña = input("\nIngrese una contraseña (-1 Para volver al menú): ")
+        if not contraseña.strip() == "-1":
+            if not contraseña.isalnum():   
+                if len(contraseña) >= longitud_min_contraseñas:
+                    if " " not in contraseña:
+                        return contraseña
+            print("Contraseña inválida")
+        else:
+            return "Volver"
 
 def generar_id_usuario(usuarios_datos, dni):
     while True:
@@ -138,8 +147,8 @@ def generar_id_usuario(usuarios_datos, dni):
 def crear_nombre_usuario(usuarios_datos):
     while True:
         usuario = input("Ingrese el nombre que desea utilizar (0 para volver): ")
-        if usuario==0:
-            return -1 
+        if usuario.strip()=="0": # Evitamos 0 acompañado de espacios en blanco
+            return "Volver" 
         elif usuario.isalnum():
             if buscar_nombre_usuario(usuarios_datos, usuario) is None:      # Verifica que no esté en uso
                 return usuario          
@@ -155,8 +164,10 @@ def validar_id(usuarios_datos, id):
 
 def crear_mail(usuarios_datos):
     while True:
-        mail = input("Ingrese su e-mail: ")
-        if re.search(r"\S+@\S+\.\S+", mail):    # Verifica que sea formato de mail
+        mail = input("Ingrese su e-mail (-1 para volver): ")
+        if mail.strip() == "-1":
+            return "Volver"
+        elif re.search(r"\S+@\S+\.\S+", mail):    # Verifica que sea formato de mail
             for datos in usuarios_datos.values():
                 if datos['mail'] == mail:
                     print("\nEl mail ingresado ya está en uso\n")

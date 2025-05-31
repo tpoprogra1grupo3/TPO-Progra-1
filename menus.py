@@ -20,15 +20,18 @@ def menu_inicio(usuarios_datos, libros, prestamos):  # Menu de registro y login
         if opcion == "1":
             limpiar_consola()
             titulo(1)
-            crear_socio(usuarios_datos)
+            crear_socio(usuarios_datos)     # La opcion volver da un return para finalizar la iteracion actual
             input("\nPresione ENTER para continuar...")
+        
         elif opcion == "2":
             limpiar_consola()
             titulo(2)
             rol, usuario_actual, id_usuario_actual = iniciar_sesion(usuarios_datos)  # Se guarda el usuario y el ID para uso posterior.
+            if usuario_actual == "Volver":
+                continue        # Devuelve al menu de inicio (No se ejecuta ningun menu del rol correspondiente)
+            
             limpiar_consola()
             print(f"Usted tiene el rol de {rol}")
-
             if rol == "admin":
                 resultado = menu_admin(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual)
             elif rol == "socio":

@@ -47,7 +47,9 @@ def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuari
         if permisos_usuario_actual in ["admin", "empleado"]:
             while True:
                 try:
-                    usuario_ingresado = input("\nIngrese el nombre de usuario de quien desea alquilar el libro: ").strip() # Solo admin y empleado pueden hacer préstamos a otros
+                    usuario_ingresado = input("\nIngrese el nombre de usuario de quien desea alquilar el libro (-1 para cancelar): ").strip() # Solo admin y empleado pueden hacer préstamos a otros
+                    if usuario_ingresado == "-1":
+                        return 
                     usuario_actual = buscar_nombre_usuario(usuarios_datos, usuario_ingresado)
                     if usuario_actual is None:
                         raise ValueError("Usuario no encontrado.")  
@@ -88,7 +90,7 @@ def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuari
         print("1. Confirmar los datos del préstamo")
         print("2. Cancelar el préstamo")
 
-        opcion = input("Ingrese la opción que desea utilizar: ").strip()
+        opcion = input(f"Ingrese la opción que desea utilizar (-1 para volver al menu de {permisos_usuario_actual}): ").strip()
         if opcion == "1":
             prestamo = (
                 usuario_actual,
@@ -109,6 +111,8 @@ def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuari
             return
         elif opcion == "2":
             print("\nPréstamo cancelado.\n")
+            return
+        elif opcion.strip() == "-1":
             return
         else:
             print("\nLa opción ingresada es inválida.\n")

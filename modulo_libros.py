@@ -92,8 +92,10 @@ def buscar_libro(libros):
     print("4. Stock")
     print("5. Editorial")
 
-    opcion = input("\nSeleccione una opción (1-6): ")
-
+    opcion = input("\nSeleccione una opción (1-6)(-1 para cancelar la búsqueda): ")
+    if opcion.strip() == "-1":
+        return
+    
     campos = {
         "1": 0,  # Nombre
         "2": 1,  # Código
@@ -107,17 +109,20 @@ def buscar_libro(libros):
         input("\nPresiona Enter para continuar...")
         return
 
-    indice = campos[opcion]
+    indice = campos[opcion]     # indice es la fila de ese valor en la lista del libro 
     resultados = []
 
 
-    valor = input("Ingrese el valor a buscar: ").strip()
+    valor = input("Ingrese el valor a buscar (-1 para cancelar): ").strip()
+    if valor.strip() == "-1":
+        return
 
+    # Se Busca coinicidencias exactas y parciales
     if opcion in ["2", "4"]:  # Código y Stock: comparación exacta
         filtro = lambda libro: str(libro[indice]).lower() == valor.lower()
     else:
-        # Nombre, Autor, Editorial: coincidencia parcial (regex)
-        patron = re.compile(re.escape(valor), re.IGNORECASE)
+        # Nombre, Autor, Editorial: coincidencia parcial (regex)    
+        patron = re.compile(re.escape(valor), re.IGNORECASE)        # "escape" ignora caracteres especiales
         filtro = lambda libro: bool(patron.search(str(libro[indice])))
 
     # Aplica el filtro
