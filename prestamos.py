@@ -11,9 +11,9 @@ def crud_prestamos(): # Prestamos utilizando Tuplas
 
 def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual, permisos_usuario_actual):  # Crea el préstamo utilizando los datos del usuario logueado
     while True:
-        libros_disponibles = [libro for libro in libros if libro[3] > 0]
+        libros_disponibles = [libro for libro in libros if libro[3] > 0]    # Crea lista por comprensión con los libros disponibles
 
-        if not libros_disponibles:
+        if not libros_disponibles:  # Verifica que haya libros dispo
             print("\nNo hay libros disponibles para préstamo.\n")
             return
 
@@ -44,10 +44,10 @@ def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuari
         libro_seleccionado = libros_disponibles[indice_libro]
         fila_libro = libros.index(libro_seleccionado)
 
-        if permisos_usuario_actual in ["admin", "empleado"]:
+        if permisos_usuario_actual in ["admin"]:
             while True:
                 try:
-                    usuario_ingresado = input("\nIngrese el nombre de usuario de quien desea alquilar el libro (-1 para cancelar): ").strip() # Solo admin y empleado pueden hacer préstamos a otros
+                    usuario_ingresado = input("\nIngrese el nombre de usuario de quien desea alquilar el libro (-1 para cancelar): ").strip() # Solo admins pueden hacer préstamos a otros
                     if usuario_ingresado == "-1":
                         return 
                     usuario_actual = buscar_nombre_usuario(usuarios_datos, usuario_ingresado)
@@ -227,19 +227,22 @@ def actualizar_prestamo(prestamos, libros):
         if 0 <= nro < len(prestamos):
             limpiar_consola()
             print("¿Qué desea actualizar del préstamo?")
-            print("1. Estado (se recalcula automáticamente)")
+            print("1. Estado (se recalcula automáticamente)") #  ELIANNNN?? Lo dejamos?
             print("2. Fecha de vencimiento")
             print("3. Devolver libro")
+            print("4. Volver al menu anterior")
             opcion = input("Ingrese opción: ")
-
+            opcion = opcion.strip()
             if opcion == "1":
                 fila = prestamos[nro]
                 nueva_fila = fila[:-1] + (estado_prestamo(fila[8]),)
                 prestamos[nro] = nueva_fila
                 print("Estado recalculado correctamente.")
             elif opcion == "2":
-                semanas_extra = input("Ingrese cuántas semanas desea extender el préstamo: ")
-                if semanas_extra.isnumeric() and int(semanas_extra) > 0:
+                semanas_extra = input("Ingrese cuántas semanas desea extender el préstamo (-1 para cancelar): ")
+                if semanas_extra.strip() == "-1":
+                    return
+                elif semanas_extra.isnumeric() and int(semanas_extra) > 0:
                     semanas_extra = int(semanas_extra)
                     fila = prestamos[nro]
                     
@@ -272,7 +275,8 @@ def actualizar_prestamo(prestamos, libros):
                 prestamos[nro] = nueva_fila
 
                 print("El préstamo se ha devuelto correctamente.")
-
+            elif opcion == "4":
+                return
             else:
                 print("Opción inválida.")
         else:
@@ -282,18 +286,20 @@ def actualizar_prestamo(prestamos, libros):
 
 def eliminar_prestamo(prestamos, libros):   # Elimina un préstamo existente
     limpiar_consola()
-    if not prestamos:
+    if not prestamos:   # Verifica que existan prestamos (Hay un elemento dentro de prestamos)
         print("| No hay préstamos para eliminar |")
         return
 
     imprimir_prestamos(prestamos)
 
-    nro = input("\nIngrese el número de préstamo que desea eliminar: ")
-    if nro.isnumeric():
+    nro = input("\nIngrese el número de préstamo que desea eliminar (-1 para cancelar): ")
+    if nro.strip() == "-1":
+        return
+    elif nro.isnumeric():
         nro = int(nro) - 1
         if 0 <= nro < len(prestamos):
             prestamo = prestamos[nro]
-            confirmacion = input(f"\n¿Confirma eliminar el préstamo de {prestamo[0]} por el libro '{prestamo[2]}'? (s/n): ").lower()
+            confirmacion = input(f"\n¿Confirma eliminar el préstamo de {prestamo[0]} por el libro '{prestamo[2]}'? (s/n) (-1 para cancelar): ").lower()
             if confirmacion == "s":
                 # Buscar el libro en el inventario y aumentar su stock
                 id_libro_prestamo = prestamo[3]  # Código del libro del préstamo
@@ -304,6 +310,8 @@ def eliminar_prestamo(prestamos, libros):   # Elimina un préstamo existente
 
                 prestamos.pop(nro)  # Elimina el préstamo
                 print("\nPréstamo eliminado correctamente. El stock del libro ha sido actualizado.")
+            elif confirmacion.strip() == "-1":
+                return
             else:
                 print("\nEliminación cancelada.")
         else:

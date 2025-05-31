@@ -28,21 +28,21 @@ def usuarios_de_base():   # Usuarios del sistema con su ID y rol
         'Iair007': {
             'contraseña': 'Messi@',
             'ultimos_3_digitos': '835',
-            'rol': 'empleado',
+            'rol': 'admin',
             'id': 111835221,
             'mail': 'iair007@uade.edu.ar'
         },
         'Esteban': {
             'contraseña': 'mentaaa#',
             'ultimos_3_digitos': '257',
-            'rol': 'empleado',
+            'rol': 'admin',
             'id': 290257618,
             'mail': 'juanesteban@uade.edu.ar'
         }
     }
     return usuarios_datos
 
-def crear_empleado(usuarios_datos):         # REVISARRRRRRR
+def crear_admin(usuarios_datos):         # REVISARRRRRRR
     usuario = crear_nombre_usuario(usuarios_datos)
     titulo(1)
     contraseña = crear_contraseña()
@@ -62,7 +62,7 @@ def crear_empleado(usuarios_datos):         # REVISARRRRRRR
 
     id = generar_id_usuario(usuarios_datos, ultimos_3_digitos)
 
-    permisos = "empleado"
+    permisos = "admin"
 
     # Se agrega al diccionario "Usuarios"
     usuarios_datos[usuario] = {
@@ -185,7 +185,6 @@ def mostrar_usuarios(usuarios_datos):
     else:
         for nombre, datos in usuarios_datos.items():
             print(f"Usuario: {nombre}")
-            print(f"  Contraseña: {datos['contraseña']}")
             print(f"  Últimos 3 dígitos del DNI: {datos['ultimos_3_digitos']}")
             print(f"  Rol: {datos['rol']}")
             print(f"  ID: {datos['id']}")

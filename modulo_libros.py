@@ -40,9 +40,15 @@ def imprimir_libros(libros):
 def añadir_libro(libros):
     limpiar_consola()
     print(f"|{'Bienvenido a la carga de libros':-^60}|", end="\n\n")
-    nuevo_nombre_libro = input("Ingrese el nombre del nuevo libro: ").lower()
-    nuevo_autor_libro = input("Ingrese el autor: ").lower()
-    nuevo_editorial_libro = input("Ingrese la editorial del libro: ").lower()
+    nuevo_nombre_libro = input("Ingrese el nombre del nuevo libro (-1 para volver al menu de admin): ").lower()
+    if nuevo_nombre_libro.strip() == "-1":
+        return
+    nuevo_autor_libro = input("Ingrese el autor (-1 para volver al menu de admin): ").lower()
+    if nuevo_autor_libro.strip() == "-1":
+        return
+    nuevo_editorial_libro = input("Ingrese la editorial del libro (-1 para volver al menu de admin): ").lower()
+    if nuevo_editorial_libro.strip() == "-1":
+        return
     
     existente = False  # Interruptor para saber si el libro ingresado ya existe
 
@@ -72,7 +78,9 @@ def eliminar_libro(libros):
     """Elimina un libro por ID."""
     limpiar_consola()
     print(f"|{'Bienvenido a la eliminación de libros':-^60}|\n")
-    id_libro = input("Ingrese el ID del libro a eliminar (ej: L001): ").upper()
+    id_libro = input("Ingrese el ID del libro a eliminar (ej: L001)(-1 para volver): ").upper()
+    if id_libro.strip() == "-1":
+        return
 
     for libro in libros:
         if libro[1] == id_libro:
@@ -155,7 +163,9 @@ def buscar_libro(libros):
 def actualizar_libro(libros):
     limpiar_consola()
     print(f"|{'Actualizar datos de un libro':-^120}|\n")
-    id_libro = input("Ingrese el ID del libro que desea actualizar (ej: L001): ").upper()
+    id_libro = input("Ingrese el ID del libro que desea actualizar (ej: L001)(-1 para cancelar): ").upper()
+    if id_libro.strip() == "-1":
+        return
 
     # Busca el libro por ID
     libro_encontrado = None
@@ -183,24 +193,33 @@ def actualizar_libro(libros):
     print("-" * 120)
 
     # Selecciona campo para actualizar
-    opcion = input("\nSeleccione el número del campo que desea actualizar (1-5): ")
-
-    if opcion == "1":
-        nuevo_nombre = input("Ingrese el nuevo nombre del libro: ").title()
+    opcion = input("\nSeleccione el número del campo que desea actualizar (1-5)(-1 para cancelar): ")
+    if opcion.strip() == "-1":
+        return
+    elif opcion == "1":
+        nuevo_nombre = input("Ingrese el nuevo nombre del libro (-1 para cancelar): ").title()
+        if nuevo_nombre.strip() == "-1":
+            return
         libro_encontrado[0] = nuevo_nombre
     elif opcion == "2":
-        nuevo_autor = input("Ingrese el nuevo autor: ").title()
+        nuevo_autor = input("Ingrese el nuevo autor (-1 para cancelar): ").title()
+        if nuevo_autor.strip() == "-1":
+            return
         libro_encontrado[2] = nuevo_autor
     elif opcion == "3":
         while True:
-            nuevo_stock = input("Ingrese el nuevo stock (número entero): ")
+            nuevo_stock = input("Ingrese el nuevo stock (número entero)(-1 para cancelar): ")
+            if nuevo_stock.strip() == "-1":
+                return
             if nuevo_stock.isdigit():
                 libro_encontrado[3] = int(nuevo_stock)
                 break
             else:
                 print("Stock inválido. Intente nuevamente.")
     elif opcion == "4":
-        nueva_editorial = input("Ingrese la nueva editorial: ").title()
+        nueva_editorial = input("Ingrese la nueva editorial (-1 para cancelar): ").title()
+        if nueva_editorial.strip() == "-1":
+            return
         libro_encontrado[4] = nueva_editorial
     else:
         print("\nOpción no válida.")

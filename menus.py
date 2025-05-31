@@ -1,7 +1,7 @@
 from modulo_libros import añadir_libro, eliminar_libro, imprimir_libros, buscar_libro, actualizar_libro
 from funciones_utiles import limpiar_consola, titulo        #, cambiar_rol
 from Log_y_Sign_in.login import iniciar_sesion
-from Log_y_Sign_in.sign_in import crear_empleado, crear_socio, mostrar_usuarios
+from Log_y_Sign_in.sign_in import crear_socio, mostrar_usuarios
 from prestamos import crear_prestamos, ver_prestamos_con_filtro, actualizar_prestamo, eliminar_prestamo, ver_mis_prestamos
 
 def menu_inicio(usuarios_datos, libros, prestamos):  # Menu de registro y login
@@ -36,8 +36,6 @@ def menu_inicio(usuarios_datos, libros, prestamos):  # Menu de registro y login
                 resultado = menu_admin(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual)
             elif rol == "socio":
                 resultado = menu_socio(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual)
-            elif rol == "empleado":
-                resultado = menu_empleado(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual)
 
             if resultado == "volver_inicio":
                 continue
@@ -85,24 +83,12 @@ def mostrar_menu(titulo_menu, opciones):  # Generaliza el mostrado de menús con
 def menu_admin(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):   # Menu Principal Vista Admin
     while True:
         opciones_admin = {
-            "0": {"texto": "Añadir nuevo empleado", "accion": lambda: crear_empleado(usuarios_datos)},
             "1": {"texto": "Inventario", "accion": lambda: submenu_inventario(libros)},
             "2": {"texto": "Préstamos", "accion": lambda: submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual,"admin")},
             "3": {"texto": "Mostrar info de usuarios del sistema", "accion": lambda: mostrar_usuarios(usuarios_datos)},
             "9": {"texto": "Cerrar sesión", "accion": "volver"}
         }
         resultado = mostrar_menu("Bienvenido al menú de Admin", opciones_admin)
-        if resultado == "volver_inicio":
-            return "volver_inicio"
-
-def menu_empleado(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):  # Menu Principal Vista Empleado
-    while True:
-        opciones_empleado = {
-            "1": {"texto": "Inventario", "accion": lambda: submenu_inventario(libros)},
-            "2": {"texto": "Préstamos", "accion": lambda: submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual,"empleado")},
-            "9": {"texto": "Cerrar sesión", "accion": "volver"}
-        }
-        resultado = mostrar_menu("Bienvenido al menú de Empleado", opciones_empleado)
         if resultado == "volver_inicio":
             return "volver_inicio"
 
