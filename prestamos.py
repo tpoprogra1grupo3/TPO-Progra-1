@@ -227,18 +227,12 @@ def actualizar_prestamo(prestamos, libros):
         if 0 <= nro < len(prestamos):
             limpiar_consola()
             print("¿Qué desea actualizar del préstamo?")
-            print("1. Estado (se recalcula automáticamente)") #  ELIANNNN?? Lo dejamos?
-            print("2. Fecha de vencimiento")
-            print("3. Devolver libro")
-            print("4. Volver al menu anterior")
+            print("1. Fecha de vencimiento")
+            print("2. Devolver libro")
+            print("3. Volver al menu anterior")
             opcion = input("Ingrese opción: ")
             opcion = opcion.strip()
             if opcion == "1":
-                fila = prestamos[nro]
-                nueva_fila = fila[:-1] + (estado_prestamo(fila[8]),)
-                prestamos[nro] = nueva_fila
-                print("Estado recalculado correctamente.")
-            elif opcion == "2":
                 semanas_extra = input("Ingrese cuántas semanas desea extender el préstamo (-1 para cancelar): ")
                 if semanas_extra.strip() == "-1":
                     return
@@ -256,7 +250,7 @@ def actualizar_prestamo(prestamos, libros):
                     print("Fecha de vencimiento actualizada correctamente.")
                 else:
                     print("Cantidad de semanas inválida.")    
-            elif opcion == "3":
+            elif opcion == "2":
                 # Devuelve el libro
                 fila = prestamos[nro]
                 
@@ -275,7 +269,7 @@ def actualizar_prestamo(prestamos, libros):
                 prestamos[nro] = nueva_fila
 
                 print("El préstamo se ha devuelto correctamente.")
-            elif opcion == "4":
+            elif opcion == "3":
                 return
             else:
                 print("Opción inválida.")

@@ -74,3 +74,10 @@ def es_numero_flotante(valor):       # Verifica si es un string con un numero fl
 def convertir_a_flotante(valor):    # Convierte string a float reemplazando , por .
     valor = valor.replace(',', '.')
     return float(valor)
+
+def buscar_por_dni(usuarios_datos,dni):
+    for usuario in usuarios_datos.values():
+        if usuario["ultimos_3_digitos"] == dni:
+            return usuario["ultimos_3_digitos"] # Devuelve el dni desde la base
+    
+    return None

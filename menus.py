@@ -12,7 +12,7 @@ def menu_inicio(usuarios_datos, libros, prestamos):  # Menu de registro y login
         print(f"{'=' * 60}\n")
 
         print("1. Registrarse")
-        print("2. Iniciar sesión")
+        print("2. Iniciar sesión/Cambiar contraseña")
         print("0. Salir\n")
 
         opcion = input("Seleccione una opción:\n> ").strip()
