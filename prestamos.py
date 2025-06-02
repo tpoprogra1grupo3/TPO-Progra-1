@@ -239,14 +239,21 @@ def actualizar_prestamo(prestamos, libros):
                 elif semanas_extra.isnumeric() and int(semanas_extra) > 0:
                     semanas_extra = int(semanas_extra)
                     fila = prestamos[nro]
-                    
+
                     fila_del_libro = buscar_fila_libro(libros, nombre=prestamos[nro][2])
-                    precio_total_libro = libros[fila_del_libro][5]
+
+                    if fila_del_libro is None:
+                        print("No se encontró el libro.")
+                        return
+
+                    precio_total_libro = fila[6]  #  ya no busca precio de libros sino de prestamos
                     precio = precio_total_libro * (semanas_extra / 10)
-                    precio = precio + prestamos[nro][6]
+                    precio = precio + fila[6] 
+
                     nueva_fecha = fila[8] + timedelta(weeks=semanas_extra)
                     nueva_fila = fila[:6] + (precio, fila[7], nueva_fecha, estado_prestamo(nueva_fecha))
                     prestamos[nro] = nueva_fila
+
                     print("Fecha de vencimiento actualizada correctamente.")
                 else:
                     print("Cantidad de semanas inválida.")    
