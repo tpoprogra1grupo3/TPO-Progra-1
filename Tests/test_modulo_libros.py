@@ -15,6 +15,6 @@ def test_libro_individual(): #Testea que los libros se encuentren correctamente 
         assert type(libro) is list
         assert len (libro) == 5
 
-def test_ultimo_libro(): #Testea ultimo libro en la biblioteca
+def test_ultimo_libro(): # Testea ultimo libro en la biblioteca
     libros = biblioteca()
-    assert libros [9] ==  ['El código Da Vinci', 'L010', 'Dan Brown', 1, 'Planeta']
+    assert libros[9] ==  ['El código Da Vinci', 'L010', 'Dan Brown', 1, 'Planeta']

@@ -73,7 +73,7 @@ def mostrar_menu(titulo_menu, opciones):  # Generaliza el mostrado de menús con
                 limpiar_consola()
                 resultado = opciones[opcion]["accion"]()  # Esto ejecuta una función, osea si fuese un str en lugar de un lambda, nos da error. Por eso el if de arriba
                 if resultado == "volver_inicio":
-                    return "volver_inicio"                 # Se hace una cadena de returns que nos levan al primer menú de todos
+                    return "volver_inicio"                 # Se hace una cadena de returns que nos llevan al primer menú de todos
                 input("\nPresione ENTER para continuar...")
         else:
             print("\nLa opción ingresada no es válida.")

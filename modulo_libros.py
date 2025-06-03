@@ -2,20 +2,22 @@ import os
 import re
 from funciones_utiles import es_numero_flotante, convertir_a_flotante
 
-def biblioteca():              # Crea un inventario incial
-    libros = [
-    ['Cien años de soledad', 'L001', 'Gabriel García Márquez', 5, 'Sudamericana'],
-    ['El principito', 'L002', 'Antoine de Saint-Exupéry', 10, 'Emecé'],
-    ['Don Quijote de la Mancha', 'L003', 'Miguel de Cervantes', 3, 'Alfaguara'],
-    ['1984', 'L004', 'George Orwell', 7, 'Destino'],
-    ['Orgullo y prejuicio', 'L005', 'Jane Austen', 6, 'Alianza'],
-    ['El señor de los anillos', 'L006', 'J.R.R. Tolkien', 2, 'Minotauro'],
-    ['Harry Potter y la piedra filosofal', 'L007', 'J.K. Rowling', 9, 'Salamandra'],
-    ['Matar un ruiseñor', 'L008', 'Harper Lee', 4, 'Debolsillo'],
-    ['Crónica de una muerte anunciada', 'L009', 'Gabriel García Márquez', 8, 'Norma'],
-    ['El código Da Vinci', 'L010', 'Dan Brown', 1, 'Planeta']
-]
-    return libros
+def biblioteca():              # Crea un inventario incial 
+    try:
+        libros = []
+        with open("Archivos_TXT/libros.txt", "r", encoding="UTF-8") as archivo_libros:
+            try:
+                libro_seleccionado = archivo_libros.readline().strip()
+                while libro_seleccionado:
+                    libro_seleccionado = list(libro_seleccionado.split(","))   # Pone los elementos en una lista
+                    libro_seleccionado[3] = int(libro_seleccionado[3])
+                    libros.append(libro_seleccionado)
+                    libro_seleccionado = archivo_libros.readline().strip()      # Lee la siguiente línea
+                return libros    
+            except:
+                print("Línea inválida")
+    except:
+            print("No se pudo abrir el archivo")
 
 def limpiar_consola(): # Vacía la consola
     os.system("cls")
@@ -72,7 +74,14 @@ def añadir_libro(libros):
         nuevo_editorial_libro.title(),
     ]
     libros.append(nuevo_libro)
-    print(f"\nEl libro '{nuevo_nombre_libro.title()}' se ha cargado con éxito en la biblioteca.")
+    
+    try:
+        guardar_cambios_libros(libros)
+        print(f"\nEl libro '{nuevo_nombre_libro.title()}' se ha cargado con éxito en la biblioteca.")
+        return
+    except:
+        print("\n Ha ocurrido un Error al guardar los datos, contactar con soporte")
+    
 
 def eliminar_libro(libros):
     """Elimina un libro por ID."""
@@ -85,10 +94,15 @@ def eliminar_libro(libros):
     for libro in libros:
         if libro[1] == id_libro:
             libros.remove(libro)  # Elimina el libro de la lista
-            print(f"\nEl libro '{libro[0]}' (ID: {libro[1]}) se ha eliminado de la biblioteca.")
-            return
-
+            try:
+                guardar_cambios_libros(libros)
+                print(f"\nEl libro '{libro[0]}' (ID: {libro[1]}) se ha eliminado de la biblioteca.")
+                return
+            except:
+                print("\n Ha ocurrido un Error al guardar los datos, contactar con soporte")
+    
     print("\nNo se encontró ningún libro con ese ID.")
+    
 
 def buscar_libro(libros):
     limpiar_consola()
@@ -225,7 +239,11 @@ def actualizar_libro(libros):
         print("\nOpción no válida.")
         return
 
-    print("\n¡El libro ha sido actualizado correctamente!")
+    try:
+        guardar_cambios_libros(libros)
+        print("\n¡El libro ha sido actualizado correctamente!")
+    except:
+        print("\n Ha ocurrido un Error al guardar los datos, contactar con soporte")
 
 def generar_id_libro(libros):    #Genera un ID secuencial siguiendo el patrón LXXX usando set.
     numeros_existentes = set()
@@ -240,5 +258,16 @@ def generar_id_libro(libros):    #Genera un ID secuencial siguiendo el patrón L
     else:
         nuevo_numero = 1
 
-    return f"L{nuevo_numero:03d}"
-            
+    return f"L{nuevo_numero:03d}" 
+
+
+def guardar_cambios_libros(libros):     # Reescribe los datos de libros
+    filas_libros = [f"{nombre},{id_libro},{autor},{int(stock)},{editorial}\n" for nombre,id_libro,autor,stock,editorial in libros]
+    try:
+        with open("Archivos_TXT/libros.txt", "wt", encoding="UTF-8") as archivo_libros: # Abre y cierra el archivo 
+            try:
+                archivo_libros.writelines(filas_libros)
+            except:
+                print("No se han podido guardar los cambios en los archivos de programa")
+    except:
+        print("No se ha podido abrir el archivo")
