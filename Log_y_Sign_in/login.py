@@ -1,6 +1,7 @@
-from funciones_utiles import buscar_nombre_usuario,buscar_por_dni
+from funciones_utiles import buscar_nombre_usuario,limpiar_consola
 import re
-from .sign_in import crear_contraseña
+from .sign_in import crear_contraseña,guardar_usuarios_datos
+
 
 def iniciar_sesion(usuarios_datos):   # Loguea el usuario y devuelve nombre/ID para uso posterior
     bandera = True
@@ -81,10 +82,16 @@ def cambiar_contrasenia(usuarios_datos):
             print("\nEl mail introducido es inválido\n")
     
     # A partir de aca, el usuario ya confirmo tener mail, dni y nombre de usuario
+    limpiar_consola()
     print(f"||{" Usted esta creando una nueva contraseña ":=^60}||", end="\n\n")
     nueva_contrasenia = crear_contraseña()      # Se valida dentro de la función
-    usuarios_datos[usuario_ingresado]["contraseña"] = nueva_contrasenia
-    print("Se ha cambiado la contraseña correctamente\n")
+    try:
+        usuarios_datos[usuario_ingresado]["contraseña"] = nueva_contrasenia
+        guardar_usuarios_datos(usuarios_datos)
+        print("Se ha cambiado la contraseña correctamente\n")
+    except:
+        print("Ha ocurrido un error al guardar los datos\n")
+
     input("Presione ENTER para continuar...")
     return
 

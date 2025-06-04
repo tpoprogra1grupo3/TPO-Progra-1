@@ -264,7 +264,7 @@ def generar_id_libro(libros):    #Genera un ID secuencial siguiendo el patrón L
 def guardar_cambios_libros(libros):     # Reescribe los datos de libros
     filas_libros = [f"{nombre},{id_libro},{autor},{int(stock)},{editorial}\n" for nombre,id_libro,autor,stock,editorial in libros]
     try:
-        with open("Archivos_TXT/libros.txt", "wt", encoding="UTF-8") as archivo_libros: # Abre y cierra el archivo 
+        with open("Archivos_TXT/libros.txt", "w", encoding="UTF-8") as archivo_libros: # Abre y cierra el archivo 
             try:
                 archivo_libros.writelines(filas_libros)
             except:

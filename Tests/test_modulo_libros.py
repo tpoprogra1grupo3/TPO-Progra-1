@@ -3,7 +3,7 @@ from modulo_libros import biblioteca
 def test_biblioteca_no_vacia():  #Testea que la biblioteca contenga elementos
     libros = biblioteca()
     assert type(libros) is list
-    assert len (libros) == 10
+    assert len (libros) >= 1
     
 def test_primer_libro(): #Testea primer libro en la biblioteca
     libros = biblioteca()

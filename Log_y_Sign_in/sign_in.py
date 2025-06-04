@@ -1,46 +1,20 @@
 from funciones_utiles import buscar_nombre_usuario, titulo, limpiar_consola
 import random
 import re
+import json
 
 def usuarios_de_base():   # Usuarios del sistema con su ID y rol 
-    usuarios_datos = {
-        'Juan': {
-            'contraseña': 'Hola!',
-            'ultimos_3_digitos': '836',
-            'rol': 'admin',
-            'id': 156836921,
-            'mail': 'jrocca@uade.edu.ar'
-        },
-        'Elian': {
-            'contraseña': '5555!',
-            'ultimos_3_digitos': '856',
-            'rol': 'admin',
-            'id': 527856776,
-            'mail': 'elianbineder@uade.edu.ar'
-        },
-        'Facu': {
-            'contraseña': '1234-',
-            'ultimos_3_digitos': '196',
-            'rol': 'socio',
-            'id': 133185723,
-            'mail': 'fbueguez@uade.edu.ar'
-        },
-        'Iair007': {
-            'contraseña': 'Messi@',
-            'ultimos_3_digitos': '835',
-            'rol': 'admin',
-            'id': 111835221,
-            'mail': 'iair007@uade.edu.ar'
-        },
-        'Esteban': {
-            'contraseña': 'mentaaa#',
-            'ultimos_3_digitos': '257',
-            'rol': 'admin',
-            'id': 290257618,
-            'mail': 'juanesteban@uade.edu.ar'
-        }
-    }
-    return usuarios_datos
+    try:
+        with open("Archivos_JSON/usuarios_datos.json","r",encoding="UTF-8") as archivo_usuarios:
+            try:
+                usuarios_datos = json.load(archivo_usuarios)
+                return usuarios_datos
+
+            except:
+                print("Ha ocurrido un error al leer los datos de un usuario")
+    except:
+        print("Se ha producido un error al cargar los archivos de usuarios del programa")
+
 
 def crear_admin(usuarios_datos):         # REVISARRRRRRR
     usuario = crear_nombre_usuario(usuarios_datos)
@@ -109,13 +83,17 @@ def crear_socio(usuarios_datos):
     permisos = "socio"
 
     # Se agrega al diccionario "Usuarios"
-    usuarios_datos[usuario] = {
-        'contraseña': contraseña,
-        'ultimos_3_digitos': ultimos_3_digitos,
-        'rol': permisos,
-        'id': id,
-        'mail': mail
-    }
+    try:
+        usuarios_datos[usuario] = {
+            'contraseña': contraseña,
+            'ultimos_3_digitos': ultimos_3_digitos,
+            'rol': permisos,
+            'id': id,
+            'mail': mail
+            }
+        guardar_usuarios_datos(usuarios_datos) # Guardo cambios en el json
+    except:
+        print("Ha ocurrido un error al crear el usuario.")
 
     limpiar_consola()
 
@@ -190,3 +168,14 @@ def mostrar_usuarios(usuarios_datos):
             print(f"  ID: {datos['id']}")
             print(f"  Mail: {datos['mail']}")
             print("---------------------------------")
+
+def guardar_usuarios_datos(usuarios_datos):
+    try:
+        with open("Archivos_JSON/usuarios_datos.json","w", encoding="UTF-8") as archivo_usuarios:
+            try: 
+                json.dump(usuarios_datos,archivo_usuarios,ensure_ascii=False) 
+            except:
+                print("No se han podido guardar los cambios en los archivos de programa")
+    except:
+        print("No se ha podido abrir el archivo")
+
