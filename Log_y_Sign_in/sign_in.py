@@ -88,10 +88,11 @@ def crear_socio(usuarios_datos):
             'contraseña': contraseña,
             'ultimos_3_digitos': ultimos_3_digitos,
             'rol': permisos,
-            'id': id,
+            'id': int(id),
             'mail': mail
             }
         guardar_usuarios_datos(usuarios_datos) # Guardo cambios en el json
+        print(f"Su id de usuario es {id}. RECUERDE ANOTAR ESTE DATO, PUEDE SER MUY IMPORTANTE PARA EL CORRECTO USO DE SU CUENTA")
     except:
         print("Ha ocurrido un error al crear el usuario.")
 
@@ -179,36 +180,27 @@ def guardar_usuarios_datos(usuarios_datos):
     except:
         print("No se ha podido abrir el archivo")
 
-def eliminar_usuarios_por_id(archivo_usuarios):
+def eliminar_usuarios_por_id(usuarios_datos):
         while True:
             try:
-                id_usuario = int(input("Ingrese el Id del usuario a eliminar: "))
-                break     
+                id_usuario = int(input("Ingrese el Id del usuario a eliminar(-1 para volver): ").strip())
+                if id_usuario == -1:
+                    return
+                else:
+                    break     
             except ValueError as er:
                 print(f"Error: {er}. Igrese un numero de Id válido")
-                continue        
-        try:   
-            with open("Archivos_JSON/usuarios_datos.json", 'r', encoding="UTF-8") as archivo_usuarios:
+                continue            
+        usuarios_a_eliminar = [nombre for nombre, datos in usuarios_datos.items() if datos.get("id") == id_usuario]  # itera nombre por cada dic(nombre/usuario) compara su id convertido a string y si existe lo agrega a la lista
+            
+        if usuarios_a_eliminar:  #si la lista no esta vacia
+            for nombre in usuarios_a_eliminar:  #recorre los nombre con la lista anterior por tuplas(key,value)
                 try:
-                    usuarios = json.load(archivo_usuarios)
+                    del usuarios_datos[nombre]  
+                    guardar_usuarios_datos(usuarios_datos)
+                    print("Se ha eliminado al usuario satisfactoriamente")
                 except:
-                    print("Ha ocurrido un error al leer los datos de un usuario")
-            
-            usuarios_a_eliminar = [nombre for nombre, datos in usuarios.items() 
-            if str(datos.get("id")) == str(id_usuario)]  # itera nombre por cada dic(nombre/usuario) compara su id convertido a string y si existe lo agrega a la lista
-            
-            if usuarios_a_eliminar:  #si la lista no esta vacia
-                for nombre in usuarios_a_eliminar:  #recorre los nombre con la lista anterior por tuplas(key,value)
-                    del usuarios[nombre]            # por el .items y elimina al usuario si coinciden los ids
-
-                with open("Archivos_JSON/usuarios_datos.json",'w', encoding="UTF-8") as archivo_usuarios:
-                    try:
-                        json.dump(usuarios, archivo_usuarios, ensure_ascii=False)
-                    except:
-                        print("No se han podido guardar los cambios en los archivos de programa")
-                print(f"El usuario {nombre} con el id {id_usuario} fue eliminado")
-            else: 
-                print(f"Usuario con el id {id_usuario} no fue encontrado")
-            
-        except (FileNotFoundError, OSError) as error:
-            print(f"Error al encontrar el archivo {error}")
+                    print("No se pudo elimar el usuario")
+            print(f"El usuario {nombre} con el id {id_usuario} fue eliminado")
+        else: 
+            print(f"Usuario con el id {id_usuario} no fue encontrado")       
