@@ -1,7 +1,7 @@
 from modulo_libros import añadir_libro, eliminar_libro, imprimir_libros, buscar_libro, actualizar_libro
-from funciones_utiles import limpiar_consola, titulo        #, cambiar_rol
+from funciones_utiles import limpiar_consola, titulo      #, cambiar_rol
 from Log_y_Sign_in.login import iniciar_sesion
-from Log_y_Sign_in.sign_in import crear_socio, mostrar_usuarios
+from Log_y_Sign_in.sign_in import crear_socio, mostrar_usuarios, eliminar_usuarios_por_id
 from prestamos import crear_prestamos, ver_prestamos_con_filtro, actualizar_prestamo, eliminar_prestamo, ver_mis_prestamos
 
 def menu_inicio(usuarios_datos, libros, prestamos):  # Menu de registro y login
@@ -86,6 +86,7 @@ def menu_admin(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_act
             "1": {"texto": "Inventario", "accion": lambda: submenu_inventario(libros)},
             "2": {"texto": "Préstamos", "accion": lambda: submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual,"admin")},
             "3": {"texto": "Mostrar info de usuarios del sistema", "accion": lambda: mostrar_usuarios(usuarios_datos)},
+            "4": {"texto": "Eliminar usuarios por Id", "accion":lambda: eliminar_usuarios_por_id(usuarios_datos)},
             "9": {"texto": "Cerrar sesión", "accion": "volver"}
         }
         resultado = mostrar_menu("Bienvenido al menú de Admin", opciones_admin)
