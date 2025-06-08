@@ -1,13 +1,37 @@
-from datetime import datetime, date, time, timedelta
+from datetime import date, timedelta
 from funciones_utiles import buscar_nombre_usuario, limpiar_consola, encontrar_id_usuario, buscar_fila_libro
-from modulo_libros import imprimir_libros
 
-def crud_prestamos(): # Prestamos utilizando Tuplas
-    prestamos = [
-        ("Facu", 133185723, 'El principito', 'L002', "Antoine de Saint-Exupéry", 'Emecé', 1300, date.today(), (date.today() + timedelta(weeks=-0.2)), "Vencido"),
-        ("Facu", 133185723, '1984', 'L004', "George Orwell", 'Destino', 5400, date.today(), (date.today() + timedelta(weeks=0.5)), "En Curso")
-    ]
-    return prestamos
+def guardar_prestamos(prestamos): # Prestamos utilizando Tuplas
+    filas_prestamos = [f"{nombre_usuario},{id_usuario},{nombre_libro},{id_libro},{autor},{editorial},{fecha_inicio},{fecha_vencimiento},{estado}\n" for nombre_usuario,id_usuario,nombre_libro,id_libro,autor,editorial,fecha_inicio,fecha_vencimiento,estado in prestamos]
+    try:
+        with open("Archivos_TXT/prestamos.txt", "w", encoding="UTF-8") as archivo_prestamos: # Abre y cierra el archivo 
+            try:
+                archivo_prestamos.writelines(filas_prestamos)
+            except:
+                print("No se han podido guardar los cambios en los archivos de programa")
+    except:
+        print("No se ha podido abrir el archivo")
+
+def cargar_prestamos():
+    try:
+        prestamos = []
+        with open("Archivos_TXT/prestamos.txt","r",encoding="UTF-8") as archivo_prestamos:
+            try:
+                prestamo_seleccionado = archivo_prestamos.readline().strip()
+                while prestamo_seleccionado:
+                    prestamo_seleccionado = list(prestamo_seleccionado.split(","))  # Lista para poder modificar la fecha
+                    prestamo_seleccionado[6] = date.fromisoformat(prestamo_seleccionado[6]) # Convierte la fecha de str a objeto date
+                    prestamo_seleccionado[7] = date.fromisoformat (prestamo_seleccionado[7]) # Las funciones que usan la fecha siguen funcionando gracias a esto"""
+                    prestamos.append(tuple(prestamo_seleccionado))  
+                    prestamo_seleccionado = archivo_prestamos.readline().strip() # lee la siguiente linea
+                cambio_estado_inicio(prestamos) # Calcula si estan en curso o vencidos 
+                return prestamos
+            except:
+                print("Un préstamo no ha podido ser cargado con éxito")
+    except:
+        print("Ha ocurrido un error al acceder a la información de los prestamos en los archivos de programa")
+
+
 
 def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual, permisos_usuario_actual):  # Crea el préstamo utilizando los datos del usuario logueado
     while True:
@@ -78,13 +102,12 @@ def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuari
         id_libro = libro_seleccionado[1]
         autor_libro = libro_seleccionado[2]
         editorial = libro_seleccionado[4]
-        precio = 1000 * (semanas_a_alquilar / 10)
 
         fecha_de_creacion = date.today()
         fecha_de_vencimiento = date.today() + timedelta(weeks=semanas_a_alquilar)
 
         print("\n\nLos datos del préstamo son: ")
-        print(f"{usuario_actual} | {id_usuario_actual} | {nombre_libro} | {id_libro} | {autor_libro} | {editorial} | ${precio:.2f} | {estado_prestamo(fecha_de_vencimiento)}")
+        print(f"{usuario_actual} | {id_usuario_actual} | {nombre_libro} | {id_libro} | {autor_libro} | {editorial} | {estado_prestamo(fecha_de_vencimiento)}")
         print(f"\nFecha de inicio: {fecha_de_creacion}")
         print(f"Fecha de vencimiento: {fecha_de_vencimiento}\n")
         print("1. Confirmar los datos del préstamo")
@@ -92,23 +115,30 @@ def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuari
 
         opcion = input(f"Ingrese la opción que desea utilizar (-1 para volver al menu de {permisos_usuario_actual}): ").strip()
         if opcion == "1":
-            prestamo = (
-                usuario_actual,
-                id_usuario_actual,
-                nombre_libro,
-                id_libro,
-                autor_libro,
-                editorial,
-                precio,
-                fecha_de_creacion,
-                fecha_de_vencimiento,
-                estado_prestamo(fecha_de_vencimiento)
-            )
-            prestamos.append(prestamo)
-            libros[fila_libro][3] -= 1
-            limpiar_consola()
-            print("Se ha creado el préstamo exitosamente")
-            return
+            try:
+                prestamo = (
+                    usuario_actual,
+                    id_usuario_actual,
+                    nombre_libro,
+                    id_libro,
+                    autor_libro,
+                    editorial,
+                    fecha_de_creacion,
+                    fecha_de_vencimiento,
+                    estado_prestamo(fecha_de_vencimiento)
+                )
+                prestamos.append(prestamo)
+                libros[fila_libro][3] -= 1
+                limpiar_consola()
+                try:
+                    guardar_prestamos(prestamos)
+                    print("Se ha creado el préstamo exitosamente")
+                    return
+                except:
+                    print("Ha ocurrido un error al guardar el préstamo en los archivos de programa")
+            except:
+                print("Ha ocurrido un error al guardar el nuevo préstamo")
+
         elif opcion == "2":
             print("\nPréstamo cancelado.\n")
             return
@@ -126,7 +156,7 @@ def estado_prestamo(fecha_vencimiento):   # Define el estado del préstamo
 def cambio_estado_inicio(prestamos):   
     for i in range(len(prestamos)):
         fila = prestamos[i]
-        nueva_fila = fila[:-1] + (estado_prestamo(fila[8]),)
+        nueva_fila = fila[:-1] + (estado_prestamo(fila[7]),)
         prestamos[i] = nueva_fila
 
 def imprimir_prestamos(prestamos, filtro="todos"):
@@ -143,7 +173,7 @@ def imprimir_prestamos(prestamos, filtro="todos"):
     contador = 0
 
     for i, prestamo in enumerate(prestamos, 1):
-        usuario, dni, libro, codigo, autor, editorial, precio, fecha_inicio, fecha_vencimiento, estado_original = prestamo
+        usuario, dni, libro, codigo, autor, editorial, fecha_inicio, fecha_vencimiento, estado_original = prestamo
 
         if estado_original == "Devuelto":
             estado_actual = "Devuelto"
@@ -179,7 +209,7 @@ def imprimir_prestamos(prestamos, filtro="todos"):
         # Mostrar si cumple filtro
         if mostrar:
             contador += 1
-            print(f"{contador:<4}{usuario:<15}{dni:<12}{libro:<25}{codigo:<8}{autor:<25}{editorial:<15}${precio:<9.2f}{fecha_inicio.strftime('%d/%m/%Y'):<12}{fecha_vencimiento.strftime('%d/%m/%Y'):<14}{color}{estado_actual:<10}\033[0m")
+            print(f"{contador:<4}{usuario:<15}{dni:<12}{libro:<25}{codigo:<8}{autor:<25}{editorial:<15}{fecha_inicio.strftime('%d/%m/%Y'):<12}{fecha_vencimiento.strftime('%d/%m/%Y'):<14}{color}{estado_actual:<10}\033[0m")
 
     if contador == 0:
         print("No se encontraron préstamos según el filtro aplicado.")
@@ -245,24 +275,29 @@ def actualizar_prestamo(prestamos, libros):
                     if fila_del_libro is None:
                         print("No se encontró el libro.")
                         return
-
-                    precio_total_libro = fila[6]  #  ya no busca precio de libros sino de prestamos
-                    precio = precio_total_libro * (semanas_extra / 10)
-                    precio = precio + fila[6] 
-
-                    nueva_fecha = fila[8] + timedelta(weeks=semanas_extra)
-                    nueva_fila = fila[:6] + (precio, fila[7], nueva_fecha, estado_prestamo(nueva_fecha))
-                    prestamos[nro] = nueva_fila
-
-                    print("Fecha de vencimiento actualizada correctamente.")
                 else:
-                    print("Cantidad de semanas inválida.")    
+                    print("Cantidad de semanas inválida.")
+                    
+                try:
+                    nueva_fecha = fila[7] + timedelta(weeks=semanas_extra)
+                    nueva_fila = fila[:6] + (fila[6], nueva_fecha, estado_prestamo(nueva_fecha))
+                    prestamos[nro] = nueva_fila
+                    try:
+                        guardar_prestamos(prestamos)
+                        print("Fecha de vencimiento actualizada correctamente.")
+                    except:
+                        print("Ha ocurrido un error al actualizar el prestamo en los archivos de programa")
+                except:
+                    print("Ha ocurrido un error al actualizar el préstamo")      
+                
+                    print("Fecha de vencimiento actualizada correctamente.")
+    
             elif opcion == "2":
                 # Devuelve el libro
                 fila = prestamos[nro]
                 
                 # Verificar si ya estaba devuelto
-                if fila[9] == "Devuelto":
+                if fila[8] == "Devuelto":
                     print("El préstamo ya fue devuelto anteriormente.")
                     return
 
@@ -272,10 +307,16 @@ def actualizar_prestamo(prestamos, libros):
                     libros[fila_del_libro][3] += 1
 
                 # Actualiza estado del préstamo a Devuelto
-                nueva_fila = fila[:-1] + ("Devuelto",)
-                prestamos[nro] = nueva_fila
-
-                print("El préstamo se ha devuelto correctamente.")
+                try:
+                    nueva_fila = fila[:-1] + ("Devuelto",)
+                    prestamos[nro] = nueva_fila
+                    try:
+                        guardar_prestamos(prestamos)
+                        print("El préstamo se ha devuelto correctamente.")
+                    except:
+                        print("Ha ocurrido un error al devolver el prestamo en los archivos de programa")
+                except:
+                    print("Ha ocurrido un error al devolver el préstamo")
             elif opcion == "3":
                 return
             else:
@@ -309,8 +350,15 @@ def eliminar_prestamo(prestamos, libros):   # Elimina un préstamo existente
                         libro[3] += 1  # Aumenta el stock en 1
                         break
 
-                prestamos.pop(nro)  # Elimina el préstamo
-                print("\nPréstamo eliminado correctamente. El stock del libro ha sido actualizado.")
+                try:
+                    prestamos.pop(nro)  # Elimina el préstamo
+                    try:
+                        guardar_prestamos(prestamos)
+                        print("\nPréstamo eliminado correctamente. El stock del libro ha sido actualizado.")
+                    except:
+                        print("Ha ocurrido un error al eliminar el prestamo en los archivos de programa")
+                except:
+                    print("Ha ocurrido un error al eliminar el préstamo")            
             elif confirmacion.strip() == "-1":
                 return
             else:
@@ -335,7 +383,7 @@ def ver_mis_prestamos(prestamos, usuario_actual):  # Imprime préstamos según e
     hoy = date.today()
 
     for i, prestamo in enumerate(mis_prestamos, 1):         # Recorremos la lista de préstamos del usuario, empezando el índice desde 1
-        _, _, libro, codigo, autor, editorial, precio, fecha_inicio, fecha_vencimiento, _ = prestamo   # Desempaquetamos los valores del préstamo (ignoramos los campos que no usamos con '_')
+        _, _, libro, codigo, autor, editorial, fecha_inicio, fecha_vencimiento, _ = prestamo   # Desempaquetamos los valores del préstamo (ignoramos los campos que no usamos con '_')
         estado_actual = estado_prestamo(fecha_vencimiento)
 
         dias_restantes = (fecha_vencimiento - hoy).days
@@ -348,6 +396,6 @@ def ver_mis_prestamos(prestamos, usuario_actual):  # Imprime préstamos según e
         else:
             color = "\033[92m"
 
-        print(f"{i:<4}{libro:<25}{codigo:<8}{autor:<25}{editorial:<15}${precio:<9.2f}{fecha_inicio.strftime('%d/%m/%Y'):<12}{fecha_vencimiento.strftime('%d/%m/%Y'):<14}{color}{estado_actual:<10}\033[0m")
+        print(f"{i:<4}{libro:<25}{codigo:<8}{autor:<25}{editorial:<15}{fecha_inicio.strftime('%d/%m/%Y'):<12}{fecha_vencimiento.strftime('%d/%m/%Y'):<14}{color}{estado_actual:<10}\033[0m")
         # Se pone el color con los marcadores {} del f-string, y se resetea al final con \033[0m
     print("-" * 190)
