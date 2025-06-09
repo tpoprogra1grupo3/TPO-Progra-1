@@ -2,7 +2,7 @@ import os
 import re
 from funciones_utiles import es_numero_flotante, convertir_a_flotante
 
-def biblioteca():              # Crea un inventario incial 
+def biblioteca():              # Carga la bibloteca desde el .txt
     try:
         libros = []
         with open("Archivos_TXT/libros.txt", "r", encoding="UTF-8") as archivo_libros:

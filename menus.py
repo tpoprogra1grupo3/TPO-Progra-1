@@ -83,7 +83,7 @@ def mostrar_menu(titulo_menu, opciones):  # Generaliza el mostrado de menús con
 def menu_admin(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):   # Menu Principal Vista Admin
     while True:
         opciones_admin = {
-            "1": {"texto": "Inventario", "accion": lambda: submenu_inventario(libros)},
+            "1": {"texto": "Bibloteca", "accion": lambda: submenu_bibloteca(libros)},
             "2": {"texto": "Préstamos", "accion": lambda: submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual,"admin")},
             "3": {"texto": "Mostrar info de usuarios del sistema", "accion": lambda: mostrar_usuarios(usuarios_datos)},
             "4": {"texto": "Eliminar usuarios por Id", "accion":lambda: eliminar_usuarios_por_id(usuarios_datos)},
@@ -96,7 +96,7 @@ def menu_admin(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_act
 def menu_socio(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):   # Menu Principal Vista Socio
     while True:
         opciones_socio = {
-            "1": {"texto": "Mostrar inventario actual", "accion": lambda: imprimir_libros(libros)},
+            "1": {"texto": "Mostrar libros disponibles actualmente", "accion": lambda: imprimir_libros(libros)},
             "2": {"texto": "Buscar libro específico", "accion": lambda: buscar_libro(libros)},
             "3": {"texto": "Crear un préstamo", "accion": lambda: crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual,"socio")},
             "4": {"texto": "Ver mis préstamos", "accion": lambda: ver_mis_prestamos(prestamos, usuario_actual)},
@@ -106,17 +106,17 @@ def menu_socio(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_act
         if resultado == "volver_inicio":
             return "volver_inicio"
 
-def submenu_inventario(libros):   # Submenu Inventario
-    opciones_inventario = {
-        "1": {"texto": "Añadir un libro al inventario", "accion": lambda: añadir_libro(libros)},
+def submenu_bibloteca(libros):   # Submenu bibloteca
+    opciones_bibloteca = {
+        "1": {"texto": "Añadir un libro a lq bibloteca", "accion": lambda: añadir_libro(libros)},
         "2": {"texto": "Eliminar libro", "accion": lambda: eliminar_libro(libros)},
-        "3": {"texto": "Mostrar inventario actual", "accion": lambda: imprimir_libros(libros)},
+        "3": {"texto": "Mostrar libros disponibles actualmente", "accion": lambda: imprimir_libros(libros)},
         "4": {"texto": "Buscar libro específico", "accion": lambda: buscar_libro(libros)},
         "5": {"texto": "Actualizar libro", "accion": lambda: actualizar_libro(libros)},
         "8": {"texto": "Volver al menú anterior", "accion": "volver"},
         "9": {"texto": "Cerrar sesión y volver al menú principal", "accion": "volver_inicio"}
     }
-    resultado = mostrar_menu("Submenú Inventario", opciones_inventario)     
+    resultado = mostrar_menu("Submenú Bibloteca", opciones_bibloteca)     
     if resultado == "volver_inicio":
         return "volver_inicio"
 
