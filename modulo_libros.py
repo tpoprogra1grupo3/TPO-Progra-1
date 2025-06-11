@@ -2,22 +2,27 @@ import os
 import re
 from funciones_utiles import es_numero_flotante, convertir_a_flotante
 
-def biblioteca():              # Carga la bibloteca desde el .txt
-    try:
+def cargar_libros():
+    try:    
         libros = []
-        with open("Archivos_TXT/libros.txt", "r", encoding="UTF-8") as archivo_libros:
-            try:
-                libro_seleccionado = archivo_libros.readline().strip()
-                while libro_seleccionado:
-                    libro_seleccionado = list(libro_seleccionado.split(","))   # Pone los elementos en una lista
-                    libro_seleccionado[3] = int(libro_seleccionado[3])
-                    libros.append(libro_seleccionado)
-                    libro_seleccionado = archivo_libros.readline().strip()      # Lee la siguiente línea
-                return libros    
-            except:
-                print("Línea inválida")
+        with open("Archivos_TXT/libros.txt", "r", encoding="UTF-8") as archivo_libros: 
+            libros = biblioteca(archivo_libros,libros)
+            return libros 
     except:
-            print("No se pudo abrir el archivo")
+        print("Hubo un error al cargar los libros desde los archivos de programa")
+        
+
+def biblioteca(archivo_libros,libros):              # Carga la bibloteca desde el .txt
+    libro_seleccionado = archivo_libros.readline().strip()
+    if libro_seleccionado == "":
+        return libros
+    else:
+        libro_seleccionado = list(libro_seleccionado.split(","))
+        libro_seleccionado[3] = int(libro_seleccionado[3])
+        libros.append(libro_seleccionado)
+        return biblioteca(archivo_libros,libros)
+
+
 
 def limpiar_consola(): # Vacía la consola
     os.system("cls")

@@ -12,26 +12,24 @@ def guardar_prestamos(prestamos): # Prestamos utilizando Tuplas
     except:
         print("No se ha podido abrir el archivo")
 
-def cargar_prestamos():
-    try:
-        prestamos = []
-        with open("Archivos_TXT/prestamos.txt","r",encoding="UTF-8") as archivo_prestamos:
-            try:
-                prestamo_seleccionado = archivo_prestamos.readline().strip()
-                while prestamo_seleccionado:
-                    prestamo_seleccionado = list(prestamo_seleccionado.split(","))  # Lista para poder modificar la fecha
-                    prestamo_seleccionado[6] = date.fromisoformat(prestamo_seleccionado[6]) # Convierte la fecha de str a objeto date
-                    prestamo_seleccionado[7] = date.fromisoformat (prestamo_seleccionado[7]) # Las funciones que usan la fecha siguen funcionando gracias a esto"""
-                    prestamos.append(tuple(prestamo_seleccionado))  
-                    prestamo_seleccionado = archivo_prestamos.readline().strip() # lee la siguiente linea
-                cambio_estado_inicio(prestamos) # Calcula si estan en curso o vencidos 
-                return prestamos
-            except:
-                print("Un préstamo no ha podido ser cargado con éxito")
-    except:
-        print("Ha ocurrido un error al acceder a la información de los prestamos en los archivos de programa")
-
-
+def cargar_prestamos():    # Carga la bibloteca desde el .txt con recursividad   
+    prestamos = []
+    with open("Archivos_TXT/prestamos.txt", "r", encoding="UTF-8") as archivo_prestamos: 
+        prestamos = prestamos_recursivo(archivo_prestamos,prestamos)
+        cambio_estado_inicio(prestamos)
+        return prestamos
+    
+def prestamos_recursivo(archivo_prestamos,prestamos):              
+    prestamo_seleccionado = archivo_prestamos.readline().strip()  # Lee la linea siguiente (si no hay anterior, es la primera)
+    print(prestamo_seleccionado)
+    if prestamo_seleccionado == "":    # Si la línea es la última, comienzan los returns
+        return prestamos   
+    else:       # Añade la linea como lista a libros
+        prestamo_seleccionado = list(prestamo_seleccionado.split(","))  # Lista para poder modificar la fecha
+        prestamo_seleccionado[6] = date.fromisoformat(prestamo_seleccionado[6]) # Convierte la fecha de str a objeto date
+        prestamo_seleccionado[7] = date.fromisoformat (prestamo_seleccionado[7]) # Las funciones que usan la fecha siguen funcionando gracias a esto"""
+        prestamos.append(tuple(prestamo_seleccionado))  
+        return prestamos_recursivo(archivo_prestamos,prestamos)
 
 def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual, permisos_usuario_actual):  # Crea el préstamo utilizando los datos del usuario logueado
     while True:
