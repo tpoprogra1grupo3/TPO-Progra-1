@@ -1,7 +1,7 @@
 from modulo_libros import añadir_libro, eliminar_libro, imprimir_libros, buscar_libro, actualizar_libro
 from funciones_utiles import limpiar_consola, titulo      #, cambiar_rol
 from Log_y_Sign_in.login import iniciar_sesion
-from Log_y_Sign_in.sign_in import crear_socio, mostrar_usuarios, eliminar_usuarios_por_id
+from Log_y_Sign_in.sign_in import crear_usuario, mostrar_usuarios, eliminar_usuarios_por_id
 from prestamos import crear_prestamos, ver_prestamos_con_filtro, actualizar_prestamo, eliminar_prestamo, ver_mis_prestamos
 
 def menu_inicio(usuarios_datos, libros, prestamos):  # Menu de registro y login
@@ -20,7 +20,7 @@ def menu_inicio(usuarios_datos, libros, prestamos):  # Menu de registro y login
         if opcion == "1":
             limpiar_consola()
             titulo(1)
-            crear_socio(usuarios_datos)     # La opcion volver da un return para finalizar la iteracion actual
+            crear_usuario(usuarios_datos)     # La opcion volver da un return para finalizar la iteracion actual
             input("\nPresione ENTER para continuar...")
         
         elif opcion == "2":

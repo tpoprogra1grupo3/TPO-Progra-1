@@ -16,7 +16,7 @@ def usuarios_de_base():   # Usuarios del sistema con su ID y rol
         print("Se ha producido un error al cargar los archivos de usuarios del programa")
 
 
-def crear_admin(usuarios_datos):         # REVISARRRRRRR
+def crear_usuario(usuarios_datos):
     usuario = crear_nombre_usuario(usuarios_datos)
     titulo(1)
     contraseña = crear_contraseña()
@@ -36,51 +36,37 @@ def crear_admin(usuarios_datos):         # REVISARRRRRRR
 
     id = generar_id_usuario(usuarios_datos, ultimos_3_digitos)
 
-    permisos = "admin"
-
-    # Se agrega al diccionario "Usuarios"
-    usuarios_datos[usuario] = {
-        'contraseña': contraseña,
-        'ultimos_3_digitos': ultimos_3_digitos,
-        'rol': permisos,
-        'id': id,
-        'mail': mail
-    }
-
-    limpiar_consola()
-
-
-def crear_socio(usuarios_datos):
-    usuario = crear_nombre_usuario(usuarios_datos)
-    if usuario == "Volver":
-        return "Volver"
-    titulo(1)
-    contraseña = crear_contraseña()
-    if contraseña == "Volver":
-        return "Volver"
-    titulo(1)
-    mail = crear_mail(usuarios_datos)
-    if mail == "Volver":
-        return "Volver"
-    titulo(1)
+    # Selección de rol
 
     while True:
-        dni_completo = input("Ingrese su DNI completo (Máx 10 caracteres)(-1 para volver al menu): ")
-        if dni_completo=="-1":
-            return "Volver"
-        elif dni_completo.isdigit() and len(dni_completo) <=10 and len(dni_completo)>=3:
-            dni_completo = dni_completo.zfill(10)  # Tendrá siempre 10 caracteres
-            ultimos_3_digitos = dni_completo[-3:]  # Se deja como string
+        print("\nSeleccione el rol del nuevo usuario:")
+        print("1. Administrador")
+        print("2. Socio")
+        opcion = input("Ingrese 1 o 2: ")
+
+        if opcion == "1":
+            #Confirmacion Rol Admin
+            master_key= "1234"
+            intentos = 3
+            while intentos > 0:
+                clave_ingresada = input("Ingrese la clave para crear un Admin: ")
+                if clave_ingresada == master_key:    # Confirmación adicional para creación de cuenta admin
+                    permisos = "admin"
+                    break
+            else:
+                intentos -= 1
+            print(f"Clave incorrecta. Intentos restantes: {intentos}")
+            if intentos == 0:
+                print("No se pudo verificar la clave. Cancelando creación de administrador.")
+                return -1
+            break   # Se cancela la creación de una cuenta de administrador
+
+        elif opcion == "2":
+            permisos = "socio"
             break
+
         else:
-            print("DNI inválido. Asegúrese de ingresar exactamente 9 dígitos numéricos.")
-
-    id = generar_id_usuario(usuarios_datos, ultimos_3_digitos)
-
-    # if len(usuarios_datos) == 0:
-    #     permisos = "admin"
-    # else:
-    permisos = "socio"
+            print("Opción inválida. Intente de nuevo.")
 
     # Se agrega al diccionario "Usuarios"
     try:
