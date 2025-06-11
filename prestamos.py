@@ -343,12 +343,15 @@ def eliminar_prestamo(prestamos, libros):   # Elimina un préstamo existente
             prestamo = prestamos[nro]
             confirmacion = input(f"\n¿Confirma eliminar el préstamo de {prestamo[0]} por el libro '{prestamo[2]}'? (s/n) (-1 para cancelar): ").lower()
             if confirmacion == "s":
+                id_libro_prestamo = prestamo[3]
                 # Buscar el libro en la bibloteca y aumentar su stock
-                id_libro_prestamo = prestamo[3]  # Código del libro del préstamo
-                for libro in libros:
-                    if libro[1] == id_libro_prestamo:
-                        libro[3] += 1  # Aumenta el stock en 1
-                        break
+                indice = 0
+                encontrado = False
+                while indice < len(libros) and not encontrado:
+                    if libros[indice][1] == id_libro_prestamo:
+                        libros[indice][3] += 1
+                        encontrado = True
+                    indice += 1
 
                 try:
                     prestamos.pop(nro)  # Elimina el préstamo

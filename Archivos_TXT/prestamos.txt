@@ -1,4 +1,3 @@
 Facu,133185723,El principito,L002,Antoine de Saint-Exupéry,Emecé,2025-06-08,2025-06-20,En curso
 Elian,527856776,La Felicidad,L011,Gabriel Rolón,Planeta,2025-06-08,2025-06-15,En curso
-Iair007,111835221,Crónica de una muerte anunciada,L009,Gabriel García Márquez,Norma,2025-06-08,2025-07-06,En curso
 Facu,133185723,El principito,L002,Antoine de Saint-Exupéry,Emecé,2025-06-08,2025-06-15,En curso
