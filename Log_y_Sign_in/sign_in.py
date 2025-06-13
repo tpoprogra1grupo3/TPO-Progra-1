@@ -190,3 +190,16 @@ def eliminar_usuarios_por_id(usuarios_datos):
             print(f"El usuario {nombre} con el id {id_usuario} fue eliminado")
         else: 
             print(f"Usuario con el id {id_usuario} no fue encontrado")       
+
+def eliminar_mi_usuario(usuarios_datos, usuario_actual):
+    confirmacion = input(f"¿Estás seguro que querés eliminar tu cuenta, {usuario_actual}? (s/n): ").lower()
+    if confirmacion == "s":
+        try:
+            usuarios_datos.pop(usuario_actual, None)  # Se elimina y se verifica que no de errores
+            guardar_usuarios_datos(usuarios_datos)
+            print("Tu cuenta fue eliminada exitosamente.")
+            return "volver_inicio"
+        except:
+            print("Ocurrió un error al eliminar tu cuenta.")
+    else:
+        print("Operación cancelada.")

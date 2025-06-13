@@ -1,7 +1,7 @@
 from modulo_libros import añadir_libro, eliminar_libro, imprimir_libros, buscar_libro, actualizar_libro
-from funciones_utiles import limpiar_consola, titulo      #, cambiar_rol
+from funciones_utiles import limpiar_consola, titulo, mostrar_mi_id      #, cambiar_rol
 from Log_y_Sign_in.login import iniciar_sesion
-from Log_y_Sign_in.sign_in import crear_usuario, mostrar_usuarios, eliminar_usuarios_por_id
+from Log_y_Sign_in.sign_in import crear_usuario, mostrar_usuarios, eliminar_usuarios_por_id, eliminar_mi_usuario
 from prestamos import crear_prestamos, ver_prestamos_con_filtro, actualizar_prestamo, eliminar_prestamo, ver_mis_prestamos
 
 def menu_inicio(usuarios_datos, libros, prestamos):  # Menu de registro y login
@@ -100,6 +100,8 @@ def menu_socio(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_act
             "2": {"texto": "Buscar libro específico", "accion": lambda: buscar_libro(libros)},
             "3": {"texto": "Crear un préstamo", "accion": lambda: crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual,"socio")},
             "4": {"texto": "Ver mis préstamos", "accion": lambda: ver_mis_prestamos(prestamos, usuario_actual)},
+            "5": {"texto": "Ver mi ID", "accion": lambda: mostrar_mi_id(usuario_actual, id_usuario_actual)},
+            "6": {"texto": "Eliminar mi usuario", "accion": lambda: eliminar_mi_usuario(usuarios_datos, usuario_actual)},
             "9": {"texto": "Cerrar sesión", "accion": "volver"}
         }
         resultado = mostrar_menu("Bienvenido al menú de Socio", opciones_socio)

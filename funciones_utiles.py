@@ -26,6 +26,9 @@ def buscar_fila_libro(libros,nombre):   # Devuelve el id del usuario
     for i in range(0,len(libros)):
         if libros[i][0].lower() == nombre:
             return i  
+        
+def mostrar_mi_id(usuario_actual, id_usuario_actual):
+    print(f"Bienvenido, {usuario_actual}. Tu ID de usuario es: {id_usuario_actual}")
 
 
 def titulo(opcion):     
