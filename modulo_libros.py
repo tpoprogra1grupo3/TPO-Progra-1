@@ -1,6 +1,5 @@
 import os
 import re
-from funciones_utiles import es_numero_flotante, convertir_a_flotante
 
 def cargar_libros():
     try:    
@@ -47,17 +46,30 @@ def imprimir_libros(libros):
 def añadir_libro(libros):
     limpiar_consola()
     print(f"|{'Bienvenido a la carga de libros':-^60}|", end="\n\n")
-    nuevo_nombre_libro = input("Ingrese el nombre del nuevo libro (-1 para volver al menu de admin): ").lower()
-    if nuevo_nombre_libro.strip() == "-1":
-        return
-    nuevo_autor_libro = input("Ingrese el autor (-1 para volver al menu de admin): ").lower()
-    if nuevo_autor_libro.strip() == "-1":
-        return
-    nuevo_editorial_libro = input("Ingrese la editorial del libro (-1 para volver al menu de admin): ").lower()
-    if nuevo_editorial_libro.strip() == "-1":
-        return
-    
-    existente = False  # Interruptor para saber si el libro ingresado ya existe
+    while True:
+        nuevo_nombre_libro = input("Ingrese el nombre del nuevo libro (-1 para volver al menu de admin): ").lower()
+        if nuevo_nombre_libro.strip() == "-1":
+            return
+        elif nuevo_nombre_libro.strip() != "":
+            break
+        else:
+            print("El nombre ingresado es inválido")
+    while True:
+        nuevo_autor_libro = input("Ingrese el autor (-1 para volver al menu de admin): ").lower()
+        if nuevo_autor_libro.strip() == "-1":
+            return
+        elif nuevo_autor_libro.strip() != "":
+            break
+        else:
+            print("El autor ingresado es inválido")
+    while True:
+        nuevo_editorial_libro = input("Ingrese la editorial del libro (-1 para volver al menu de admin): ").lower()
+        if nuevo_editorial_libro.strip() == "-1":
+            return
+        elif nuevo_editorial_libro != "":
+            break
+        else: 
+            print("La editorial ingresada es inválida")
 
     for libro in libros:
         if (libro[0].lower() == nuevo_nombre_libro and
@@ -65,7 +77,6 @@ def añadir_libro(libros):
             libro[4].lower() == nuevo_editorial_libro):
             libro[3] += 1  # Añade un ejemplar más si el libro ya existe
             print(f"El libro '{nuevo_nombre_libro.title()}' ya existe y se añadió un ejemplar más!!")
-            existente = True
             return
 
     nuevo_codigo_libro = generar_id_libro(libros)
@@ -132,8 +143,7 @@ def buscar_libro(libros):
     }
 
     if opcion not in campos:
-        print("Opción no válida.")
-        input("\nPresiona Enter para continuar...")
+        print("Opción no válida.\n")
         return
 
     indice = campos[opcion]     # indice es la fila de ese valor en la lista del libro 

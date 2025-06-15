@@ -3,3 +3,5 @@ Facu,133185723,El principito,L002,Antoine de Saint-Exupéry,Emecé,2025-06-08,20
 Elian,527856776,La Felicidad,L011,Gabriel Rolón,Planeta,2025-06-11,2025-06-25,En curso
 lula,839456903,Cien años de soledad,L001,Gabriel García Márquez,Sudamericana,2025-06-14,2025-06-21,En curso
 lula,351778345,Cien años de soledad,L001,Gabriel García Márquez,Sudamericana,2025-06-14,2025-06-21,En curso
+Juan,156836921,F1: Historia De Motor,L012,Adrian Puente,Planeta,2025-06-15,2025-06-29,Devuelto
+Facu,133185723,F1: Historia De Motor,L012,Adrian Puente,Planeta,2025-06-15,2025-06-22,En curso

@@ -9,4 +9,4 @@ Matar un ruiseñor,L008,Harper Lee,4,Debolsillo
 Crónica de una muerte anunciada,L009,Gabriel García Márquez,8,Norma
 El código Da Vinci,L010,Dan Brown,1,Planeta
 La Felicidad,L011,Gabriel Rolón,2,Planeta
-
+F1: Historia De Motor,L012,Adrian Puente,7,Planeta

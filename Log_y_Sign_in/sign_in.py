@@ -18,15 +18,21 @@ def usuarios_de_base():   # Usuarios del sistema con su ID y rol
 
 def crear_usuario(usuarios_datos):
     usuario = crear_nombre_usuario(usuarios_datos)
+    if usuario == "Volver":
+        return "Volver"
     titulo(1)
     contraseña = crear_contraseña()
+    if contraseña == "Volver":
+        return "Volver"
     titulo(1)
     mail = crear_mail(usuarios_datos)
+    if mail == "Volver":
+        return "Volver"
     titulo(1)
     while True:
         dni_completo = input("Ingrese su DNI completo (Máx 10 caracteres)(-1 para volver al menu): ")
-        if dni_completo==-1:
-            return -1
+        if int(dni_completo)==-1:
+            return "Volver"
         elif dni_completo.isdigit() and len(dni_completo) <=10 and len(dni_completo)>=3:
             dni_completo = dni_completo.zfill(10)  # Tendrá siempre 10 caracteres
             ultimos_3_digitos = dni_completo[-3:]  # Se deja como string
@@ -39,12 +45,14 @@ def crear_usuario(usuarios_datos):
     # Selección de rol
 
     while True:
-        print("\nSeleccione el rol del nuevo usuario:")
+        print("\nSeleccione el rol del nuevo usuario (-1 para volver al menú):")
         print("1. Administrador")
         print("2. Socio")
         opcion = input("Ingrese 1 o 2: ")
 
-        if opcion == "1":
+        if opcion.strip() == "-1":
+            return "Volver"
+        elif opcion == "1":
             #Confirmacion Rol Admin
             master_key= "1234"
             intentos = 3

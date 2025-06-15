@@ -111,7 +111,7 @@ def menu_socio(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_act
 
 def submenu_bibloteca(libros):   # Submenu bibloteca
     opciones_bibloteca = {
-        "1": {"texto": "Añadir un libro a lq bibloteca", "accion": lambda: añadir_libro(libros)},
+        "1": {"texto": "Añadir un libro a la bibloteca", "accion": lambda: añadir_libro(libros)},
         "2": {"texto": "Eliminar libro", "accion": lambda: eliminar_libro(libros)},
         "3": {"texto": "Mostrar libros disponibles actualmente", "accion": lambda: imprimir_libros(libros)},
         "4": {"texto": "Buscar libro específico", "accion": lambda: buscar_libro(libros)},

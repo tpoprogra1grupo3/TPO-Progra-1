@@ -249,7 +249,7 @@ def actualizar_prestamo(prestamos, libros):
 
     imprimir_prestamos(prestamos)
 
-    nro = input("\nIngrese el número de préstamo que desea actualizar: ")
+    nro = input("\nIngrese el número de préstamo que desea actualizar: ").strip()
     if nro.isnumeric():
         nro = int(nro) - 1
         if 0 <= nro < len(prestamos):
@@ -332,8 +332,8 @@ def eliminar_prestamo(prestamos, libros):   # Elimina un préstamo existente
 
     imprimir_prestamos(prestamos)
 
-    nro = input("\nIngrese el número de préstamo que desea eliminar (-1 para cancelar): ")
-    if nro.strip() == "-1":
+    nro = input("\nIngrese el número de préstamo que desea eliminar (-1 para cancelar): ").strip()
+    if nro == "-1":
         return
     elif nro.isnumeric():
         nro = int(nro) - 1
