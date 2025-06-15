@@ -129,7 +129,7 @@ def validar_id(usuarios_datos, id):
 
 def crear_mail(usuarios_datos):
     while True:
-        mail = input("Ingrese su e-mail (-1 para volver): ")
+        mail = input("Crea su e-mail (-1 para volver): ")
         if mail.strip() == "-1":
             return "Volver"
         elif re.search(r"\S+@\S+\.\S+", mail):    # Verifica que sea formato de mail
@@ -201,5 +201,22 @@ def eliminar_mi_usuario(usuarios_datos, usuario_actual):
             return "volver_inicio"
         except:
             print("Ocurrió un error al eliminar tu cuenta.")
+    else:
+        print("Operación cancelada.")
+
+def cambiar_mail(usuarios_datos, usuario_actual):
+    confirmacion = input(f"¿Estás seguro que querés cambiar de mail, {usuario_actual}? (s/n): ").lower()
+    if confirmacion == "s":
+        nuevo_mail=crear_mail(usuarios_datos)
+        if nuevo_mail == "Volver":
+            print("Actualización cancelada.")
+            return
+        try:
+            usuarios_datos[usuario_actual]["mail"] = nuevo_mail
+            guardar_usuarios_datos(usuarios_datos)
+            print("El mail ha sido actualizado correctamente.")
+        except:
+            print("Hubo un error al guardar el nuevo mail.")
+            return "volver_inicio"
     else:
         print("Operación cancelada.")
