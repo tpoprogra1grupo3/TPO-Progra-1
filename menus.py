@@ -83,7 +83,7 @@ def mostrar_menu(titulo_menu, opciones):  # Generaliza el mostrado de menús con
 def menu_admin(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):   # Menu Principal Vista Admin
     while True:
         opciones_admin = {
-            "1": {"texto": "Bibloteca", "accion": lambda: submenu_bibloteca(libros)},
+            "1": {"texto": "Gestión de Libros", "accion": lambda: submenu_bibloteca(libros)},
             "2": {"texto": "Préstamos", "accion": lambda: submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual,"admin")},
             "3": {"texto": "Mostrar info de usuarios del sistema", "accion": lambda: mostrar_usuarios(usuarios_datos)},
             "4": {"texto": "Eliminar usuarios por Id", "accion":lambda: eliminar_usuarios_por_id(usuarios_datos,id_usuario_actual)},
@@ -119,7 +119,7 @@ def submenu_bibloteca(libros):   # Submenu bibloteca
         "8": {"texto": "Volver al menú anterior", "accion": "volver"},
         "9": {"texto": "Cerrar sesión y volver al menú principal", "accion": "volver_inicio"}
     }
-    resultado = mostrar_menu("Submenú Bibloteca", opciones_bibloteca)     
+    resultado = mostrar_menu("Submenú Gestión de Libros", opciones_bibloteca)     
     if resultado == "volver_inicio":
         return "volver_inicio"
 
