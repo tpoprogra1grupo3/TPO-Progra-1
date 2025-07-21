@@ -60,14 +60,17 @@ def crear_usuario(usuarios_datos):
                 clave_ingresada = input("Ingrese la clave para crear un Admin: ")
                 if clave_ingresada == master_key:    # Confirmación adicional para creación de cuenta admin
                     permisos = "admin"
+                    intentos = "Contraseña correcta"
                     break
-            else:
-                intentos -= 1
-            print(f"Clave incorrecta. Intentos restantes: {intentos}")
-            if intentos == 0:
-                print("No se pudo verificar la clave. Cancelando creación de administrador.")
-                return -1
-            break   # Se cancela la creación de una cuenta de administrador
+                else:
+                    intentos -= 1
+                    print(f"Clave incorrecta. Intentos restantes: {intentos}")
+                    if intentos == 0:
+                        print("No se pudo verificar la clave. Cancelando creación de administrador.")
+                        return -1
+
+            if intentos == "Contraseña correcta":
+                break
 
         elif opcion == "2":
             permisos = "socio"
