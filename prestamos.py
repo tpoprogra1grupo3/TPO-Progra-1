@@ -145,16 +145,19 @@ def crear_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuari
         else:
             print("\nLa opción ingresada es inválida.\n")
 
-def estado_prestamo(fecha_vencimiento):   # Define el estado del préstamo
-    if fecha_vencimiento < date.today():
-        return "Vencido"
+def estado_prestamo(fecha_vencimiento, estado="En Curso"):   # Define el estado del préstamo
+    if estado != "Devuelto":
+        if fecha_vencimiento < date.today():
+            return "Vencido"
+        else:
+            return "En curso"
     else:
-        return "En curso"
+        return "Devuelto"
 
 def cambio_estado_inicio(prestamos):   
     for i in range(len(prestamos)):
         fila = prestamos[i]
-        nueva_fila = fila[:-1] + (estado_prestamo(fila[7]),)
+        nueva_fila = fila[:-1] + (estado_prestamo(fila[7],fila[8]),)
         prestamos[i] = nueva_fila
 
 def imprimir_prestamos(prestamos, filtro="todos"):
@@ -164,14 +167,25 @@ def imprimir_prestamos(prestamos, filtro="todos"):
         return
 
     print(f"|{'Listado de Préstamos':-^190}|")
-    print(f"{'N°':<4}{'Usuario':<15}{'DNI':<12}{'Libro':<25}{'Código':<8}{'Autor':<25}{'Editorial':<15}{'Precio':<10}{'Inicio':<12}{'Vencimiento':<14}{'Estado':<10}")
+    print(f"{'N°':<4} {'Usuario':<15} {'ID Usuario':<12} {'Libro':<25} {'Código':<8} {'Autor':<25} {'Editorial':<15} {'Inicio':<12} {'Vencimiento':<14} {'Estado':<10}")
     print("-" * 190)
 
     hoy = date.today()
     contador = 0
 
-    for i, prestamo in enumerate(prestamos, 1):
+    for i, prestamo in enumerate(prestamos, 1):     # i es el indice de cada tupla, prestamo el prestamo que le corresponde
         usuario, dni, libro, codigo, autor, editorial, fecha_inicio, fecha_vencimiento, estado_original = prestamo
+
+        dni = str(dni)
+        codigo = str(codigo)
+
+        usuario = (usuario[:12].strip() + "...") if len(usuario) > 15 else usuario
+        dni = (dni[:9].strip() + "...") if len(dni) > 12 else dni
+        libro = (libro[:22].strip() + "...") if len(libro) > 25 else libro
+        codigo = (codigo[:5].strip() + "...") if len(codigo) > 8 else codigo
+        autor = (autor[:22].strip() + "...") if len(autor) > 25 else autor
+        editorial = (editorial[:12].strip() + "...") if len(editorial) > 15 else editorial
+        # No validamos fechas ya que es imposible que superen los digitos establecidos (mismo aplica a estado)
 
         if estado_original == "Devuelto":
             estado_actual = "Devuelto"
@@ -207,7 +221,7 @@ def imprimir_prestamos(prestamos, filtro="todos"):
         # Mostrar si cumple filtro
         if mostrar:
             contador += 1
-            print(f"{contador:<4}{usuario:<15}{dni:<12}{libro:<25}{codigo:<8}{autor:<25}{editorial:<15}{fecha_inicio.strftime('%d/%m/%Y'):<12}{fecha_vencimiento.strftime('%d/%m/%Y'):<14}{color}{estado_actual:<10}\033[0m")
+            print(f"{contador:<4} {usuario:<15} {dni:<12} {libro:<25} {codigo:<8} {autor:<25} {editorial:<15} {fecha_inicio.strftime('%d/%m/%Y'):<12} {fecha_vencimiento.strftime('%d/%m/%Y'):<14} {color} {estado_actual:<10}\033[0m")
 
     if contador == 0:
         print("No se encontraron préstamos según el filtro aplicado.")

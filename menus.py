@@ -86,7 +86,7 @@ def menu_admin(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_act
             "1": {"texto": "Bibloteca", "accion": lambda: submenu_bibloteca(libros)},
             "2": {"texto": "Préstamos", "accion": lambda: submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual,"admin")},
             "3": {"texto": "Mostrar info de usuarios del sistema", "accion": lambda: mostrar_usuarios(usuarios_datos)},
-            "4": {"texto": "Eliminar usuarios por Id", "accion":lambda: eliminar_usuarios_por_id(usuarios_datos)},
+            "4": {"texto": "Eliminar usuarios por Id", "accion":lambda: eliminar_usuarios_por_id(usuarios_datos,id_usuario_actual)},
             "9": {"texto": "Cerrar sesión", "accion": "volver"}
         }
         resultado = mostrar_menu("Bienvenido al menú de Admin", opciones_admin)

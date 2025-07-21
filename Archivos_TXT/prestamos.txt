@@ -1,7 +1,7 @@
-Facu,133185723,El principito,L002,Antoine de Saint-Exupéry,Emecé,2025-06-08,2025-06-20,En curso
-Facu,133185723,El principito,L002,Antoine de Saint-Exupéry,Emecé,2025-06-08,2025-06-15,En curso
-Elian,527856776,La Felicidad,L011,Gabriel Rolón,Planeta,2025-06-11,2025-06-25,En curso
-lula,839456903,Cien años de soledad,L001,Gabriel García Márquez,Sudamericana,2025-06-14,2025-06-21,En curso
-lula,351778345,Cien años de soledad,L001,Gabriel García Márquez,Sudamericana,2025-06-14,2025-06-21,En curso
+Facu,133185723,El principito,L002,Antoine de Saint-Exupéry,Emecé,2025-06-08,2025-06-20,Vencido
+Facu,133185723,El principito,L002,Antoine de Saint-Exupéry,Emecé,2025-06-08,2025-06-15,Vencido
+Elian,527856776,La Felicidad,L011,Gabriel Rolón,Planeta,2025-06-11,2025-06-25,Vencido
 Juan,156836921,F1: Historia De Motor,L012,Adrian Puente,Planeta,2025-06-15,2025-06-29,Devuelto
-Facu,133185723,F1: Historia De Motor,L012,Adrian Puente,Planeta,2025-06-15,2025-06-22,En curso
+Facu,133185723,F1: Historia De Motor,L012,Adrian Puente,Planeta,2025-06-15,2025-06-22,Devuelto
+Facu,133196723,1984,L004,George Orwell,Destino,2025-07-21,2025-08-04,En curso
+Iair007,111835221,Crónica de una muerte anunciada,L009,Gabriel García Márquez,Norma,2025-07-21,2025-07-24,En curso

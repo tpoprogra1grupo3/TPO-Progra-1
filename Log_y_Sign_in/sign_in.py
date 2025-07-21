@@ -177,7 +177,8 @@ def guardar_usuarios_datos(usuarios_datos):
     except:
         print("No se ha podido abrir el archivo")
 
-def eliminar_usuarios_por_id(usuarios_datos):
+def eliminar_usuarios_por_id(usuarios_datos,id_usuario_actual):
+        id_usuario_actual = int(id_usuario_actual)
         while True:
             try:
                 id_usuario = int(input("Ingrese el Id del usuario a eliminar(-1 para volver): ").strip())
@@ -195,10 +196,11 @@ def eliminar_usuarios_por_id(usuarios_datos):
                 try:
                     del usuarios_datos[nombre]  
                     guardar_usuarios_datos(usuarios_datos)
-                    print("Se ha eliminado al usuario satisfactoriamente")
+                    print(f"El usuario {nombre} con el id {id_usuario} fue eliminado")
+                    if id_usuario_actual == id_usuario:
+                        return "volver_inicio"
                 except:
                     print("No se pudo elimar el usuario")
-            print(f"El usuario {nombre} con el id {id_usuario} fue eliminado")
         else: 
             print(f"Usuario con el id {id_usuario} no fue encontrado")       
 
