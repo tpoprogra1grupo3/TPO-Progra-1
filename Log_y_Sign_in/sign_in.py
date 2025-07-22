@@ -233,3 +233,107 @@ def cambiar_mail(usuarios_datos, usuario_actual):
             return "volver_inicio"
     else:
         print("Operación cancelada.")
+
+def actualizar_usuario(usuarios_datos):
+    limpiar_consola()
+    print("== Actualización de usuario ==")
+
+    print("\nLista de usuarios:")   # Se muestra los usuarios del sistema
+    usuarios_lista = list(usuarios_datos.items())
+    for i, (nombre, datos) in enumerate(usuarios_lista, start=1):
+        print(f"{i}. {nombre} (ID: {datos['id']})")
+
+    seleccion = input("\nIngrese el número del usuario a modificar (-1 para cancelar): ").strip()  # Selección del usuario a modificar
+    if seleccion == "-1":
+        return
+    if not seleccion.isdigit() or not (1 <= int(seleccion) <= len(usuarios_lista)):
+        print("Selección inválida.")   # Se cancela en caso de ser inválido
+        return
+
+    seleccion = int(seleccion)
+    usuario_encontrado = usuarios_lista[seleccion - 1][0]
+
+    print(f"\nUsuario seleccionado: {usuario_encontrado}")
+    print("1. Cambiar Mail")
+    print("2. Cambiar Rol")
+    print("3. Cambiar Contraseña")
+    print("4. Cambiar Nombre de Usuario")
+    print("5. Cancelar")
+
+    opcion = input("Seleccione una opción: ").strip()
+
+    if opcion == "1":   #Cambio de mail
+        nuevo_mail = crear_mail(usuarios_datos)
+        if nuevo_mail == "Volver":
+            print("Operación cancelada.")
+            return
+        usuarios_datos[usuario_encontrado]["mail"] = nuevo_mail  
+
+    elif opcion == "2": # Cambio de rol
+        nuevo_rol = input("Ingrese el nuevo rol (admin / socio): ").strip().lower()
+        if nuevo_rol in ("admin", "socio"):
+            usuarios_datos[usuario_encontrado]["rol"] = nuevo_rol
+        else:
+            print("Rol inválido.")
+            return
+
+    elif opcion == "3": # Cambio de contraseña
+        nueva_contraseña = crear_contraseña()
+        if nueva_contraseña == "Volver":
+            print("Operación cancelada.")
+            return
+        usuarios_datos[usuario_encontrado]["contraseña"] = nueva_contraseña
+
+    elif opcion == "4": # Cambio de nombre de usuario
+        nuevo_nombre = crear_nombre_usuario(usuarios_datos)
+        if nuevo_nombre == "Volver":
+            print("Operación cancelada.")
+            return
+        usuarios_datos[nuevo_nombre] = usuarios_datos.pop(usuario_encontrado)
+        usuario_encontrado = nuevo_nombre
+
+    elif opcion == "5": # Se cancela la modificación y vuelve al menu gestión de usuarios
+        return
+
+    else:
+        print("Opción no válida.")
+        return
+
+    try:
+        guardar_usuarios_datos(usuarios_datos)  # Guarda los cambios en archivo
+        print("Los datos se actualizaron correctamente.")
+    except:
+        print("Error al guardar los datos actualizados.")
+
+def eliminar_usuario(usuarios_datos, id_usuario_actual):
+    limpiar_consola()
+    print("== Eliminación de usuario ==")
+
+    print("\nLista de usuarios:")     # Se muestra una lista de los usuarios del sistema
+    usuarios_lista = list(usuarios_datos.items())
+    for i, (nombre, datos) in enumerate(usuarios_lista, start=1):
+        print(f"{i}. {nombre} (ID: {datos['id']})")
+
+    seleccion = input("\nIngrese el número del usuario a eliminar (-1 para cancelar): ").strip() # Permite seleccionar el usuario a eliminar
+    if seleccion == "-1":
+        return
+    if not seleccion.isdigit() or not (1 <= int(seleccion) <= len(usuarios_lista)):
+        print("Selección inválida.")    # Se cancela en caso de ser inválido
+        return
+
+    seleccion = int(seleccion)
+    usuario_seleccionado, datos = usuarios_lista[seleccion - 1]
+
+    confirmacion = input(f"¿Está seguro que desea eliminar a '{usuario_seleccionado}'? (s/n): ").lower()  # Confirmación de eliminación
+    if confirmacion == "s":
+        try:
+            del usuarios_datos[usuario_seleccionado]
+            guardar_usuarios_datos(usuarios_datos)
+            print("Usuario eliminado exitosamente.")   # Usuario eliminado correctamente
+            if datos["id"] == int(id_usuario_actual):
+                print("\nSe ha eliminado el usuario actualmente en sesión. Cerrando sesión...")
+                return "volver_inicio"
+        except:
+            print("Error al eliminar el usuario.")
+    else:
+        print("Operación cancelada.")

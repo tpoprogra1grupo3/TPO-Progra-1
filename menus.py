@@ -1,7 +1,7 @@
 from modulo_libros import añadir_libro, eliminar_libro, imprimir_libros, buscar_libro, actualizar_libro
 from funciones_utiles import limpiar_consola, titulo, mostrar_mi_id      #, cambiar_rol
 from Log_y_Sign_in.login import iniciar_sesion
-from Log_y_Sign_in.sign_in import crear_usuario, mostrar_usuarios, eliminar_usuarios_por_id, eliminar_mi_usuario, cambiar_mail
+from Log_y_Sign_in.sign_in import crear_usuario, mostrar_usuarios, eliminar_usuarios_por_id, eliminar_mi_usuario, cambiar_mail, actualizar_usuario, eliminar_usuario
 from prestamos import crear_prestamos, ver_prestamos_con_filtro, actualizar_prestamo, eliminar_prestamo, ver_mis_prestamos
 
 def menu_inicio(usuarios_datos, libros, prestamos):  # Menu de registro y login
@@ -85,8 +85,7 @@ def menu_admin(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_act
         opciones_admin = {
             "1": {"texto": "Gestión de Libros", "accion": lambda: submenu_bibloteca(libros)},
             "2": {"texto": "Préstamos", "accion": lambda: submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual,"admin")},
-            "3": {"texto": "Mostrar info de usuarios del sistema", "accion": lambda: mostrar_usuarios(usuarios_datos)},
-            "4": {"texto": "Eliminar usuarios por Id", "accion":lambda: eliminar_usuarios_por_id(usuarios_datos,id_usuario_actual)},
+            "3": {"texto": "Gestión de Usuarios", "accion": lambda: submenu_usuarios(usuarios_datos, id_usuario_actual)},
             "9": {"texto": "Cerrar sesión", "accion": "volver"}
         }
         resultado = mostrar_menu("Bienvenido al menú de Admin", opciones_admin)
@@ -133,5 +132,17 @@ def submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usua
         "9": {"texto": "Cerrar sesión y volver al menú principal", "accion": "volver_inicio"}
     }
     resultado = mostrar_menu("Submenú Préstamos", opciones_prestamos)
+    if resultado == "volver_inicio":
+        return "volver_inicio"
+    
+def submenu_usuarios(usuarios_datos, id_usuario_actual): # Submenu Gestión de Usuarios
+    opciones_usuarios = {
+        "1": {"texto": "Mostrar todos los usuarios", "accion": lambda: mostrar_usuarios(usuarios_datos)},
+        "2": {"texto": "Eliminar usuario", "accion": lambda: eliminar_usuario(usuarios_datos, id_usuario_actual)},
+        "3": {"texto": "Actualizar datos de un usuario", "accion": lambda: actualizar_usuario(usuarios_datos)},
+        "8": {"texto": "Volver al menú anterior", "accion": "volver"},
+        "9": {"texto": "Cerrar sesión y volver al menú principal", "accion": "volver_inicio"},
+    }
+    resultado = mostrar_menu("Submenú Gestión de Usuarios", opciones_usuarios)
     if resultado == "volver_inicio":
         return "volver_inicio"
