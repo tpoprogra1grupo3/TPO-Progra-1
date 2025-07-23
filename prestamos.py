@@ -275,34 +275,30 @@ def actualizar_prestamo(prestamos, libros):
             opcion = input("Ingrese opción: ")
             opcion = opcion.strip()
             if opcion == "1":
-                semanas_extra = input("Ingrese cuántas semanas desea extender el préstamo (-1 para cancelar): ")
-                if semanas_extra.strip() == "-1":
-                    return
-                elif semanas_extra.isnumeric() and int(semanas_extra) > 0:
-                    semanas_extra = int(semanas_extra)
-                    fila = prestamos[nro]
-
-                    fila_del_libro = buscar_fila_libro(libros, nombre=prestamos[nro][2])
-
-                    if fila_del_libro is None:
-                        print("No se encontró el libro.")
+                if prestamos[nro][8] != "Devuelto":   
+                    semanas_extra = input("Ingrese cuántas semanas desea extender el préstamo (-1 para cancelar): \n")
+                    if semanas_extra.strip() == "-1":
                         return
+                    elif semanas_extra.isnumeric() and int(semanas_extra) > 0:
+                        semanas_extra = int(semanas_extra)
+                        fila = prestamos[nro]
+                        
+                        try:
+                            nueva_fecha = fila[7] + timedelta(weeks=semanas_extra)
+                            nueva_fila = fila[:6] + (fila[6], nueva_fecha, estado_prestamo(nueva_fecha))
+                            prestamos[nro] = nueva_fila
+                            try:
+                                guardar_prestamos(prestamos)
+                                print("Fecha de vencimiento actualizada correctamente.\n")
+                            except:
+                                print("Ha ocurrido un error al actualizar el prestamo en los archivos de programa\n")
+                        except:
+                            print("Ha ocurrido un error al actualizar el préstamo\n")
+                    else:
+                        print("Cantidad de semanas inválida.\n")
                 else:
-                    print("Cantidad de semanas inválida.")
-                    
-                try:
-                    nueva_fecha = fila[7] + timedelta(weeks=semanas_extra)
-                    nueva_fila = fila[:6] + (fila[6], nueva_fecha, estado_prestamo(nueva_fecha))
-                    prestamos[nro] = nueva_fila
-                    try:
-                        guardar_prestamos(prestamos)
-                        print("Fecha de vencimiento actualizada correctamente.")
-                    except:
-                        print("Ha ocurrido un error al actualizar el prestamo en los archivos de programa")
-                except:
-                    print("Ha ocurrido un error al actualizar el préstamo")      
+                    print("\n\nERROR: El préstamo ya ha sido devuelto previamente. Porfavor haga uno nuevo")
                 
-                    print("Fecha de vencimiento actualizada correctamente.")
     
             elif opcion == "2":
                 # Devuelve el libro

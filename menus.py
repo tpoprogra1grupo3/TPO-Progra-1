@@ -83,7 +83,7 @@ def mostrar_menu(titulo_menu, opciones):  # Generaliza el mostrado de menús con
 def menu_admin(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual):   # Menu Principal Vista Admin
     while True:
         opciones_admin = {
-            "1": {"texto": "Gestión de Libros", "accion": lambda: submenu_bibloteca(libros)},
+            "1": {"texto": "Gestión de Libros", "accion": lambda: submenu_bibloteca(libros,prestamos)},
             "2": {"texto": "Préstamos", "accion": lambda: submenu_prestamos(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_actual,"admin")},
             "3": {"texto": "Gestión de Usuarios", "accion": lambda: submenu_usuarios(usuarios_datos, id_usuario_actual)},
             "9": {"texto": "Cerrar sesión", "accion": "volver"}
@@ -108,13 +108,13 @@ def menu_socio(usuarios_datos, libros, prestamos, usuario_actual, id_usuario_act
         if resultado == "volver_inicio":
             return "volver_inicio"
 
-def submenu_bibloteca(libros):   # Submenu bibloteca
+def submenu_bibloteca(libros,prestamos):   # Submenu bibloteca
     opciones_bibloteca = {
         "1": {"texto": "Añadir un libro a la bibloteca", "accion": lambda: añadir_libro(libros)},
         "2": {"texto": "Eliminar libro", "accion": lambda: eliminar_libro(libros)},
         "3": {"texto": "Mostrar libros disponibles actualmente", "accion": lambda: imprimir_libros(libros)},
         "4": {"texto": "Buscar libro específico", "accion": lambda: buscar_libro(libros)},
-        "5": {"texto": "Actualizar libro", "accion": lambda: actualizar_libro(libros)},
+        "5": {"texto": "Actualizar libro", "accion": lambda: actualizar_libro(libros,prestamos)},   
         "8": {"texto": "Volver al menú anterior", "accion": "volver"},
         "9": {"texto": "Cerrar sesión y volver al menú principal", "accion": "volver_inicio"}
     }

@@ -1,5 +1,6 @@
 import os
 import re
+from prestamos import guardar_prestamos
 
 def cargar_libros():
     try:    
@@ -38,7 +39,12 @@ def imprimir_libros(libros):
     # Libros
     for libro in libros:
         nombre, codigo, autor, stock, editorial= libro
+        nombre = (nombre[:32].strip() + "...") if len(nombre) > 35 else nombre
+        codigo = (codigo[:5].strip() + "...") if len(codigo) > 8 else codigo
+        autor = (autor[:22].strip() + "...") if len(autor) > 25 else autor
+        editorial = (editorial[:17].strip() + "...") if len(editorial) > 20 else editorial
         linea = f"{nombre:<35} {codigo:<8} {autor:<25} {stock:<7} {editorial:<20}"
+        
         print(linea)
 
     print("-" * 120)
@@ -189,10 +195,10 @@ def buscar_libro(libros):
     else:
         print("No se encontraron libros con ese criterio.")
 
-def actualizar_libro(libros):
+def actualizar_libro(libros,prestamos):
     limpiar_consola()
     print(f"|{'Actualizar datos de un libro':-^120}|\n")
-    id_libro = input("Ingrese el ID del libro que desea actualizar (ej: L001)(-1 para cancelar): ").upper()
+    id_libro = input("Ingrese el ID del libro que desea actualizar (ej: L001)(-1 para cancelar): ").upper().strip()
     if id_libro.strip() == "-1":
         return
 
@@ -222,22 +228,41 @@ def actualizar_libro(libros):
     print("-" * 120)
 
     # Selecciona campo para actualizar
-    opcion = input("\nSeleccione el número del campo que desea actualizar (1-5)(-1 para cancelar): ")
+    opcion = input("\nSeleccione el número del campo que desea actualizar (1-5)(-1 para cancelar): ").strip()
     if opcion.strip() == "-1":
         return
+    
     elif opcion == "1":
-        nuevo_nombre = input("Ingrese el nuevo nombre del libro (-1 para cancelar): ").title()
+        nuevo_nombre = input("Ingrese el nuevo nombre del libro (-1 para cancelar): ").title().strip()
         if nuevo_nombre.strip() == "-1":
             return
+        nombre_anterior = libro_encontrado[0]
         libro_encontrado[0] = nuevo_nombre
+        for i, prestamo in enumerate(prestamos):            # Se encarga de que los préstamos con este libro, reciban el cambio
+            if prestamo[2].lower() == nombre_anterior.lower():
+                prestamos[i] = prestamo[:2] + (nuevo_nombre,) + prestamo[3:]
+        try:
+            guardar_prestamos(prestamos)
+        except:
+            print("Ha ocurrido un error al actualizar el libro en los préstamos existentes en los archivos de programa")
+
     elif opcion == "2":
-        nuevo_autor = input("Ingrese el nuevo autor (-1 para cancelar): ").title()
+        nuevo_autor = input("Ingrese el nuevo autor (-1 para cancelar): ").title().strip()
         if nuevo_autor.strip() == "-1":
             return
+        autor_anterior = libro_encontrado[2]
         libro_encontrado[2] = nuevo_autor
+        for i,prestamo in enumerate(prestamos):             # Se encarga de que los préstamos con este libro, reciban el cambio
+            if prestamo[4].lower() == autor_anterior.lower() and prestamo[2].lower() == libro_encontrado[0].lower():    # Actualiza el autor de los prestamos que han pedido "ESE" libro (no todos sus libros)
+                prestamos[i] = prestamo[:4] + (nuevo_autor,) + prestamo[5:]
+        try:
+            guardar_prestamos(prestamos)
+        except:
+            print("Ha ocurrido un error al actualizar el libro en los préstamos existentes en los archivos de programa")
+
     elif opcion == "3":
         while True:
-            nuevo_stock = input("Ingrese el nuevo stock (número entero)(-1 para cancelar): ")
+            nuevo_stock = input("Ingrese el nuevo stock (número entero)(-1 para cancelar): ").strip()
             if nuevo_stock.strip() == "-1":
                 return
             if nuevo_stock.isdigit():
@@ -245,11 +270,21 @@ def actualizar_libro(libros):
                 break
             else:
                 print("Stock inválido. Intente nuevamente.")
+    
     elif opcion == "4":
-        nueva_editorial = input("Ingrese la nueva editorial (-1 para cancelar): ").title()
+        nueva_editorial = input("Ingrese la nueva editorial (-1 para cancelar): ").title().strip()
         if nueva_editorial.strip() == "-1":
             return
+        editorial_anterior = libro_encontrado[4]
         libro_encontrado[4] = nueva_editorial
+        for i,prestamo in enumerate(prestamos):
+            if prestamo[2].lower() == libro_encontrado[0].lower() and prestamo[5].lower() == editorial_anterior.lower():    # Actualiza el autor de los prestamos que han pedido "ESE" libro (no todos sus libros)
+                prestamos[i] = prestamo[:5] + (nueva_editorial,) + prestamo[6:]
+        try:
+            guardar_prestamos(prestamos)
+        except:
+            print("Ha ocurrido un error al actualizar el libro en los préstamos existentes en los archivos de programa")    
+
     else:
         print("\nOpción no válida.")
         return
