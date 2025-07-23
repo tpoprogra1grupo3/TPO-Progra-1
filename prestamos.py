@@ -388,7 +388,7 @@ def ver_mis_prestamos(prestamos, usuario_actual):  # Imprime préstamos según e
         return
 
     print(f"|{'Sus Préstamos':-^190}|")
-    print(f"{'N°':<4}{'Libro':<25}{'Código':<8}{'Autor':<25}{'Editorial':<15}{'Precio':<10}{'Inicio':<12}{'Vencimiento':<14}{'Estado':<10}")
+    print(f"{'N°':<4}{'Libro':<25}{'Código':<8}{'Autor':<25}{'Editorial':<15}{'Inicio':<12}{'Vencimiento':<14}{'Estado':<10}")
     print("-" * 190)
 
     hoy = date.today()

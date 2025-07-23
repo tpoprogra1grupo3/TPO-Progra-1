@@ -31,7 +31,7 @@ def crear_usuario(usuarios_datos):
     titulo(1)
     while True:
         dni_completo = input("Ingrese su DNI completo (Máx 10 caracteres)(-1 para volver al menu): ")
-        if int(dni_completo)==-1:
+        if dni_completo.strip()=="-1":
             return "Volver"
         elif dni_completo.isdigit() and len(dni_completo) <=10 and len(dni_completo)>=3:
             dni_completo = dni_completo.zfill(10)  # Tendrá siempre 10 caracteres
@@ -149,7 +149,7 @@ def crear_mail(usuarios_datos):
                     print("\nEl mail ingresado ya está en uso\n")
                     break
             else:
-                return mail
+                return mail.lower().strip()
         else:
             print("\nEl mail introducido es inválido\n")
 

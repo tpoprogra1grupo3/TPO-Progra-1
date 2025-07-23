@@ -74,7 +74,7 @@ def cambiar_contrasenia(usuarios_datos):
         if mail.strip() == "-1":
             return "Volver"
         elif re.search(r"\S+@\S+\.\S+", mail):    # Verifica que sea formato de mail
-            if mail == usuarios_datos[usuario_ingresado]["mail"]: 
+            if mail.lower().strip() == usuarios_datos[usuario_ingresado]["mail"].lower().strip(): 
                 break
             else:
                 print("\nEl mail es incorrecto\n")

@@ -28,6 +28,10 @@ def limpiar_consola(): # Vacía la consola
     os.system("cls")
 
 def imprimir_libros(libros):
+    try:
+        guardar_cambios_libros(libros)
+    except:
+        print("Ha ocurrido un error al realizar los cambios")
     limpiar_consola()
     print(f"|{'Catálogo de Libros':-^120}|\n")
     
