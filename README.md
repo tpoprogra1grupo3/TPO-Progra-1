@@ -77,4 +77,5 @@ La documentación completa del proyecto está en `Grupo 3 - Informe de Proyecto-
 
 ---
 
-**Equipo — Grupo 3:** Facundo Burguez · _(completar con los nombres del grupo)_
+**Equipo — Grupo 3:** Facundo Burguez - Juan Rocca Cruz - Elian Bineder
+
