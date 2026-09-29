@@ -1,4 +1,4 @@
-[README.md](https://github.com/user-attachments/files/32818099/README.md)
+
 # Sistema de Gestión de Biblioteca
 
 Aplicación de consola en Python para administrar una biblioteca: catálogo de libros, usuarios con roles y préstamos con control de vencimientos.
